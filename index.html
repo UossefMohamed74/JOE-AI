@@ -1,285 +1,248 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pipnex AI — منصة التحليل الفني والتوصيات حية</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #0b0e14;
-            --card-bg: #151a23;
-            --border-color: #232a3b;
-            --accent-color: #00f2fe;
-            --accent-gradient: linear-gradient(135deg, #00c6ff, #0072ff);
-            --green: #00e676;
-            --red: #ff5252;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; padding: 12px; gap: 14px; }
-
-        /* Navbar Header */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); }
-        .logo { font-size: 20px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
-        .logo i { color: var(--accent-color); }
-        .badge { background: var(--accent-gradient); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-
-        /* Dashboard Main Layout */
-        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
-        @media (min-width: 992px) { .dashboard-grid { grid-template-columns: 2fr 1fr; } }
-
-        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-        .card-title { font-size: 14px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; justify-content: space-between; }
-        .card-title i { color: var(--accent-color); margin-left: 6px; }
-
-        .form-group { margin-bottom: 8px; }
-        label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-        select, input, button { width: 100%; padding: 10px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main); font-size: 13px; outline: none; }
-        select:focus, input:focus { border-color: var(--accent-color); }
-        
-        button.btn-primary { background: var(--accent-gradient); border: none; font-weight: bold; cursor: pointer; color: #fff; display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 6px; }
-        button.btn-primary:active { opacity: 0.8; }
-
-        /* Chart Frame */
-        .chart-container { height: 420px; width: 100%; border-radius: 8px; overflow: hidden; }
-
-        /* Signal Box Output */
-        .signal-box { background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--border-color); border-radius: 10px; padding: 14px; margin-top: 8px; display: flex; flex-direction: column; gap: 10px; }
-        .signal-badge { padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 13px; display: inline-block; }
-        .badge-buy { background: rgba(0, 230, 118, 0.2); color: var(--green); border: 1px solid var(--green); }
-        .badge-sell { background: rgba(255, 82, 82, 0.2); color: var(--red); border: 1px solid var(--red); }
-
-        .info-row { display: flex; justify-content: space-between; background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 6px; font-size: 12px; }
-        .price-details { font-size: 13px; line-height: 1.8; }
-
-        /* Risk Calculator Grid */
-        .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
-        .result-box { margin-top: 8px; padding: 10px; background: rgba(0, 242, 254, 0.05); border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px; font-weight: bold; color: var(--accent-color); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pipnex — تحليل فني</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{--bg:#0b0e14;--card:#151a23;--line:#232a3b;--accent:#00f2fe;--grad:linear-gradient(135deg,#00c6ff,#0072ff);--green:#00e676;--red:#ff5252;--text:#f1f5f9;--muted:#94a3b8}
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Tahoma,sans-serif}
+body{background:var(--bg);color:var(--text);display:flex;flex-direction:column;min-height:100vh;padding:12px;gap:14px}
+.header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--card);border-radius:12px;border:1px solid var(--line)}
+.logo{font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px}
+.logo i{color:var(--accent)}
+.badge{background:var(--grad);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:992px){.grid{grid-template-columns:2fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card-title{font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card-title i{color:var(--accent);margin-left:6px}
+label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}
+select,input,button{width:100%;padding:10px;background:var(--bg);border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:13px;outline:none}
+select:focus,input:focus,button:focus-visible{border-color:var(--accent)}
+button.primary{background:var(--grad);border:none;font-weight:700;cursor:pointer;color:#fff;display:flex;justify-content:center;align-items:center;gap:8px}
+button.primary:disabled{opacity:.5;cursor:wait}
+.chart{height:420px;width:100%;border-radius:8px;overflow:hidden}
+.signal{background:rgba(255,255,255,.02);border:1px dashed var(--line);border-radius:10px;padding:14px;display:none;flex-direction:column;gap:10px}
+.sbadge{padding:4px 10px;border-radius:6px;font-weight:800;font-size:13px;border:1px solid}
+.buy{background:rgba(0,230,118,.2);color:var(--green);border-color:var(--green)}
+.sell{background:rgba(255,82,82,.2);color:var(--red);border-color:var(--red)}
+.wait{background:rgba(148,163,184,.15);color:var(--muted);border-color:var(--muted)}
+.row{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;background:rgba(0,0,0,.3);padding:8px 12px;border-radius:6px;font-size:12px}
+.details{font-size:13px;line-height:1.9}
+.reasons{font-size:11px;color:var(--muted);line-height:1.8;padding-right:16px}
+.note{font-size:11px;color:var(--muted);line-height:1.7}
+.err{display:none;font-size:12px;color:var(--red);background:rgba(255,82,82,.08);padding:8px 10px;border-radius:6px}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.result{display:none;padding:10px;background:rgba(0,242,254,.05);border:1px solid var(--line);border-radius:6px;font-size:12px;font-weight:700;color:var(--accent)}
+.warn{font-size:11px;color:#ffb74d;background:rgba(255,183,77,.08);border-radius:8px;padding:10px 12px;line-height:1.7}
+</style>
 </head>
 <body>
 
-    <!-- Header Navbar -->
-    <div class="header">
-        <div class="logo">
-            <i class="fa-solid fa-brain"></i> Pipnex AI
-            <span class="badge">PRO TERMINAL</span>
-        </div>
-        <div style="font-size: 11px; color: var(--green);">
-            <i class="fa-solid fa-circle" style="font-size: 8px;"></i> متصل بالأسعار اللحظية
-        </div>
+<div class="header">
+  <div class="logo"><i class="fa-solid fa-chart-line"></i> Pipnex <span class="badge">PRO</span></div>
+  <div id="status" style="font-size:11px;color:var(--muted)"><i class="fa-solid fa-circle" style="font-size:8px"></i> بانتظار التحليل</div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <div class="card-title">
+      <span><i class="fa-solid fa-chart-column"></i> الرسم البياني</span>
+      <select id="pair" style="width:auto;padding:4px 10px">
+        <option value="EURUSD">EUR/USD</option>
+        <option value="XAUUSD">XAU/USD (الذهب)</option>
+        <option value="GBPUSD">GBP/USD</option>
+        <option value="BTCUSDT">BTC/USDT</option>
+      </select>
     </div>
+    <div class="chart" id="tv"></div>
+  </div>
 
-    <!-- Dashboard Content -->
-    <div class="dashboard-grid">
-        
-        <!-- Chart Section -->
-        <div class="card">
-            <div class="card-title">
-                <span><i class="fa-solid fa-chart-candlestick"></i> الرسم البياني المباشر</span>
-                <select id="pairSelect" style="width: auto; padding: 4px 10px;" onchange="updateChartAndAnalysis()">
-                    <option value="FX:EURUSD" data-symbol="EURUSD">EUR/USD</option>
-                    <option value="OANDA:XAUUSD" data-symbol="XAUUSD">XAU/USD (الذهب)</option>
-                    <option value="FX:GBPUSD" data-symbol="GBPUSD">GBP/USD</option>
-                    <option value="BINANCE:BTCUSDT" data-symbol="BTCUSDT">BTC/USDT</option>
-                </select>
-            </div>
-            <div class="chart-container" id="tradingview_widget"></div>
-        </div>
-
-        <!-- AI Signals Control Panel -->
-        <div class="card">
-            <div class="card-title">
-                <span><i class="fa-solid fa-microchip"></i> لوحة تحليل السوق المباشرة</span>
-            </div>
-
-            <div class="form-group">
-                <label>الإطار الزمني (Timeframe)</label>
-                <select id="tfSelect" onchange="runAnalysis()">
-                    <option value="15m">15 دقيقة (مضاربة)</option>
-                    <option value="1h" selected>1 ساعة (سوينج سريع)</option>
-                    <option value="4h">4 ساعات (سوينج)</option>
-                </select>
-            </div>
-
-            <button class="btn-primary" onclick="runAnalysis()">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> حساب وتحليل الاتجاه اللحظي
-            </button>
-
-            <div id="loadingText" style="display: none; font-size: 12px; color: var(--accent-color); text-align: center; margin-top: 10px;">
-                <i class="fa-solid fa-spinner fa-spin"></i> جاري قراءة حركة الشموع وحساب الأهداف...
-            </div>
-
-            <!-- Signal Output Display -->
-            <div id="signalOutput" class="signal-box" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span id="signalBadge" class="signal-badge badge-buy">BUY</span>
-                    <span style="font-size: 11px; color: var(--text-muted);">دقة التوصية: <b id="confidenceVal" style="color:var(--accent-color);">88%</b></span>
-                </div>
-
-                <div class="info-row">
-                    <span>مؤشر القوة RSI: <b id="rsiVal">-</b></span>
-                    <span>الاتجاه العام: <b id="trendVal">-</b></span>
-                </div>
-
-                <div class="price-details">
-                    <p>سعر الدخول الحالي: <b id="entryVal" style="color: var(--accent-color);">-</b></p>
-                    <p style="color:var(--red);">وقف الخسارة (SL): <b id="slVal">-</b></p>
-                    <p style="color:var(--green);">الهدف الأول (TP1): <b id="tp1Val">-</b></p>
-                    <p style="color:var(--green);">الهدف الثاني (TP2): <b id="tp2Val">-</b></p>
-                </div>
-
-                <div style="font-size: 11px; color: var(--accent-color); background: rgba(0, 242, 254, 0.08); padding: 6px 10px; border-radius: 4px;">
-                    <i class="fa-regular fa-clock"></i> الوقت التقديري لتحقيق الهدف: <b id="etaVal">-</b>
-                </div>
-            </div>
-        </div>
-
+  <div class="card">
+    <div class="card-title"><span><i class="fa-solid fa-microchip"></i> التحليل الفني</span></div>
+    <div>
+      <label for="tf">الإطار الزمني</label>
+      <select id="tf">
+        <option value="15m">15 دقيقة</option>
+        <option value="1h" selected>1 ساعة</option>
+        <option value="4h">4 ساعات</option>
+      </select>
     </div>
+    <button class="primary" id="run"><i class="fa-solid fa-wand-magic-sparkles"></i> حلّل الآن</button>
+    <div class="err" id="err"></div>
 
-    <!-- Position & Lot Risk Calculator -->
-    <div class="card">
-        <div class="card-title">
-            <span><i class="fa-solid fa-calculator"></i> حاسبة إدارة المخاطر واللوت (Lot Size)</span>
-        </div>
-        <div class="calc-grid">
-            <div class="form-group">
-                <label>رأس المال ($)</label>
-                <input type="number" id="calcBalance" value="1000">
-            </div>
-            <div class="form-group">
-                <label>المخاطرة (%)</label>
-                <input type="number" id="calcRisk" value="1">
-            </div>
-            <div class="form-group">
-                <label>الاستوب (Pips)</label>
-                <input type="number" id="calcSL" value="30">
-            </div>
-            <div class="form-group" style="display: flex; align-items: flex-end;">
-                <button class="btn-primary" onclick="calculateLot()">احسب اللوت</button>
-            </div>
-        </div>
-        <div id="calcResult" class="result-box" style="display: none;"></div>
+    <div class="signal" id="out">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span id="sig" class="sbadge wait">—</span>
+        <span style="font-size:11px;color:var(--muted)">قوة التوافق: <b id="score" style="color:var(--accent)">-</b></span>
+      </div>
+      <div class="row"><span>RSI(14): <b id="rsi">-</b></span><span>الاتجاه: <b id="trend">-</b></span><span>ATR: <b id="atr">-</b></span></div>
+      <div class="details">
+        <p>السعر الحالي: <b id="entry" style="color:var(--accent)">-</b></p>
+        <p style="color:var(--red)">وقف الخسارة: <b id="sl">-</b></p>
+        <p style="color:var(--green)">الهدف 1 (1:1.5): <b id="tp1">-</b></p>
+        <p style="color:var(--green)">الهدف 2 (1:2.5): <b id="tp2">-</b></p>
+      </div>
+      <ul class="reasons" id="reasons"></ul>
+      <p class="note" id="src"></p>
     </div>
+  </div>
+</div>
 
-    <!-- TradingView Embed Code -->
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script>
-        function loadChart(symbol) {
-            document.getElementById("tradingview_widget").innerHTML = "";
-            new TradingView.widget({
-                "autosize": true,
-                "symbol": symbol,
-                "interval": "60",
-                "timezone": "Etc/UTC",
-                "theme": "dark",
-                "style": "1",
-                "locale": "ar",
-                "container_id": "tradingview_widget"
-            });
-        }
+<div class="card">
+  <div class="card-title"><span><i class="fa-solid fa-calculator"></i> حاسبة حجم اللوت</span></div>
+  <div class="calc">
+    <div><label for="bal">رأس المال ($)</label><input type="number" id="bal" value="1000" min="1"></div>
+    <div><label for="risk">المخاطرة (%)</label><input type="number" id="riskPct" value="1" min="0.1" step="0.1"></div>
+    <div><label for="slp">الاستوب (Pips)</label><input type="number" id="slp" value="30" min="1"></div>
+    <div style="display:flex;align-items:flex-end"><button class="primary" id="calcBtn">احسب اللوت</button></div>
+  </div>
+  <div class="result" id="res"></div>
+  <p class="note">القيم التقريبية: فوركس 1 pip = 0.0001 (≈$10 لكل لوت)، الذهب 1 pip = 0.1$ (≈$10 لكل لوت)، البيتكوين 1 pip = 1$ لكل 1 BTC. تحقق من مواصفات العقد عند وسيطك.</p>
+</div>
 
-        function updateChartAndAnalysis() {
-            const sym = document.getElementById("pairSelect").value;
-            loadChart(sym);
-            runAnalysis();
-        }
+<div class="warn"><i class="fa-solid fa-triangle-exclamation"></i> هذه قراءة آلية للمؤشرات وليست نصيحة استثمارية ولا تضمن الربح. لا تخاطر بأكثر مما تتحمل خسارته، وجرّب على حساب تجريبي أولاً.</div>
 
-        async function fetchPrice(symbol) {
-            try {
-                if (symbol === "BTCUSDT") {
-                    const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-                    const data = await res.json();
-                    return parseFloat(data.price);
-                } else if (symbol === "XAUUSD") {
-                    const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
-                    const data = await res.json();
-                    return parseFloat(data.price);
-                } else {
-                    const res = await fetch('https://open.er-api.com/v6/latest/USD');
-                    const data = await res.json();
-                    if (symbol === "EURUSD") return 1 / data.rates.EUR;
-                    if (symbol === "GBPUSD") return 1 / data.rates.GBP;
-                }
-            } catch (e) {
-                console.error(e);
-            }
-            return null;
-        }
+<script src="https://s3.tradingview.com/tv.js"></script>
+<script>
+const $ = id => document.getElementById(id);
 
-        async function runAnalysis() {
-            const selectElem = document.getElementById("pairSelect");
-            const symbol = selectElem.options[selectElem.selectedIndex].getAttribute("data-symbol");
-            const tf = document.getElementById("tfSelect").value;
-            
-            const loading = document.getElementById("loadingText");
-            const output = document.getElementById("signalOutput");
+// تعريف كل رمز: رمز TradingView + رمز Binance للبيانات + حجم الـ pip وقيمته لكل لوت
+const PAIRS = {
+  EURUSD:  {tv:"FX:EURUSD",        bn:"EURUSDT", dec:5, pip:0.0001, pipVal:10, note:"بيانات EUR/USDT من Binance (قريبة من الفوركس)"},
+  GBPUSD:  {tv:"FX:GBPUSD",        bn:"GBPUSDT", dec:5, pip:0.0001, pipVal:10, note:"بيانات GBP/USDT من Binance (قريبة من الفوركس)"},
+  XAUUSD:  {tv:"OANDA:XAUUSD",     bn:"PAXGUSDT",dec:2, pip:0.1,    pipVal:10, note:"بيانات PAXG (ذهب رقمي) كبديل لسعر الذهب"},
+  BTCUSDT: {tv:"BINANCE:BTCUSDT",  bn:"BTCUSDT", dec:2, pip:1,      pipVal:1,  note:"بيانات Binance المباشرة"}
+};
+const TF = {"15m":{tv:"15",lbl:"15 دقيقة"},"1h":{tv:"60",lbl:"1 ساعة"},"4h":{tv:"240",lbl:"4 ساعات"}};
+const HOSTS = ["https://data-api.binance.vision","https://api.binance.com"];
 
-            loading.style.display = "block";
-            output.style.display = "none";
+function loadChart() {
+  const p = PAIRS[$("pair").value];
+  $("tv").innerHTML = "";
+  if (typeof TradingView === "undefined") { $("tv").innerHTML = '<p class="note" style="padding:16px">تعذر تحميل الرسم البياني.</p>'; return; }
+  new TradingView.widget({autosize:true, symbol:p.tv, interval:TF[$("tf").value].tv, timezone:"Etc/UTC", theme:"dark", style:"1", locale:"ar", container_id:"tv"});
+}
 
-            const currentPrice = await fetchPrice(symbol);
-            loading.style.display = "none";
+async function fetchCandles(sym, tf) {
+  let lastErr;
+  for (const h of HOSTS) {
+    try {
+      const r = await fetch(`${h}/api/v3/klines?symbol=${sym}&interval=${tf}&limit=250`);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const d = await r.json();
+      return d.map(k => ({h:+k[2], l:+k[3], c:+k[4]}));
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr;
+}
 
-            if (!currentPrice) {
-                alert("تعذر جلب السعر اللحظي، يرجى إعادة المحاولة.");
-                return;
-            }
+// ===== المؤشرات =====
+function ema(vals, n) {
+  const k = 2 / (n + 1);
+  let e = vals.slice(0, n).reduce((a, b) => a + b, 0) / n;
+  const out = new Array(n - 1).fill(null); out.push(e);
+  for (let i = n; i < vals.length; i++) { e = vals[i] * k + e * (1 - k); out.push(e); }
+  return out;
+}
+function rsi(closes, n = 14) {           // Wilder smoothing
+  let g = 0, l = 0;
+  for (let i = 1; i <= n; i++) { const d = closes[i] - closes[i-1]; d >= 0 ? g += d : l -= d; }
+  g /= n; l /= n;
+  for (let i = n + 1; i < closes.length; i++) {
+    const d = closes[i] - closes[i-1];
+    g = (g * (n - 1) + Math.max(d, 0)) / n;
+    l = (l * (n - 1) + Math.max(-d, 0)) / n;
+  }
+  return l === 0 ? 100 : 100 - 100 / (1 + g / l);
+}
+function atr(c, n = 14) {
+  const tr = [];
+  for (let i = 1; i < c.length; i++) tr.push(Math.max(c[i].h - c[i].l, Math.abs(c[i].h - c[i-1].c), Math.abs(c[i].l - c[i-1].c)));
+  let a = tr.slice(0, n).reduce((x, y) => x + y, 0) / n;
+  for (let i = n; i < tr.length; i++) a = (a * (n - 1) + tr[i]) / n;
+  return a;
+}
 
-            const now = new Date();
-            const seed = now.getUTCFullYear() + (now.getUTCMonth() + 1) + now.getUTCDate() + now.getUTCHours();
-            const isBuy = (seed % 2 === 0);
+function analyze(candles) {
+  const closes = candles.map(x => x.c);
+  const last = closes[closes.length - 1];
+  const e20 = ema(closes, 20), e50 = ema(closes, 50), e200 = ema(closes, 200);
+  const f = e20.at(-1), m = e50.at(-1), s = e200.at(-1);
+  const r = rsi(closes), a = atr(candles);
+  const slope = f - e20.at(-4);
+  let score = 0; const why = [];
 
-            const signalType = isBuy ? 'BUY' : 'SELL';
-            const rsi = isBuy ? (45 + (seed % 15)) : (55 - (seed % 15));
-            const trend = isBuy ? 'صاعد (Bullish)' : 'هابط (Bearish)';
+  if (f > m) { score++; why.push("EMA20 فوق EMA50 (زخم صاعد)"); } else { score--; why.push("EMA20 تحت EMA50 (زخم هابط)"); }
+  if (last > s) { score++; why.push("السعر فوق EMA200 (اتجاه عام صاعد)"); } else { score--; why.push("السعر تحت EMA200 (اتجاه عام هابط)"); }
+  if (slope > 0) score++; else score--;
+  if (r > 55 && r < 70) { score++; why.push(`RSI ${r.toFixed(0)} يدعم الصعود دون تشبّع`); }
+  else if (r < 45 && r > 30) { score--; why.push(`RSI ${r.toFixed(0)} يدعم الهبوط دون تشبّع`); }
+  else if (r >= 70) { score -= 1; why.push(`RSI ${r.toFixed(0)} تشبّع شرائي — خطر تصحيح`); }
+  else if (r <= 30) { score += 1; why.push(`RSI ${r.toFixed(0)} تشبّع بيعي — احتمال ارتداد`); }
+  else why.push(`RSI ${r.toFixed(0)} محايد`);
 
-            let pipsFactor = 0.0020;
-            if (symbol === "XAUUSD") pipsFactor = 12.0;
-            if (symbol === "BTCUSDT") pipsFactor = 450.0;
+  const type = score >= 3 ? "BUY" : score <= -3 ? "SELL" : "WAIT";
+  return {type, score, strength: Math.round(Math.abs(score) / 4 * 100), rsi: r, atr: a, last, bull: f > m, why};
+}
 
-            const sl = isBuy ? currentPrice - pipsFactor : currentPrice + pipsFactor;
-            const tp1 = isBuy ? currentPrice + (pipsFactor * 1.5) : currentPrice - (pipsFactor * 1.5);
-            const tp2 = isBuy ? currentPrice + (pipsFactor * 2.8) : currentPrice - (pipsFactor * 2.8);
+async function run() {
+  const key = $("pair").value, p = PAIRS[key], tf = $("tf").value;
+  const btn = $("run"), err = $("err");
+  btn.disabled = true; err.style.display = "none"; $("out").style.display = "none";
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحليل...';
+  try {
+    const candles = await fetchCandles(p.bn, tf);
+    if (candles.length < 210) throw new Error("بيانات غير كافية");
+    const a = analyze(candles), d = p.dec;
+    const buy = a.type === "BUY", sell = a.type === "SELL";
+    const dir = buy ? 1 : -1, risk = a.atr * 1.5;
 
-            let eta = "45 دقيقة";
-            if (tf === '15m') eta = "20 - 30 دقيقة";
-            if (tf === '1h') eta = "1 - 2 ساعة";
-            if (tf === '4h') eta = "4 - 8 ساعات";
+    const sig = $("sig");
+    sig.textContent = a.type === "WAIT" ? "انتظار" : a.type;
+    sig.className = "sbadge " + (buy ? "buy" : sell ? "sell" : "wait");
+    $("score").textContent = a.type === "WAIT" ? "ضعيفة" : a.strength + "%";
+    $("rsi").textContent = a.rsi.toFixed(1);
+    $("trend").textContent = a.bull ? "صاعد" : "هابط";
+    $("atr").textContent = a.atr.toFixed(d);
+    $("entry").textContent = a.last.toFixed(d);
+    const lv = (x) => (buy || sell) ? x.toFixed(d) : "—";
+    $("sl").textContent = lv(a.last - dir * risk);
+    $("tp1").textContent = lv(a.last + dir * risk * 1.5);
+    $("tp2").textContent = lv(a.last + dir * risk * 2.5);
+    $("reasons").innerHTML = a.why.map(x => `<li>${x}</li>`).join("") + (a.type === "WAIT" ? "<li>لا يوجد توافق كافٍ بين المؤشرات — الأفضل عدم الدخول</li>" : "");
+    $("src").textContent = `${p.note} • ${TF[tf].lbl} • الوقف = 1.5×ATR`;
+    $("out").style.display = "flex";
+    $("status").innerHTML = '<i class="fa-solid fa-circle" style="font-size:8px;color:var(--green)"></i> <span style="color:var(--green)">تم التحديث ' + new Date().toLocaleTimeString("ar-EG") + "</span>";
 
-            const decimals = (symbol === "XAUUSD" || symbol === "BTCUSDT") ? 2 : 5;
+    if (buy || sell) $("slp").value = Math.max(1, Math.round(risk / p.pip));
+  } catch (e) {
+    err.textContent = "تعذر جلب البيانات (" + e.message + "). تحقق من الاتصال أو جرّب VPN إن كان Binance محجوباً في بلدك.";
+    err.style.display = "block";
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> حلّل الآن';
+  }
+}
 
-            document.getElementById("signalBadge").innerText = signalType;
-            document.getElementById("signalBadge").className = `signal-badge ${isBuy ? 'badge-buy' : 'badge-sell'}`;
-            document.getElementById("rsiVal").innerText = rsi;
-            document.getElementById("trendVal").innerText = trend;
-            document.getElementById("entryVal").innerText = currentPrice.toFixed(decimals);
-            document.getElementById("slVal").innerText = sl.toFixed(decimals);
-            document.getElementById("tp1Val").innerText = tp1.toFixed(decimals);
-            document.getElementById("tp2Val").innerText = tp2.toFixed(decimals);
-            document.getElementById("etaVal").innerText = eta;
+function calcLot() {
+  const bal = parseFloat($("bal").value), rp = parseFloat($("riskPct").value), sl = parseFloat($("slp").value);
+  const res = $("res");
+  if (!(bal > 0) || !(rp > 0) || !(sl > 0)) { res.textContent = "أدخل قيماً صحيحة أكبر من صفر."; res.style.display = "block"; return; }
+  const p = PAIRS[$("pair").value];
+  const riskAmt = bal * rp / 100;
+  const lot = riskAmt / (sl * p.pipVal);
+  res.textContent = `حجم اللوت: ${lot.toFixed(2)} | أقصى خسارة عند الوقف: $${riskAmt.toFixed(2)}` + (lot < 0.01 ? " — أقل من الحد الأدنى 0.01، خفّض الاستوب أو زد رأس المال" : "");
+  res.style.display = "block";
+}
 
-            output.style.display = "flex";
-        }
-
-        function calculateLot() {
-            const balance = parseFloat(document.getElementById("calcBalance").value);
-            const riskPercent = parseFloat(document.getElementById("calcRisk").value);
-            const stopLossPips = parseFloat(document.getElementById("calcSL").value);
-            if (!balance || !riskPercent || !stopLossPips) return;
-            const riskAmount = balance * (riskPercent / 100);
-            const lotSize = (riskAmount / (stopLossPips * 10)).toFixed(2);
-            
-            const resultElem = document.getElementById("calcResult");
-            resultElem.innerText = `حجم العقد (Lot) المناسب: ${lotSize} | قيمة الخسارة عند الستوب: $${riskAmount.toFixed(2)}`;
-            resultElem.style.display = "block";
-        }
-
-        // تشغيل الرسم البياني الأولي عند فتح الصفحة
-        loadChart("FX:EURUSD");
-    </script>
+$("pair").addEventListener("change", () => { loadChart(); run(); });
+$("tf").addEventListener("change", () => { loadChart(); run(); });
+$("run").addEventListener("click", run);
+$("calcBtn").addEventListener("click", calcLot);
+loadChart();
+</script>
 </body>
 </html>
