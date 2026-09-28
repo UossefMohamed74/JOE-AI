@@ -51,6 +51,7 @@ button.primary:disabled{opacity:.5;cursor:wait}
 .timer.done #timerClock{color:var(--green)}
 .bar{height:6px;background:var(--inset);border-radius:9px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:var(--grad);transition:width 1s linear}
+.chip{padding:3px 10px;border-radius:14px;font-size:11px;font-weight:700;border:1px solid}
 button.ghost{width:auto;align-self:flex-start;padding:5px 12px;font-size:11px;cursor:pointer;color:var(--muted);background:transparent}
 button.ghost:hover{color:var(--red);border-color:var(--red)}
 button.primary:disabled{cursor:not-allowed}
@@ -77,12 +78,21 @@ document.documentElement.dataset.theme=t;})();
     <div class="card-title">
       <span><i class="fa-solid fa-chart-column"></i> الرسم البياني</span>
       <select id="pair" style="width:auto;padding:4px 10px">
-        <option value="EURUSD">EUR/USD</option>
-        <option value="XAUUSD">XAU/USD (الذهب)</option>
-        <option value="GBPUSD">GBP/USD</option>
-        <option value="USOIL">النفط الأمريكي WTI</option>
-        <option value="UKOIL">نفط برنت Brent</option>
-        <option value="BTCUSDT">BTC/USDT</option>
+        <optgroup label="فوركس — رئيسية">
+          <option value="EURUSD">EUR/USD</option><option value="GBPUSD">GBP/USD</option><option value="USDJPY">USD/JPY</option>
+          <option value="AUDUSD">AUD/USD</option><option value="USDCAD">USD/CAD</option><option value="USDCHF">USD/CHF</option>
+        </optgroup>
+        <optgroup label="فوركس — متقاطعة">
+          <option value="EURGBP">EUR/GBP</option><option value="EURJPY">EUR/JPY</option><option value="AUDJPY">AUD/JPY</option>
+        </optgroup>
+        <optgroup label="معادن وطاقة">
+          <option value="XAUUSD">XAU/USD (الذهب)</option><option value="XAGUSD">XAG/USD (الفضة)</option>
+          <option value="USOIL">النفط الأمريكي WTI</option><option value="UKOIL">نفط برنت Brent</option>
+        </optgroup>
+        <optgroup label="كريبتو">
+          <option value="BTCUSDT">BTC/USDT</option><option value="ETHUSDT">ETH/USDT</option>
+          <option value="SOLUSDT">SOL/USDT</option><option value="XRPUSDT">XRP/USDT</option>
+        </optgroup>
       </select>
     </div>
     <div class="chart" id="tv"></div>
@@ -122,6 +132,10 @@ document.documentElement.dataset.theme=t;})();
         <p class="lv" style="color:var(--green)">الهدف 1 (1:1.5): <b id="tp1">-</b></p>
         <p class="lv" style="color:var(--green)">الهدف 2 (1:2.5): <b id="tp2">-</b></p>
       </div>
+      <div id="mtfBox" style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;gap:6px;flex-wrap:wrap" id="mtfChips"></div>
+        <p class="note" id="mtfNote"></p>
+      </div>
       <div id="etaBox" style="display:none;flex-direction:column;gap:8px">
         <div class="row"><span><i class="fa-regular fa-clock"></i> مدة الهدف 1: <b id="eta1">-</b></span></div>
         <div class="row"><span><i class="fa-regular fa-clock"></i> مدة الهدف 2: <b id="eta2">-</b></span></div>
@@ -147,7 +161,7 @@ document.documentElement.dataset.theme=t;})();
     <div style="display:flex;align-items:flex-end"><button class="primary" id="calcBtn">احسب اللوت</button></div>
   </div>
   <div class="result" id="res"></div>
-  <p class="note">القيم التقريبية: فوركس 1 pip = 0.0001 (≈$10 لكل لوت)، الذهب 1 pip = 0.1$ (≈$10 لكل لوت)، النفط 1 pip = 0.01$ لكل برميل (1 لوت = 1000 برميل ≈ $10 للنقطة)، البيتكوين 1 pip = 1$ لكل 1 BTC. تحقق من مواصفات العقد عند وسيطك.</p>
+  <p class="note">قيمة النقطة للفوركس تُحسب حسب عملة التسعير (JPY وCAD وCHF وGBP تُحوَّل للدولار بسعر حي). الذهب 1 pip = 0.1$ (100 أوقية)، الفضة 1 pip = 0.01$ (5000 أوقية)، النفط 1 pip = 0.01$ (1000 برميل). الكريبتو: اللوت = عدد العملات. راجع مواصفات عقدك عند وسيطك.</p>
 </div>
 
 <div class="warn"><i class="fa-solid fa-triangle-exclamation"></i> عقود Binance تعمل 24/7 بينما الفوركس والذهب والنفط الفعلية تغلق في عطلة الأسبوع، فقد تختلف الأسعار قليلاً عن حساب وسيطك. هذه قراءة آلية للمؤشرات وليست نصيحة استثمارية ولا تضمن الربح. لا تخاطر بأكثر مما تتحمل خسارته، وجرّب على حساب تجريبي أولاً.</div>
@@ -157,17 +171,45 @@ document.documentElement.dataset.theme=t;})();
 const $ = id => document.getElementById(id);
 
 // تعريف كل رمز: رمز TradingView + رمز Binance للبيانات + حجم الـ pip وقيمته لكل لوت
-// src: مصادر البيانات بالترتيب (spot = Binance Spot، fut = Binance USDⓈ-M Futures)
-// range: النطاق المنطقي للسعر | atr: النطاق المتوقع لـ ATR كنسبة % من السعر (للتحقق من سلامة البيانات)
-// pip: حجم النقطة | pipVal: قيمة النقطة بالدولار لكل لوت قياسي
+// src: مصادر البيانات بالترتيب (kraken = Kraken Spot، spot/fut = Binance Spot/Futures)
+// range: النطاق المنطقي للسعر | atr: النطاق المتوقع لـ ATR كنسبة % من السعر | ref: سعر مرجعي للتحقق | tol: أقصى فرق مسموح
+// pip: حجم النقطة | فوركس: quote+pipQ (قيمة النقطة بعملة التسعير لكل لوت) وتُحوَّل للدولار | غيره: pipVal بالدولار
+const FXATR = [0.01, 0.8];
+function fx(name, base, quote, range, o = {}) {
+  const jpy = quote === "JPY";
+  return Object.assign({tv:"FX:" + name, src:[["kraken", name]], dec: jpy ? 3 : 5, pip: jpy ? 0.01 : 0.0001, quote, pipQ: jpy ? 1000 : 10,
+    range, atr: FXATR, ref:{t:"er", base, quote}, tol:0.02, note:"سعر " + base + "/" + quote}, o);
+}
 const PAIRS = {
-  EURUSD:  {tv:"FX:EURUSD",       src:[["kraken","EURUSD"],["spot","EURUSDT"]],  dec:5, pip:0.0001, pipVal:10, range:[0.8,1.6],     atr:[0.01,0.6], ref:{t:"er",cur:"EUR"}, tol:0.015, note:"سعر EUR/USD"},
-  GBPUSD:  {tv:"FX:GBPUSD",       src:[["kraken","GBPUSD"]],                      dec:5, pip:0.0001, pipVal:10, range:[1.0,1.8],     atr:[0.01,0.6], ref:{t:"er",cur:"GBP"}, tol:0.015, note:"سعر GBP/USD"},
-  XAUUSD:  {tv:"OANDA:XAUUSD",    src:[["fut","XAUUSDT"],["spot","PAXGUSDT"]],    dec:2, pip:0.1,    pipVal:10, range:[1000,10000],  atr:[0.03,3],   ref:{t:"paxg"},          tol:0.03,  note:"عقد الذهب الدائم"},
-  USOIL:   {tv:"TVC:USOIL",       src:[["fut","CLUSDT"]],                         dec:2, pip:0.01,   pipVal:10, range:[20,250],      atr:[0.05,6],   note:"عقد WTI الدائم"},
-  UKOIL:   {tv:"TVC:UKOIL",       src:[["fut","BZUSDT"]],                         dec:2, pip:0.01,   pipVal:10, range:[20,250],      atr:[0.05,6],   note:"عقد Brent الدائم"},
-  BTCUSDT: {tv:"BINANCE:BTCUSDT", src:[["spot","BTCUSDT"]],                       dec:2, pip:1,      pipVal:1,  range:[1000,1000000],atr:[0.05,8],   note:"بيانات Binance المباشرة"}
+  EURUSD: fx("EURUSD","EUR","USD",[0.8,1.6],   {src:[["kraken","EURUSD"],["spot","EURUSDT"]], tol:0.015}),
+  GBPUSD: fx("GBPUSD","GBP","USD",[1.0,1.8],   {tol:0.015}),
+  USDJPY: fx("USDJPY","USD","JPY",[80,220]),
+  AUDUSD: fx("AUDUSD","AUD","USD",[0.4,1.0]),
+  USDCAD: fx("USDCAD","USD","CAD",[1.0,1.8]),
+  USDCHF: fx("USDCHF","USD","CHF",[0.6,1.3]),
+  EURGBP: fx("EURGBP","EUR","GBP",[0.6,1.0]),
+  EURJPY: fx("EURJPY","EUR","JPY",[100,250]),
+  AUDJPY: fx("AUDJPY","AUD","JPY",[50,150]),
+  XAUUSD:  {tv:"OANDA:XAUUSD",    src:[["fut","XAUUSDT"],["spot","PAXGUSDT"]], dec:2, pip:0.1,    pipVal:10,     range:[1000,10000],   atr:[0.03,3], ref:{t:"paxg"}, tol:0.03, note:"عقد الذهب الدائم"},
+  XAGUSD:  {tv:"OANDA:XAGUSD",    src:[["fut","XAGUSDT"]],                      dec:3, pip:0.01,   pipVal:50,     range:[10,500],       atr:[0.05,8], note:"عقد الفضة الدائم"},
+  USOIL:   {tv:"TVC:USOIL",       src:[["fut","CLUSDT"]],                       dec:2, pip:0.01,   pipVal:10,     range:[20,250],       atr:[0.05,6], note:"عقد WTI الدائم"},
+  UKOIL:   {tv:"TVC:UKOIL",       src:[["fut","BZUSDT"]],                       dec:2, pip:0.01,   pipVal:10,     range:[20,250],       atr:[0.05,6], note:"عقد Brent الدائم"},
+  BTCUSDT: {tv:"BINANCE:BTCUSDT", src:[["spot","BTCUSDT"]],                     dec:2, pip:1,      pipVal:1,      range:[1000,1000000], atr:[0.05,8], note:"بيانات Binance"},
+  ETHUSDT: {tv:"BINANCE:ETHUSDT", src:[["spot","ETHUSDT"]],                     dec:2, pip:0.1,    pipVal:0.1,    range:[100,50000],    atr:[0.05,8], note:"بيانات Binance"},
+  SOLUSDT: {tv:"BINANCE:SOLUSDT", src:[["spot","SOLUSDT"]],                     dec:3, pip:0.01,   pipVal:0.01,   range:[5,5000],       atr:[0.05,9], note:"بيانات Binance"},
+  XRPUSDT: {tv:"BINANCE:XRPUSDT", src:[["spot","XRPUSDT"]],                     dec:4, pip:0.0001, pipVal:0.0001, range:[0.1,50],       atr:[0.05,9], note:"بيانات Binance"}
 };
+// أسعار تحويل تقريبية تُستخدم فقط لو فشل جلب الأسعار الحية
+const ER_FALLBACK = {JPY:150, CAD:1.38, CHF:0.8, GBP:0.76, EUR:0.92, AUD:1.5};
+let ER = null, ERt = 0;
+async function getRates() {
+  if (ER && Date.now() - ERt < 30 * 60000) return ER;
+  try {
+    const d = await (await fetch("https://open.er-api.com/v6/latest/USD")).json();
+    if (d && d.rates) { ER = d.rates; ER.USD = 1; ERt = Date.now(); }
+  } catch (e) {}
+  return ER;
+}
 const TF = {"15m":{tv:"15",lbl:"15 دقيقة"},"1h":{tv:"60",lbl:"1 ساعة"},"4h":{tv:"240",lbl:"4 ساعات"}};
 const HOSTS = {spot:["https://data-api.binance.vision","https://api.binance.com"], fut:["https://fapi.binance.com"]};
 const TFMS = {"15m":9e5,"1h":36e5,"4h":144e5};
@@ -207,8 +249,8 @@ async function refPrice(p) {
   try {
     if (!p.ref) return null;
     if (p.ref.t === "er") {
-      const d = await (await fetch("https://open.er-api.com/v6/latest/USD")).json();
-      return 1 / d.rates[p.ref.cur];
+      const r = await getRates();
+      return r ? r[p.ref.quote] / r[p.ref.base] : null;
     }
     if (p.ref.t === "paxg") {
       const d = await (await fetch(HOSTS.spot[0] + "/api/v3/ticker/price?symbol=PAXGUSDT")).json();
@@ -226,6 +268,9 @@ async function fetchCandles(p, tf) {
       const candles = kind === "kraken" ? await krakenKlines(sym, tf) : await binanceKlines(kind, sym, tf);
       if (candles.length < 210) throw new Error("بيانات غير كافية");
       if (Date.now() - candles.at(-1).t > TFMS[tf] * 3) throw new Error("بيانات قديمة أو متوقفة");
+      let gaps = 0; const w = candles.slice(-200);
+      for (let i = 1; i < w.length; i++) if (w[i].t - w[i-1].t > TFMS[tf] * 2) gaps++;
+      if (gaps > 12) throw new Error("شموع ناقصة كثيرة (سيولة ضعيفة)");
       const ref = await refPrice(p);
       if (ref) {
         const dev = Math.abs(candles.at(-1).c / ref - 1);
@@ -370,9 +415,31 @@ function startTimer(minutes, label) {
   tick(); timerId = setInterval(tick, 1000);
 }
 let ETA = {t1: null, t2: null};
+let runId = 0;
+
+// توافق الأطر الزمنية الثلاثة (يعمل بالخلفية ولا يعطل التحليل الرئيسي)
+async function runMTF(p, tf0, a0, id) {
+  $("mtfChips").innerHTML = ""; $("mtfNote").textContent = "جاري فحص الأطر الأخرى...";
+  const res = {[tf0]: a0};
+  await Promise.all(Object.keys(TF).filter(t => t !== tf0).map(async t => {
+    try { res[t] = analyze((await fetchCandles(p, t)).candles); } catch (e) { res[t] = null; }
+  }));
+  if (id !== runId) return;
+  const lbl = {"15m":"15د", "1h":"1س", "4h":"4س"}, keys = Object.keys(TF);
+  $("mtfChips").innerHTML = keys.map(t => {
+    const ty = res[t] ? res[t].type : "—";
+    return `<span class="chip ${ty === "BUY" ? "buy" : ty === "SELL" ? "sell" : "wait"}">${lbl[t]}: ${ty === "WAIT" ? "انتظار" : ty}</span>`;
+  }).join("");
+  const known = keys.map(t => res[t] && res[t].type).filter(Boolean);
+  let msg;
+  if (known.length === 3 && known.every(x => x === known[0]) && known[0] !== "WAIT") msg = "✅ توافق كامل على الأطر الثلاثة — إشارة أقوى";
+  else if (a0.type !== "WAIT" && res["4h"] && res["4h"].type !== "WAIT" && res["4h"].type !== a0.type) msg = "⚠ الإشارة عكس اتجاه إطار 4 ساعات — مخاطرة أعلى";
+  else msg = "لا يوجد توافق كامل بين الأطر" + (known.length < 3 ? " (تعذر فحص بعضها)" : "");
+  $("mtfNote").textContent = msg;
+}
 
 async function run() {
-  const key = $("pair").value, p = PAIRS[key], tf = $("tf").value;
+  const key = $("pair").value, p = PAIRS[key], tf = $("tf").value, myRun = ++runId;
   const btn = $("run"), err = $("err");
   btn.disabled = true; err.style.display = "none"; $("out").style.display = "none";
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحليل...';
@@ -413,11 +480,12 @@ async function run() {
       $("stats").textContent = `إحصاء من آخر ${bt.n} حركة سابقة على هذا الزوج والإطار: الهدف 1 تحقق في ${pc(bt.t1.length)}، الهدف 2 في ${pc(bt.t2.length)}، والوقف ضُرب قبل أي هدف في ${pc(bt.sl)}. المدة تقدير إحصائي وليست وعداً.`;
     }
     $("out").style.display = "flex";
+    runMTF(p, tf, a, myRun);
     $("status").innerHTML = '<i class="fa-solid fa-circle" style="font-size:8px;color:var(--green)"></i> <span style="color:var(--green)">تم التحديث ' + new Date().toLocaleTimeString("ar-EG") + "</span>";
 
     if (buy || sell) $("slp").value = Math.max(1, Math.round(risk / p.pip));
   } catch (e) {
-    err.textContent = "تعذر جلب البيانات (" + e.message + "). تحقق من الاتصال أو جرّب VPN إن كان Binance محجوباً في بلدك.";
+    err.textContent = "تعذر جلب البيانات (" + e.message + ")." + (e.message.includes("قديمة") ? " قد يكون السوق مغلقاً (عطلة نهاية الأسبوع) أو المصدر متوقفاً." : " تحقق من الاتصال، وقد يكون المصدر محجوباً في بلدك.");
     err.style.display = "block";
   } finally {
     btn.disabled = false;
@@ -425,14 +493,19 @@ async function run() {
   }
 }
 
-function calcLot() {
+async function pipUSD(p) {
+  if (!p.quote) return {v: p.pipVal, approx: false};
+  if (p.quote === "USD") return {v: p.pipQ, approx: false};
+  const r = await getRates();
+  return r && r[p.quote] ? {v: p.pipQ / r[p.quote], approx: false} : {v: p.pipQ / ER_FALLBACK[p.quote], approx: true};
+}
+async function calcLot() {
   const bal = parseFloat($("bal").value), rp = parseFloat($("riskPct").value), sl = parseFloat($("slp").value);
   const res = $("res");
   if (!(bal > 0) || !(rp > 0) || !(sl > 0)) { res.textContent = "أدخل قيماً صحيحة أكبر من صفر."; res.style.display = "block"; return; }
-  const p = PAIRS[$("pair").value];
-  const riskAmt = bal * rp / 100;
-  const lot = riskAmt / (sl * p.pipVal);
-  res.textContent = `حجم اللوت: ${lot.toFixed(2)} | أقصى خسارة عند الوقف: $${riskAmt.toFixed(2)}` + (lot < 0.01 ? " — أقل من الحد الأدنى 0.01، خفّض الاستوب أو زد رأس المال" : "");
+  const {v, approx} = await pipUSD(PAIRS[$("pair").value]);
+  const riskAmt = bal * rp / 100, lot = riskAmt / (sl * v);
+  res.textContent = `حجم اللوت: ${lot.toFixed(lot < 1 ? 3 : 2)} | أقصى خسارة عند الوقف: $${riskAmt.toFixed(2)} | قيمة النقطة ≈ $${v.toFixed(v < 1 ? 4 : 2)}` + (approx ? " (تقريبية)" : "") + (lot < 0.01 ? " — أقل من الحد الأدنى 0.01، خفّض الاستوب أو زد رأس المال" : "");
   res.style.display = "block";
 }
 
