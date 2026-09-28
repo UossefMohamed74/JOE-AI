@@ -6,44 +6,62 @@
 <title>Pipnex — تحليل فني</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
-:root{--bg:#0b0e14;--card:#151a23;--line:#232a3b;--accent:#00f2fe;--grad:linear-gradient(135deg,#00c6ff,#0072ff);--green:#00e676;--red:#ff5252;--text:#f1f5f9;--muted:#94a3b8}
+:root{--bg:#0a0d14;--bg2:#0e131c;--card:#141a24;--line:#232c3d;--accent:#00e5f0;--grad:linear-gradient(135deg,#00c6ff,#0072ff);--green:#00e676;--red:#ff5252;--warn:#ffb74d;--text:#f1f5f9;--muted:#94a3b8;--soft:rgba(255,255,255,.03);--inset:rgba(0,0,0,.32);--shadow:0 8px 28px rgba(0,0,0,.35);--glow:rgba(0,198,255,.18);--tint-accent:rgba(0,229,240,.07);--tint-green:rgba(0,230,118,.16);--tint-red:rgba(255,82,82,.16);--tint-warn:rgba(255,183,77,.09);--tint-mute:rgba(148,163,184,.15)}
+:root[data-theme="light"]{--bg:#eef2f8;--bg2:#e6ecf5;--card:#ffffff;--line:#dbe3ef;--accent:#0072ff;--green:#00a86b;--red:#e5383b;--warn:#b7791f;--text:#0f172a;--muted:#5b6b82;--soft:rgba(15,23,42,.025);--inset:rgba(15,23,42,.05);--shadow:0 8px 24px rgba(30,60,110,.10);--glow:rgba(0,114,255,.16);--tint-accent:rgba(0,114,255,.07);--tint-green:rgba(0,168,107,.13);--tint-red:rgba(229,56,59,.12);--tint-warn:rgba(183,121,31,.10);--tint-mute:rgba(91,107,130,.13)}
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Tahoma,sans-serif}
-body{background:var(--bg);color:var(--text);display:flex;flex-direction:column;min-height:100vh;padding:12px;gap:14px}
-.header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--card);border-radius:12px;border:1px solid var(--line)}
-.logo{font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px}
+html{color-scheme:dark}
+html[data-theme="light"]{color-scheme:light}
+body{background:radial-gradient(1100px 500px at 85% -10%,var(--glow),transparent 60%),var(--bg);color:var(--text);display:flex;flex-direction:column;min-height:100vh;padding:14px;gap:14px;transition:background-color .25s,color .25s}
+.header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 18px;background:var(--card);border-radius:16px;border:1px solid var(--line);box-shadow:var(--shadow)}
+.hright{display:flex;align-items:center;gap:12px}
+.logo{font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;letter-spacing:.2px}
 .logo i{color:var(--accent)}
-.badge{background:var(--grad);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700}
+.badge{background:var(--grad);color:#fff;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:700}
+.theme-btn{width:38px;height:38px;padding:0;border-radius:50%;background:var(--soft);border:1px solid var(--line);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:transform .2s,border-color .2s,background .2s}
+.theme-btn:hover{border-color:var(--accent);transform:rotate(18deg)}
 .grid{display:grid;grid-template-columns:1fr;gap:14px}
 @media(min-width:992px){.grid{grid-template-columns:2fr 1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0;box-shadow:var(--shadow);transition:background-color .25s,border-color .25s}
 .card-title{font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .card-title i{color:var(--accent);margin-left:6px}
-label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}
-select,input,button{width:100%;padding:10px;background:var(--bg);border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:13px;outline:none}
-select:focus,input:focus,button:focus-visible{border-color:var(--accent)}
-button.primary{background:var(--grad);border:none;font-weight:700;cursor:pointer;color:#fff;display:flex;justify-content:center;align-items:center;gap:8px}
+label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:600}
+select,input,button{width:100%;padding:10px 12px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s,box-shadow .2s,background-color .25s}
+select:hover,input:hover{border-color:var(--muted)}
+select:focus,input:focus,button:focus-visible{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+button.primary{background:var(--grad);border:none;font-weight:700;cursor:pointer;color:#fff;display:flex;justify-content:center;align-items:center;gap:8px;box-shadow:0 6px 16px var(--glow);transition:transform .15s,box-shadow .2s,opacity .2s}
+button.primary:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 22px var(--glow)}
+button.primary:active:not(:disabled){transform:translateY(0)}
 button.primary:disabled{opacity:.5;cursor:wait}
-.chart{height:420px;width:100%;border-radius:8px;overflow:hidden}
-.signal{background:rgba(255,255,255,.02);border:1px dashed var(--line);border-radius:10px;padding:14px;display:none;flex-direction:column;gap:10px}
-.sbadge{padding:4px 10px;border-radius:6px;font-weight:800;font-size:13px;border:1px solid}
-.buy{background:rgba(0,230,118,.2);color:var(--green);border-color:var(--green)}
-.sell{background:rgba(255,82,82,.2);color:var(--red);border-color:var(--red)}
-.wait{background:rgba(148,163,184,.15);color:var(--muted);border-color:var(--muted)}
-.row{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;background:rgba(0,0,0,.3);padding:8px 12px;border-radius:6px;font-size:12px}
+.chart{height:420px;width:100%;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.signal{background:var(--soft);border:1px dashed var(--line);border-radius:14px;padding:14px;display:none;flex-direction:column;gap:10px}
+.sbadge{padding:5px 14px;border-radius:20px;font-weight:800;font-size:13px;border:1px solid}
+.buy{background:var(--tint-green);color:var(--green);border-color:var(--green)}
+.sell{background:var(--tint-red);color:var(--red);border-color:var(--red)}
+.wait{background:var(--tint-mute);color:var(--muted);border-color:var(--muted)}
+.row{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;background:var(--inset);padding:9px 12px;border-radius:10px;font-size:12px}
 .details{font-size:13px;line-height:1.9}
 .reasons{font-size:11px;color:var(--muted);line-height:1.8;padding-right:16px}
 .note{font-size:11px;color:var(--muted);line-height:1.7}
-.err{display:none;font-size:12px;color:var(--red);background:rgba(255,82,82,.08);padding:8px 10px;border-radius:6px}
+.err{display:none;font-size:12px;color:var(--red);background:var(--tint-red);padding:9px 12px;border-radius:10px}
 .calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
-.result{display:none;padding:10px;background:rgba(0,242,254,.05);border:1px solid var(--line);border-radius:6px;font-size:12px;font-weight:700;color:var(--accent)}
-.warn{font-size:11px;color:#ffb74d;background:rgba(255,183,77,.08);border-radius:8px;padding:10px 12px;line-height:1.7}
+.result{display:none;padding:11px 12px;background:var(--tint-accent);border:1px solid var(--line);border-radius:10px;font-size:12px;font-weight:700;color:var(--accent)}
+.warn{font-size:11px;color:var(--warn);background:var(--tint-warn);border-radius:12px;padding:11px 14px;line-height:1.7}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<script>
+(function(){var t;try{t=localStorage.getItem("pipnex-theme")}catch(e){}
+if(!t)t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";
+document.documentElement.dataset.theme=t;})();
+</script>
 </head>
 <body>
 
 <div class="header">
   <div class="logo"><i class="fa-solid fa-chart-line"></i> Pipnex <span class="badge">PRO</span></div>
-  <div id="status" style="font-size:11px;color:var(--muted)"><i class="fa-solid fa-circle" style="font-size:8px"></i> بانتظار التحليل</div>
+  <div class="hright">
+    <div id="status" style="font-size:11px;color:var(--muted)"><i class="fa-solid fa-circle" style="font-size:8px"></i> بانتظار التحليل</div>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="تبديل الوضع الليلي والنهاري" title="تبديل الوضع"><i class="fa-solid fa-sun"></i></button>
+  </div>
 </div>
 
 <div class="grid">
@@ -54,6 +72,8 @@ button.primary:disabled{opacity:.5;cursor:wait}
         <option value="EURUSD">EUR/USD</option>
         <option value="XAUUSD">XAU/USD (الذهب)</option>
         <option value="GBPUSD">GBP/USD</option>
+        <option value="USOIL">النفط الأمريكي WTI</option>
+        <option value="UKOIL">نفط برنت Brent</option>
         <option value="BTCUSDT">BTC/USDT</option>
       </select>
     </div>
@@ -87,6 +107,7 @@ button.primary:disabled{opacity:.5;cursor:wait}
       </div>
       <ul class="reasons" id="reasons"></ul>
       <p class="note" id="src"></p>
+      <p class="note" id="wrn" style="color:var(--warn)"></p>
     </div>
   </div>
 </div>
@@ -95,48 +116,72 @@ button.primary:disabled{opacity:.5;cursor:wait}
   <div class="card-title"><span><i class="fa-solid fa-calculator"></i> حاسبة حجم اللوت</span></div>
   <div class="calc">
     <div><label for="bal">رأس المال ($)</label><input type="number" id="bal" value="1000" min="1"></div>
-    <div><label for="risk">المخاطرة (%)</label><input type="number" id="riskPct" value="1" min="0.1" step="0.1"></div>
+    <div><label for="riskPct">المخاطرة (%)</label><input type="number" id="riskPct" value="1" min="0.1" step="0.1"></div>
     <div><label for="slp">الاستوب (Pips)</label><input type="number" id="slp" value="30" min="1"></div>
     <div style="display:flex;align-items:flex-end"><button class="primary" id="calcBtn">احسب اللوت</button></div>
   </div>
   <div class="result" id="res"></div>
-  <p class="note">القيم التقريبية: فوركس 1 pip = 0.0001 (≈$10 لكل لوت)، الذهب 1 pip = 0.1$ (≈$10 لكل لوت)، البيتكوين 1 pip = 1$ لكل 1 BTC. تحقق من مواصفات العقد عند وسيطك.</p>
+  <p class="note">القيم التقريبية: فوركس 1 pip = 0.0001 (≈$10 لكل لوت)، الذهب 1 pip = 0.1$ (≈$10 لكل لوت)، النفط 1 pip = 0.01$ لكل برميل (1 لوت = 1000 برميل ≈ $10 للنقطة)، البيتكوين 1 pip = 1$ لكل 1 BTC. تحقق من مواصفات العقد عند وسيطك.</p>
 </div>
 
-<div class="warn"><i class="fa-solid fa-triangle-exclamation"></i> هذه قراءة آلية للمؤشرات وليست نصيحة استثمارية ولا تضمن الربح. لا تخاطر بأكثر مما تتحمل خسارته، وجرّب على حساب تجريبي أولاً.</div>
+<div class="warn"><i class="fa-solid fa-triangle-exclamation"></i> عقود Binance تعمل 24/7 بينما الفوركس والذهب والنفط الفعلية تغلق في عطلة الأسبوع، فقد تختلف الأسعار قليلاً عن حساب وسيطك. هذه قراءة آلية للمؤشرات وليست نصيحة استثمارية ولا تضمن الربح. لا تخاطر بأكثر مما تتحمل خسارته، وجرّب على حساب تجريبي أولاً.</div>
 
 <script src="https://s3.tradingview.com/tv.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 
 // تعريف كل رمز: رمز TradingView + رمز Binance للبيانات + حجم الـ pip وقيمته لكل لوت
+// src: مصادر البيانات بالترتيب (spot = Binance Spot، fut = Binance USDⓈ-M Futures)
+// range: النطاق المنطقي للسعر | atr: النطاق المتوقع لـ ATR كنسبة % من السعر (للتحقق من سلامة البيانات)
+// pip: حجم النقطة | pipVal: قيمة النقطة بالدولار لكل لوت قياسي
 const PAIRS = {
-  EURUSD:  {tv:"FX:EURUSD",        bn:"EURUSDT", dec:5, pip:0.0001, pipVal:10, note:"بيانات EUR/USDT من Binance (قريبة من الفوركس)"},
-  GBPUSD:  {tv:"FX:GBPUSD",        bn:"GBPUSDT", dec:5, pip:0.0001, pipVal:10, note:"بيانات GBP/USDT من Binance (قريبة من الفوركس)"},
-  XAUUSD:  {tv:"OANDA:XAUUSD",     bn:"PAXGUSDT",dec:2, pip:0.1,    pipVal:10, note:"بيانات PAXG (ذهب رقمي) كبديل لسعر الذهب"},
-  BTCUSDT: {tv:"BINANCE:BTCUSDT",  bn:"BTCUSDT", dec:2, pip:1,      pipVal:1,  note:"بيانات Binance المباشرة"}
+  EURUSD:  {tv:"FX:EURUSD",       src:[["spot","EURUSDT"]],                  dec:5, pip:0.0001, pipVal:10, range:[0.8,1.6],   atr:[0.01,0.6],  note:"EUR/USDT من Binance (بديل قريب للفوركس)"},
+  GBPUSD:  {tv:"FX:GBPUSD",       src:[["spot","GBPUSDT"]],                  dec:5, pip:0.0001, pipVal:10, range:[1.0,1.8],   atr:[0.01,0.6],  note:"GBP/USDT من Binance (بديل قريب للفوركس)"},
+  XAUUSD:  {tv:"OANDA:XAUUSD",    src:[["fut","XAUUSDT"],["spot","PAXGUSDT"]],dec:2, pip:0.1,    pipVal:10, range:[1000,10000],atr:[0.03,3],    note:"عقد الذهب الدائم XAUUSDT (وبديله PAXG)"},
+  USOIL:   {tv:"TVC:USOIL",       src:[["fut","CLUSDT"]],                    dec:2, pip:0.01,   pipVal:10, range:[20,250],    atr:[0.05,6],    note:"عقد WTI الدائم CLUSDT من Binance Futures"},
+  UKOIL:   {tv:"TVC:UKOIL",       src:[["fut","BZUSDT"]],                    dec:2, pip:0.01,   pipVal:10, range:[20,250],    atr:[0.05,6],    note:"عقد Brent الدائم BZUSDT من Binance Futures"},
+  BTCUSDT: {tv:"BINANCE:BTCUSDT", src:[["spot","BTCUSDT"]],                  dec:2, pip:1,      pipVal:1,  range:[1000,1000000],atr:[0.05,8],  note:"بيانات Binance المباشرة"}
 };
 const TF = {"15m":{tv:"15",lbl:"15 دقيقة"},"1h":{tv:"60",lbl:"1 ساعة"},"4h":{tv:"240",lbl:"4 ساعات"}};
-const HOSTS = ["https://data-api.binance.vision","https://api.binance.com"];
+const HOSTS = {spot:["https://data-api.binance.vision","https://api.binance.com"], fut:["https://fapi.binance.com"]};
+const TFMS = {"15m":9e5,"1h":36e5,"4h":144e5};
 
 function loadChart() {
   const p = PAIRS[$("pair").value];
   $("tv").innerHTML = "";
   if (typeof TradingView === "undefined") { $("tv").innerHTML = '<p class="note" style="padding:16px">تعذر تحميل الرسم البياني.</p>'; return; }
-  new TradingView.widget({autosize:true, symbol:p.tv, interval:TF[$("tf").value].tv, timezone:"Etc/UTC", theme:"dark", style:"1", locale:"ar", container_id:"tv"});
+  new TradingView.widget({autosize:true, symbol:p.tv, interval:TF[$("tf").value].tv, timezone:"Etc/UTC", theme:document.documentElement.dataset.theme || "dark", style:"1", locale:"ar", container_id:"tv"});
 }
 
-async function fetchCandles(sym, tf) {
+// يجرّب المصادر بالترتيب، ويستبعد الشمعة غير المكتملة حتى لا تتغير الإشارة أثناء تكوّن الشمعة
+async function fetchCandles(p, tf) {
   let lastErr;
-  for (const h of HOSTS) {
-    try {
-      const r = await fetch(`${h}/api/v3/klines?symbol=${sym}&interval=${tf}&limit=250`);
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      const d = await r.json();
-      return d.map(k => ({h:+k[2], l:+k[3], c:+k[4]}));
-    } catch (e) { lastErr = e; }
+  for (const [kind, sym] of p.src) {
+    for (const h of HOSTS[kind]) {
+      try {
+        const path = kind === "fut" ? "/fapi/v1/klines" : "/api/v3/klines";
+        const r = await fetch(`${h}${path}?symbol=${sym}&interval=${tf}&limit=300`);
+        if (!r.ok) throw new Error(sym + " HTTP " + r.status);
+        const d = await r.json();
+        const now = Date.now();
+        const candles = d.filter(k => +k[6] < now).map(k => ({h:+k[2], l:+k[3], c:+k[4], t:+k[6]}));
+        if (candles.length >= 210) return {candles, sym};
+        throw new Error(sym + ": بيانات غير كافية");
+      } catch (e) { lastErr = e; }
+    }
   }
   throw lastErr;
+}
+
+// فحص سلامة البيانات: نطاق السعر، حداثة الشموع، ونسبة ATR
+function validate(p, tf, candles, a) {
+  const w = [], last = a.last;
+  if (!(last >= p.range[0] && last <= p.range[1])) throw new Error(`السعر ${last} خارج النطاق المنطقي لهذا الرمز`);
+  if (Date.now() - candles.at(-1).t > TFMS[tf] * 3) w.push("آخر شمعة قديمة — السوق قد يكون مغلقاً أو البيانات متأخرة");
+  const pct = a.atr / last * 100;
+  if (pct < p.atr[0]) w.push("التقلب منخفض جداً — السوق شبه ساكن والإشارة أقل موثوقية");
+  if (pct > p.atr[1]) w.push("التقلب مرتفع جداً — قلّل حجم الصفقة");
+  return w;
 }
 
 // ===== المؤشرات =====
@@ -194,9 +239,9 @@ async function run() {
   btn.disabled = true; err.style.display = "none"; $("out").style.display = "none";
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحليل...';
   try {
-    const candles = await fetchCandles(p.bn, tf);
-    if (candles.length < 210) throw new Error("بيانات غير كافية");
+    const {candles, sym} = await fetchCandles(p, tf);
     const a = analyze(candles), d = p.dec;
+    const warns = validate(p, tf, candles, a);
     const buy = a.type === "BUY", sell = a.type === "SELL";
     const dir = buy ? 1 : -1, risk = a.atr * 1.5;
 
@@ -213,7 +258,8 @@ async function run() {
     $("tp1").textContent = lv(a.last + dir * risk * 1.5);
     $("tp2").textContent = lv(a.last + dir * risk * 2.5);
     $("reasons").innerHTML = a.why.map(x => `<li>${x}</li>`).join("") + (a.type === "WAIT" ? "<li>لا يوجد توافق كافٍ بين المؤشرات — الأفضل عدم الدخول</li>" : "");
-    $("src").textContent = `${p.note} • ${TF[tf].lbl} • الوقف = 1.5×ATR`;
+    $("src").textContent = `${p.note} (${sym}) • ${TF[tf].lbl} • الوقف = 1.5×ATR`;
+    $("wrn").innerHTML = warns.map(x => "⚠ " + x).join("<br>");
     $("out").style.display = "flex";
     $("status").innerHTML = '<i class="fa-solid fa-circle" style="font-size:8px;color:var(--green)"></i> <span style="color:var(--green)">تم التحديث ' + new Date().toLocaleTimeString("ar-EG") + "</span>";
 
@@ -242,6 +288,19 @@ $("pair").addEventListener("change", () => { loadChart(); run(); });
 $("tf").addEventListener("change", () => { loadChart(); run(); });
 $("run").addEventListener("click", run);
 $("calcBtn").addEventListener("click", calcLot);
+
+function syncThemeIcon() {
+  const light = document.documentElement.dataset.theme === "light";
+  $("themeBtn").innerHTML = light ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+}
+$("themeBtn").addEventListener("click", () => {
+  const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+  document.documentElement.dataset.theme = next;
+  try { localStorage.setItem("pipnex-theme", next); } catch (e) {}
+  syncThemeIcon();
+  loadChart();
+});
+syncThemeIcon();
 loadChart();
 </script>
 </body>
