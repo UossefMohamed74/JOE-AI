@@ -3,206 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pipnex AI — Trading Terminal</title>
+    <title>Pipnex AI — AI Trading & Market Analysis Platform</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #0a0d14;
-            --panel-bg: #121824;
-            --border-color: #1e2638;
-            --accent-blue: #00f2fe;
-            --accent-gradient: linear-gradient(135deg, #00c6ff, #0072ff);
+            --bg-dark: #07090e;
+            --card-bg: #0f131c;
+            --border: #1a2233;
+            --primary: #00f2fe;
+            --primary-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
             --green: #00e676;
             --red: #ff5252;
-            --text-primary: #ffffff;
-            --text-secondary: #8a99ad;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding: 12px; display: flex; flex-direction: column; gap: 14px; }
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        /* Pipnex Navbar Header */
+        .header { background: rgba(15, 19, 28, 0.8); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 12px; padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 20px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px; letter-spacing: -0.5px; }
+        .logo i { color: var(--primary); font-size: 22px; }
+        .badge-ai { background: var(--primary-gradient); color: #000; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+        
+        .nav-links { display: flex; gap: 12px; align-items: center; font-size: 12px; color: var(--text-sub); }
+        .status-dot { width: 8px; height: 8px; background-color: var(--green); border-radius: 50%; display: inline-block; box-shadow: 0 0 8px var(--green); }
 
-        /* Navbar Header */
-        .navbar {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* Dashboard Main Layout */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+        @media (min-width: 992px) { .dashboard-grid { grid-template-columns: 2.2fr 1fr; } }
 
-        .brand {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 700; color: var(--text-main); }
+        .card-header span { display: flex; align-items: center; gap: 8px; }
+        .card-header i { color: var(--primary); }
 
-        .brand i {
-            color: var(--accent-blue);
-        }
+        /* Form Controls */
+        select, input, button { width: 100%; background: #07090e; border: 1px solid var(--border); border-radius: 8px; color: var(--text-main); padding: 10px 12px; font-size: 13px; outline: none; transition: border-color 0.2s; }
+        select:focus, input:focus { border-color: var(--primary); }
+        
+        .btn-primary { background: var(--primary-gradient); color: #000; font-weight: 700; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: opacity 0.2s; }
+        .btn-primary:hover { opacity: 0.9; }
 
-        .brand-badge {
-            background: var(--accent-gradient);
-            color: #fff;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
+        /* TradingView Frames */
+        .chart-box { height: 450px; width: 100%; border-radius: 8px; overflow: hidden; }
+        .ta-box { height: 450px; width: 100%; border-radius: 8px; overflow: hidden; }
 
-        .status-tag {
-            font-size: 11px;
-            color: var(--green);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+        /* Pipnex Pulse Signal Output Box */
+        .pulse-box { background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+        .pulse-badge { padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 12px; display: inline-block; }
+        .pulse-buy { background: rgba(0, 230, 118, 0.15); color: var(--green); border: 1px solid var(--green); }
+        .pulse-sell { background: rgba(255, 82, 82, 0.15); color: var(--red); border: 1px solid var(--red); }
 
-        /* Layout Grid */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-
-        @media (min-width: 992px) {
-            .main-grid {
-                grid-template-columns: 2fr 1fr;
-            }
-        }
-
-        .card {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .card-header i {
-            color: var(--accent-blue);
-            margin-left: 6px;
-        }
-
-        select, input, button {
-            width: 100%;
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            color: var(--text-primary);
-            padding: 10px;
-            font-size: 13px;
-            outline: none;
-        }
-
-        select:focus, input:focus {
-            border-color: var(--accent-blue);
-        }
-
-        .btn-action {
-            background: var(--accent-gradient);
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            color: #fff;
-            transition: opacity 0.2s;
-        }
-
-        .btn-action:active {
-            opacity: 0.8;
-        }
-
-        /* Container Frames */
-        .chart-box {
-            height: 420px;
-            width: 100%;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .analysis-box {
-            height: 420px;
-            width: 100%;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        /* Risk Calculator Grid */
-        .calc-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-            gap: 10px;
-        }
-
-        .field-group label {
-            display: block;
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-        }
-
-        .result-display {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--accent-blue);
-            padding: 8px;
-            background: rgba(0, 242, 254, 0.05);
-            border-radius: 6px;
-            border: 1px dashed var(--border-color);
-        }
+        /* Calculator Grid */
+        .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+        .calc-label { font-size: 11px; color: var(--text-sub); margin-bottom: 4px; display: block; }
+        
+        .output-row { display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0; border-bottom: 1px border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .output-row:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
 
-    <!-- Top Navigation -->
-    <div class="navbar">
-        <div class="brand">
-            <i class="fa-solid fa-chart-line"></i>
-            Pipnex AI
-            <span class="brand-badge">TERMINAL</span>
+    <!-- Pipnex Header Nav -->
+    <div class="header">
+        <div class="logo">
+            <i class="fa-solid fa-bolt"></i> PIPNEX AI
+            <span class="badge-ai">MARKET BRAIN</span>
         </div>
-        <div class="status-tag">
-            <i class="fa-solid fa-circle" style="font-size: 8px;"></i> متصل بالمؤشرات الحية
+        <div class="nav-links">
+            <span><span class="status-dot"></span> Live SMC Engine</span>
         </div>
     </div>
 
-    <!-- Main Section -->
-    <div class="main-grid">
-        <!-- Chart Column -->
+    <!-- Dashboard Content -->
+    <div class="dashboard-grid">
+        
+        <!-- Main Trading Chart (Pipnex View) -->
         <div class="card">
             <div class="card-header">
-                <span><i class="fa-solid fa-chart-candlestick"></i> الرسم البياني المباشر</span>
-                <select id="pairSelect" style="width: auto; padding: 4px 8px;" onchange="changePair()">
-                    <option value="OANDA:XAUUSD">XAU/USD (الذهب)</option>
+                <span><i class="fa-solid fa-chart-area"></i> Chart Analysis & Order Blocks</span>
+                <select id="pairSelect" style="width: auto; padding: 4px 10px;" onchange="changePair()">
+                    <option value="OANDA:XAUUSD">XAU/USD (Gold)</option>
                     <option value="FX:EURUSD">EUR/USD</option>
                     <option value="FX:GBPUSD">GBP/USD</option>
                     <option value="BINANCE:BTCUSDT">BTC/USDT</option>
@@ -211,41 +94,44 @@
             <div class="chart-box" id="tv_chart"></div>
         </div>
 
-        <!-- Technical Analysis Widget Column -->
+        <!-- Pipnex Market Intelligence & AI Technical Gauge -->
         <div class="card">
             <div class="card-header">
-                <span><i class="fa-solid fa-microchip"></i> ملخص التحليل الفني اللحظي</span>
+                <span><i class="fa-solid fa-brain"></i> Technical Gauge & AI Signals</span>
             </div>
-            <div class="analysis-box" id="tv_ta"></div>
+            <div class="ta-box" id="tv_ta"></div>
         </div>
+
     </div>
 
-    <!-- Risk Calculator Bottom Card -->
+    <!-- Pipnex Position Size & Risk Calculator -->
     <div class="card">
         <div class="card-header">
-            <span><i class="fa-solid fa-calculator"></i> حاسبة إدارة المخاطر واللوت</span>
+            <span><i class="fa-solid fa-calculator"></i> Pipnex Risk & Lot Calculator</span>
         </div>
         <div class="calc-grid">
-            <div class="field-group">
-                <label>رأس المال ($)</label>
+            <div>
+                <label class="calc-label">Account Balance ($)</label>
                 <input type="number" id="calcBalance" value="1000">
             </div>
-            <div class="field-group">
-                <label>المخاطرة (%)</label>
+            <div>
+                <label class="calc-label">Risk (% Account)</label>
                 <input type="number" id="calcRisk" value="1">
             </div>
-            <div class="field-group">
-                <label>الاستوب (Pips)</label>
+            <div>
+                <label class="calc-label">Stop Loss (Pips)</label>
                 <input type="number" id="calcSL" value="30">
             </div>
-            <div class="field-group" style="display: flex; align-items: flex-end;">
-                <button class="btn-action" onclick="calculateLot()">احسب العقد</button>
+            <div style="display: flex; align-items: flex-end;">
+                <button class="btn-primary" onclick="calculateLot()">
+                    <i class="fa-solid fa-arrows-to-dot"></i> Calculate Lot
+                </button>
             </div>
         </div>
-        <div id="calcResult" class="result-display" style="display: none;"></div>
+        <div id="calcResult" style="display: none; margin-top: 10px; padding: 10px; background: rgba(0,242,254,0.05); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--primary); font-weight: bold;"></div>
     </div>
 
-    <!-- TradingView Scripts -->
+    <!-- Scripts -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
         function loadChart(symbol) {
@@ -257,7 +143,7 @@
                 "timezone": "Etc/UTC",
                 "theme": "dark",
                 "style": "1",
-                "locale": "ar",
+                "locale": "en",
                 "container_id": "tv_chart"
             });
         }
@@ -272,12 +158,12 @@
             script.innerHTML = JSON.stringify({
                 "interval": "1h",
                 "width": "100%",
-                "isTransparent": false,
+                "isTransparent": true,
                 "height": "100%",
                 "symbol": symbol,
                 "showIntervalTabs": true,
                 "displayMode": "single",
-                "locale": "ar",
+                "locale": "en",
                 "colorTheme": "dark"
             });
             container.appendChild(script);
@@ -289,7 +175,7 @@
             loadTA(sym);
         }
 
-        // Initialize on Load
+        // Initialize Pipnex Layout
         loadChart("OANDA:XAUUSD");
         loadTA("OANDA:XAUUSD");
 
@@ -302,7 +188,7 @@
             const lotSize = (riskAmount / (stopLossPips * 10)).toFixed(2);
             
             const resultElem = document.getElementById("calcResult");
-            resultElem.innerText = `حجم العقد المناسب: ${lotSize} Lot | المخاطرة المالية: $${riskAmount.toFixed(2)}`;
+            resultElem.innerText = `Recommended Position Size: ${lotSize} Lots | Total Risk: $${riskAmount.toFixed(2)}`;
             resultElem.style.display = "block";
         }
     </script>
