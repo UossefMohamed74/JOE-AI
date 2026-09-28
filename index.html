@@ -196,10 +196,12 @@ document.documentElement.dataset.theme=t;})();
         <option value="balanced">متوازن — صفقات أكثر وشروط أخف</option>
       </select>
     </div>
-    <button class="primary" id="scanBtn" type="button"><i class="fa-solid fa-radar"></i> افحص السوق الآن</button>
+    <button class="primary" id="scanBtn" type="button"><i class="fa-solid fa-magnifying-glass-chart"></i> افحص السوق الآن</button>
+    <button type="button" id="diagBtn" class="ghost" style="width:100%;align-self:stretch;padding:9px"><i class="fa-solid fa-shield-halved"></i> فحص جودة البيانات لكل الأزواج (سعر ومرجع وعمر الشمعة)</button>
     <p class="note" id="scanProg"></p>
     <div class="bar" id="scanBar" style="display:none"><i id="scanFill"></i></div>
   </div>
+  <div id="diagOut" class="card" style="display:none"></div>
   <div id="scanOut" style="display:flex;flex-direction:column;gap:12px"></div>
 </div>
 
@@ -704,6 +706,28 @@ async function runScan() {
   $("scanProg").textContent = ""; $("scanBar").style.display = "none"; btn.disabled = false;
 }
 
+
+// ===== فحص جودة البيانات: يعرض لكل زوج آخر سعر ومقارنته بالمرجع وعمر آخر شمعة =====
+async function runDiag() {
+  const btn = $("diagBtn"), box = $("diagOut");
+  btn.disabled = true; box.style.display = "flex"; box.innerHTML = '<p class="note">جاري فحص المصادر...</p>';
+  const keys = Object.keys(PAIRS).sort((a, b) => (PAIRS[a].src[0][0] === "kraken") - (PAIRS[b].src[0][0] === "kraken"));
+  const rows = await Promise.all(keys.map(async key => {
+    const p = PAIRS[key], name = pairName(key);
+    try {
+      const {candles, sym} = await fetchCandles(p, "15m");
+      const last = candles.at(-1), age = Math.round((Date.now() - last.t) / 60000), ref = await refPrice(p);
+      const dev = ref ? Math.abs(last.c / ref - 1) * 100 : null;
+      return `<div class="row"><span>✅ <b>${name}</b> (${sym})</span><span>${last.c.toFixed(p.dec)}</span><span>عمر الشمعة ${age}د</span><span>${dev === null ? "بدون مرجع" : "فرق عن المرجع " + dev.toFixed(2) + "%"}</span></div>`;
+    } catch (e) {
+      return `<div class="row" style="color:var(--red)"><span>❌ <b>${name}</b></span><span>${e.message}</span></div>`;
+    }
+  }));
+  box.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-shield-halved"></i> جودة البيانات</span></div>' + rows.join("") +
+    '<p class="note">قارن الأسعار بالشارت يدوياً: فرق صغير طبيعي (المصدر عقد أو زوج بديل)، أما الفرق الكبير أو الشمعة القديمة فتعني أن الزوج لا يُعتمد عليه الآن. الأزواج بدون مرجع تُقارن يدوياً فقط.</p>';
+  btn.disabled = false;
+}
+
 function showTab(t) {
   const A = t === "A";
   $("viewAnalysis").style.display = A ? "flex" : "none";
@@ -722,6 +746,7 @@ $("tStop").addEventListener("click", stopTimer);
 $("tabA").addEventListener("click", () => showTab("A"));
 $("tabS").addEventListener("click", () => showTab("S"));
 $("scanBtn").addEventListener("click", runScan);
+$("diagBtn").addEventListener("click", runDiag);
 $("scanOut").addEventListener("click", e => {
   const b = e.target.closest("button[data-act]"); if (!b) return;
   if (b.dataset.act === "timer") startTimer(+b.dataset.min, b.dataset.lbl);
