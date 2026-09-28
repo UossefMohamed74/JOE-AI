@@ -46,6 +46,14 @@ button.primary:disabled{opacity:.5;cursor:wait}
 .calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
 .result{display:none;padding:11px 12px;background:var(--tint-accent);border:1px solid var(--line);border-radius:10px;font-size:12px;font-weight:700;color:var(--accent)}
 .warn{font-size:11px;color:var(--warn);background:var(--tint-warn);border-radius:12px;padding:11px 14px;line-height:1.7}
+.timer{display:none;flex-direction:column;gap:9px;background:var(--tint-accent);border:1px solid var(--accent);border-radius:14px;padding:12px 14px}
+.timer.done{background:var(--tint-green);border-color:var(--green)}
+.timer.done #timerClock{color:var(--green)}
+.bar{height:6px;background:var(--inset);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--grad);transition:width 1s linear}
+button.ghost{width:auto;align-self:flex-start;padding:5px 12px;font-size:11px;cursor:pointer;color:var(--muted);background:transparent}
+button.ghost:hover{color:var(--red);border-color:var(--red)}
+button.primary:disabled{cursor:not-allowed}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 <script>
@@ -93,6 +101,15 @@ document.documentElement.dataset.theme=t;})();
     <button class="primary" id="run"><i class="fa-solid fa-wand-magic-sparkles"></i> حلّل الآن</button>
     <div class="err" id="err"></div>
 
+    <div class="timer" id="timerBox" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <span id="timerLbl" style="font-size:12px"></span>
+        <b id="timerClock" style="font-size:18px;font-variant-numeric:tabular-nums;color:var(--accent)">00:00</b>
+      </div>
+      <div class="bar"><i id="timerFill"></i></div>
+      <button type="button" id="tStop" class="ghost">إيقاف التايمر</button>
+    </div>
+
     <div class="signal" id="out">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <span id="sig" class="sbadge wait">—</span>
@@ -101,9 +118,18 @@ document.documentElement.dataset.theme=t;})();
       <div class="row"><span>RSI(14): <b id="rsi">-</b></span><span>الاتجاه: <b id="trend">-</b></span><span>ATR: <b id="atr">-</b></span></div>
       <div class="details">
         <p>السعر الحالي: <b id="entry" style="color:var(--accent)">-</b></p>
-        <p style="color:var(--red)">وقف الخسارة: <b id="sl">-</b></p>
-        <p style="color:var(--green)">الهدف 1 (1:1.5): <b id="tp1">-</b></p>
-        <p style="color:var(--green)">الهدف 2 (1:2.5): <b id="tp2">-</b></p>
+        <p class="lv" style="color:var(--red)">وقف الخسارة: <b id="sl">-</b></p>
+        <p class="lv" style="color:var(--green)">الهدف 1 (1:1.5): <b id="tp1">-</b></p>
+        <p class="lv" style="color:var(--green)">الهدف 2 (1:2.5): <b id="tp2">-</b></p>
+      </div>
+      <div id="etaBox" style="display:none;flex-direction:column;gap:8px">
+        <div class="row"><span><i class="fa-regular fa-clock"></i> مدة الهدف 1: <b id="eta1">-</b></span></div>
+        <div class="row"><span><i class="fa-regular fa-clock"></i> مدة الهدف 2: <b id="eta2">-</b></span></div>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="primary" id="t1"><i class="fa-solid fa-stopwatch"></i> تايمر الهدف 1</button>
+          <button type="button" class="primary" id="t2"><i class="fa-solid fa-stopwatch"></i> تايمر الهدف 2</button>
+        </div>
+        <p class="note" id="stats"></p>
       </div>
       <ul class="reasons" id="reasons"></ul>
       <p class="note" id="src"></p>
@@ -135,16 +161,18 @@ const $ = id => document.getElementById(id);
 // range: النطاق المنطقي للسعر | atr: النطاق المتوقع لـ ATR كنسبة % من السعر (للتحقق من سلامة البيانات)
 // pip: حجم النقطة | pipVal: قيمة النقطة بالدولار لكل لوت قياسي
 const PAIRS = {
-  EURUSD:  {tv:"FX:EURUSD",       src:[["spot","EURUSDT"]],                  dec:5, pip:0.0001, pipVal:10, range:[0.8,1.6],   atr:[0.01,0.6],  note:"EUR/USDT من Binance (بديل قريب للفوركس)"},
-  GBPUSD:  {tv:"FX:GBPUSD",       src:[["spot","GBPUSDT"]],                  dec:5, pip:0.0001, pipVal:10, range:[1.0,1.8],   atr:[0.01,0.6],  note:"GBP/USDT من Binance (بديل قريب للفوركس)"},
-  XAUUSD:  {tv:"OANDA:XAUUSD",    src:[["fut","XAUUSDT"],["spot","PAXGUSDT"]],dec:2, pip:0.1,    pipVal:10, range:[1000,10000],atr:[0.03,3],    note:"عقد الذهب الدائم XAUUSDT (وبديله PAXG)"},
-  USOIL:   {tv:"TVC:USOIL",       src:[["fut","CLUSDT"]],                    dec:2, pip:0.01,   pipVal:10, range:[20,250],    atr:[0.05,6],    note:"عقد WTI الدائم CLUSDT من Binance Futures"},
-  UKOIL:   {tv:"TVC:UKOIL",       src:[["fut","BZUSDT"]],                    dec:2, pip:0.01,   pipVal:10, range:[20,250],    atr:[0.05,6],    note:"عقد Brent الدائم BZUSDT من Binance Futures"},
-  BTCUSDT: {tv:"BINANCE:BTCUSDT", src:[["spot","BTCUSDT"]],                  dec:2, pip:1,      pipVal:1,  range:[1000,1000000],atr:[0.05,8],  note:"بيانات Binance المباشرة"}
+  EURUSD:  {tv:"FX:EURUSD",       src:[["kraken","EURUSD"],["spot","EURUSDT"]],  dec:5, pip:0.0001, pipVal:10, range:[0.8,1.6],     atr:[0.01,0.6], ref:{t:"er",cur:"EUR"}, tol:0.015, note:"سعر EUR/USD"},
+  GBPUSD:  {tv:"FX:GBPUSD",       src:[["kraken","GBPUSD"]],                      dec:5, pip:0.0001, pipVal:10, range:[1.0,1.8],     atr:[0.01,0.6], ref:{t:"er",cur:"GBP"}, tol:0.015, note:"سعر GBP/USD"},
+  XAUUSD:  {tv:"OANDA:XAUUSD",    src:[["fut","XAUUSDT"],["spot","PAXGUSDT"]],    dec:2, pip:0.1,    pipVal:10, range:[1000,10000],  atr:[0.03,3],   ref:{t:"paxg"},          tol:0.03,  note:"عقد الذهب الدائم"},
+  USOIL:   {tv:"TVC:USOIL",       src:[["fut","CLUSDT"]],                         dec:2, pip:0.01,   pipVal:10, range:[20,250],      atr:[0.05,6],   note:"عقد WTI الدائم"},
+  UKOIL:   {tv:"TVC:UKOIL",       src:[["fut","BZUSDT"]],                         dec:2, pip:0.01,   pipVal:10, range:[20,250],      atr:[0.05,6],   note:"عقد Brent الدائم"},
+  BTCUSDT: {tv:"BINANCE:BTCUSDT", src:[["spot","BTCUSDT"]],                       dec:2, pip:1,      pipVal:1,  range:[1000,1000000],atr:[0.05,8],   note:"بيانات Binance المباشرة"}
 };
 const TF = {"15m":{tv:"15",lbl:"15 دقيقة"},"1h":{tv:"60",lbl:"1 ساعة"},"4h":{tv:"240",lbl:"4 ساعات"}};
 const HOSTS = {spot:["https://data-api.binance.vision","https://api.binance.com"], fut:["https://fapi.binance.com"]};
 const TFMS = {"15m":9e5,"1h":36e5,"4h":144e5};
+const TFMIN = {"15m":15,"1h":60,"4h":240};
+const KR = {"15m":15,"1h":60,"4h":240};
 
 function loadChart() {
   const p = PAIRS[$("pair").value];
@@ -153,24 +181,60 @@ function loadChart() {
   new TradingView.widget({autosize:true, symbol:p.tv, interval:TF[$("tf").value].tv, timezone:"Etc/UTC", theme:document.documentElement.dataset.theme || "dark", style:"1", locale:"ar", container_id:"tv"});
 }
 
-// يجرّب المصادر بالترتيب، ويستبعد الشمعة غير المكتملة حتى لا تتغير الإشارة أثناء تكوّن الشمعة
-async function fetchCandles(p, tf) {
-  let lastErr;
-  for (const [kind, sym] of p.src) {
-    for (const h of HOSTS[kind]) {
-      try {
-        const path = kind === "fut" ? "/fapi/v1/klines" : "/api/v3/klines";
-        const r = await fetch(`${h}${path}?symbol=${sym}&interval=${tf}&limit=300`);
-        if (!r.ok) throw new Error(sym + " HTTP " + r.status);
-        const d = await r.json();
-        const now = Date.now();
-        const candles = d.filter(k => +k[6] < now).map(k => ({h:+k[2], l:+k[3], c:+k[4], t:+k[6]}));
-        if (candles.length >= 210) return {candles, sym};
-        throw new Error(sym + ": بيانات غير كافية");
-      } catch (e) { lastErr = e; }
-    }
+async function binanceKlines(kind, sym, tf) {
+  let last;
+  for (const h of HOSTS[kind]) {
+    try {
+      const path = kind === "fut" ? "/fapi/v1/klines" : "/api/v3/klines";
+      const r = await fetch(`${h}${path}?symbol=${sym}&interval=${tf}&limit=1000`);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const now = Date.now();
+      return (await r.json()).filter(k => +k[6] < now).map(k => ({h:+k[2], l:+k[3], c:+k[4], t:+k[6]}));
+    } catch (e) { last = e; }
   }
-  throw lastErr;
+  throw last;
+}
+async function krakenKlines(sym, tf) {
+  const r = await fetch(`https://api.kraken.com/0/public/OHLC?pair=${sym}&interval=${KR[tf]}`);
+  const j = await r.json();
+  if (j.error && j.error.length) throw new Error(j.error[0]);
+  const rows = j.result[Object.keys(j.result).find(k => k !== "last")];
+  const now = Date.now();
+  return rows.map(k => ({h:+k[2], l:+k[3], c:+k[4], t:(+k[0] + KR[tf] * 60) * 1000})).filter(x => x.t < now);
+}
+// سعر مرجعي مستقل للتحقق من صحة المصدر (اختياري: لو فشل جلبه نتجاوز الفحص)
+async function refPrice(p) {
+  try {
+    if (!p.ref) return null;
+    if (p.ref.t === "er") {
+      const d = await (await fetch("https://open.er-api.com/v6/latest/USD")).json();
+      return 1 / d.rates[p.ref.cur];
+    }
+    if (p.ref.t === "paxg") {
+      const d = await (await fetch(HOSTS.spot[0] + "/api/v3/ticker/price?symbol=PAXGUSDT")).json();
+      return parseFloat(d.price);
+    }
+  } catch (e) {}
+  return null;
+}
+
+// يجرّب المصادر بالترتيب ويرفض أي مصدر بياناته قديمة أو سعره لا يطابق المرجع
+async function fetchCandles(p, tf) {
+  const errs = [];
+  for (const [kind, sym] of p.src) {
+    try {
+      const candles = kind === "kraken" ? await krakenKlines(sym, tf) : await binanceKlines(kind, sym, tf);
+      if (candles.length < 210) throw new Error("بيانات غير كافية");
+      if (Date.now() - candles.at(-1).t > TFMS[tf] * 3) throw new Error("بيانات قديمة أو متوقفة");
+      const ref = await refPrice(p);
+      if (ref) {
+        const dev = Math.abs(candles.at(-1).c / ref - 1);
+        if (dev > p.tol) throw new Error(`السعر لا يطابق المرجع (فرق ${(dev * 100).toFixed(1)}%)`);
+      }
+      return {candles, sym};
+    } catch (e) { errs.push(sym + ": " + e.message); }
+  }
+  throw new Error(errs.join(" | "));
 }
 
 // فحص سلامة البيانات: نطاق السعر، حداثة الشموع، ونسبة ATR
@@ -233,6 +297,80 @@ function analyze(candles) {
   return {type, score, strength: Math.round(Math.abs(score) / 4 * 100), rsi: r, atr: a, last, bull: f > m, why};
 }
 
+// ===== تقدير مدة الصفقة من التاريخ الفعلي =====
+function atrSeries(c, n = 14) {
+  const o = new Array(c.length).fill(null); let sum = 0;
+  for (let i = 1; i < c.length; i++) {
+    const tr = Math.max(c[i].h - c[i].l, Math.abs(c[i].h - c[i-1].c), Math.abs(c[i].l - c[i-1].c));
+    if (i <= n) { sum += tr; if (i === n) o[i] = sum / n; } else o[i] = (o[i-1] * (n - 1) + tr) / n;
+  }
+  return o;
+}
+// لكل شمعة سابقة: نفترض دخولاً بنفس قواعدنا (وقف 1.5 ATR، هدف 1 = 1:1.5، هدف 2 = 1:2.5) ونقيس كم شمعة احتاج السعر
+// (لو لمس الوقف والهدف في نفس الشمعة نحتسب الوقف — تقدير متحفظ)
+function backtest(c, dir, H = 48) {
+  const A = atrSeries(c), t1 = [], t2 = []; let n = 0, sl = 0;
+  for (let i = 14; i < c.length - H; i++) {
+    const a = A[i]; if (!a) continue;
+    const e = c[i].c, risk = a * 1.5, S = e - dir * risk, T1 = e + dir * risk * 1.5, T2 = e + dir * risk * 2.5;
+    let b1 = 0, b2 = 0, stopped = false; n++;
+    for (let j = i + 1; j <= i + H; j++) {
+      const hitSL = dir === 1 ? c[j].l <= S : c[j].h >= S;
+      if (hitSL) { stopped = true; break; }
+      if (!b1 && (dir === 1 ? c[j].h >= T1 : c[j].l <= T1)) b1 = j - i;
+      if (!b2 && (dir === 1 ? c[j].h >= T2 : c[j].l <= T2)) b2 = j - i;
+      if (b2) break;
+    }
+    if (b1) t1.push(b1); if (b2) t2.push(b2); if (stopped && !b1) sl++;
+  }
+  return {n, t1, t2, sl};
+}
+function quant(arr, q) { const s = [...arr].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; }
+function fmtDur(min) {
+  const m = Math.max(15, Math.round(min / 15) * 15);
+  if (m < 60) return m + " دقيقة";
+  if (m >= 2880) return Math.round(m / 1440) + " أيام";
+  const h = Math.floor(m / 60), r = m % 60;
+  const hw = h === 1 ? "ساعة" : h === 2 ? "ساعتان" : h <= 10 ? h + " ساعات" : h + " ساعة";
+  return r === 0 ? hw : r === 15 ? hw + " وربع" : r === 30 ? hw + " ونصف" : hw + " و45 دقيقة";
+}
+function etaOf(arr, mins) {
+  if (arr.length < 15) return null;
+  return {mid: quant(arr, .5) * mins, lo: quant(arr, .25) * mins, hi: quant(arr, .75) * mins};
+}
+
+// ===== التايمر =====
+let timerId = null, tEnd = 0, tStart = 0;
+function stopTimer() { clearInterval(timerId); timerId = null; $("timerBox").style.display = "none"; }
+function clock(ms) {
+  const t = Math.max(0, Math.ceil(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60;
+  const p = x => String(x).padStart(2, "0");
+  return (h ? h + ":" : "") + p(m) + ":" + p(s);
+}
+function tick() {
+  const left = tEnd - Date.now();
+  $("timerClock").textContent = clock(left);
+  $("timerFill").style.width = Math.min(100, (Date.now() - tStart) / (tEnd - tStart) * 100) + "%";
+  if (left <= 0) {
+    clearInterval(timerId); timerId = null;
+    $("timerBox").classList.add("done");
+    $("timerClock").textContent = "انتهى الوقت";
+    $("timerLbl").textContent = "حان وقت مراجعة الصفقة";
+    try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch (e) {}
+    try { if ("Notification" in window && Notification.permission === "granted") new Notification("Pipnex", {body: "انتهى الوقت المتوقع للصفقة — راجع السعر"}); } catch (e) {}
+  }
+}
+function startTimer(minutes, label) {
+  stopTimer();
+  tStart = Date.now(); tEnd = tStart + minutes * 60000;
+  $("timerBox").classList.remove("done");
+  $("timerLbl").textContent = label + " — المدة المتوقعة " + fmtDur(minutes);
+  $("timerBox").style.display = "flex";
+  try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission(); } catch (e) {}
+  tick(); timerId = setInterval(tick, 1000);
+}
+let ETA = {t1: null, t2: null};
+
 async function run() {
   const key = $("pair").value, p = PAIRS[key], tf = $("tf").value;
   const btn = $("run"), err = $("err");
@@ -260,6 +398,20 @@ async function run() {
     $("reasons").innerHTML = a.why.map(x => `<li>${x}</li>`).join("") + (a.type === "WAIT" ? "<li>لا يوجد توافق كافٍ بين المؤشرات — الأفضل عدم الدخول</li>" : "");
     $("src").textContent = `${p.note} (${sym}) • ${TF[tf].lbl} • الوقف = 1.5×ATR`;
     $("wrn").innerHTML = warns.map(x => "⚠ " + x).join("<br>");
+    const trade = buy || sell;
+    document.querySelectorAll(".lv").forEach(e => e.style.display = trade ? "" : "none");
+    $("etaBox").style.display = trade ? "flex" : "none";
+    ETA = {t1: null, t2: null};
+    if (trade) {
+      const bt = backtest(candles, dir), m = TFMIN[tf];
+      const e1 = etaOf(bt.t1, m), e2 = etaOf(bt.t2, m);
+      const txt = e => e ? `${fmtDur(e.mid)} <span style="color:var(--muted);font-weight:400">(شائعاً من ${fmtDur(e.lo)} إلى ${fmtDur(e.hi)})</span>` : "بيانات غير كافية";
+      $("eta1").innerHTML = txt(e1); $("eta2").innerHTML = txt(e2);
+      ETA = {t1: e1 && e1.mid, t2: e2 && e2.mid};
+      $("t1").disabled = !e1; $("t2").disabled = !e2;
+      const pc = x => bt.n ? Math.round(x / bt.n * 100) + "%" : "-";
+      $("stats").textContent = `إحصاء من آخر ${bt.n} حركة سابقة على هذا الزوج والإطار: الهدف 1 تحقق في ${pc(bt.t1.length)}، الهدف 2 في ${pc(bt.t2.length)}، والوقف ضُرب قبل أي هدف في ${pc(bt.sl)}. المدة تقدير إحصائي وليست وعداً.`;
+    }
     $("out").style.display = "flex";
     $("status").innerHTML = '<i class="fa-solid fa-circle" style="font-size:8px;color:var(--green)"></i> <span style="color:var(--green)">تم التحديث ' + new Date().toLocaleTimeString("ar-EG") + "</span>";
 
@@ -288,6 +440,9 @@ $("pair").addEventListener("change", () => { loadChart(); run(); });
 $("tf").addEventListener("change", () => { loadChart(); run(); });
 $("run").addEventListener("click", run);
 $("calcBtn").addEventListener("click", calcLot);
+$("t1").addEventListener("click", () => ETA.t1 && startTimer(ETA.t1, $("pair").selectedOptions[0].text + " • الهدف 1"));
+$("t2").addEventListener("click", () => ETA.t2 && startTimer(ETA.t2, $("pair").selectedOptions[0].text + " • الهدف 2"));
+$("tStop").addEventListener("click", stopTimer);
 
 function syncThemeIcon() {
   const light = document.documentElement.dataset.theme === "light";
