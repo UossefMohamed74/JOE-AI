@@ -6,7 +6,7 @@
 <title>Pipnex — تحليل فني</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
-:root{--bg:#0a0d14;--bg2:#0e131c;--card:#141a24;--line:#232c3d;--accent:#00e5f0;--grad:linear-gradient(135deg,#00c6ff,#0072ff);--green:#00e676;--red:#ff5252;--warn:#ffb74d;--text:#f1f5f9;--muted:#94a3b8;--soft:rgba(255,255,255,.03);--inset:rgba(0,0,0,.32);--shadow:0 8px 28px rgba(0,0,0,.35);--glow:rgba(0,198,255,.18);--tint-accent:rgba(0,229,240,.07);--tint-green:rgba(0,230,118,.16);--tint-red:rgba(255,82,82,.16);--tint-warn:rgba(255,183,77,.09);-tint-mute:rgba(148,163,184,.15)}
+:root{--bg:#0a0d14;--bg2:#0e131c;--card:#141a24;--line:#232c3d;--accent:#00e5f0;--grad:linear-gradient(135deg,#00c6ff,#0072ff);--green:#00e676;--red:#ff5252;--warn:#ffb74d;--text:#f1f5f9;--muted:#94a3b8;--soft:rgba(255,255,255,.03);--inset:rgba(0,0,0,.32);--shadow:0 8px 28px rgba(0,0,0,.35);--glow:rgba(0,198,255,.18);--tint-accent:rgba(0,229,240,.07);--tint-green:rgba(0,230,118,.16);--tint-red:rgba(255,82,82,.16);--tint-warn:rgba(255,183,77,.09);--tint-mute:rgba(148,163,184,.15)}
 :root[data-theme="light"]{--bg:#eef2f8;--bg2:#e6ecf5;--card:#ffffff;--line:#dbe3ef;--accent:#0072ff;--green:#00a86b;--red:#e5383b;--warn:#b7791f;--text:#0f172a;--muted:#5b6b82;--soft:rgba(15,23,42,.025);--inset:rgba(15,23,42,.05);--shadow:0 8px 24px rgba(30,60,110,.10);--glow:rgba(0,114,255,.16);--tint-accent:rgba(0,114,255,.07);--tint-green:rgba(0,168,107,.13);--tint-red:rgba(229,56,59,.12);--tint-warn:rgba(183,121,31,.10);--tint-mute:rgba(91,107,130,.13)}
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Tahoma,sans-serif}
 html{color-scheme:dark}
@@ -188,12 +188,13 @@ document.documentElement.dataset.theme=t;})();
 <div id="viewScan" style="display:none;flex-direction:column;gap:14px">
   <div class="card">
     <div class="card-title"><span><i class="fa-solid fa-bullseye"></i> الصفقات — ماسح الفرص الفني</span></div>
-    <p class="note">يفحص كل الأزواج (15د + 1س + 4س) ولا يعرض إلا الصفقة التي: (1) اتجاه 1س و4س معها، (2) إشارة 15د قائمة والسعر غير بعيد عن EMA20، (3) نجحت تاريخياً بنسبة مقبولة على نفس الزوج. الصفقة قصيرة: وقف 1×ATR، هدف 1.5×ATR، وخروج بسعر السوق بعد <b>90 دقيقة كحد أقصى</b>.</p>
+    <p class="note">يفحص كل الأزواج (15د + 1س + 4س) ولا يعرض إلا الصفقة التي: (1) اتجاه 1س و4س معها، (2) إشارة 15د قائمة والسعر غير بعيد عن EMA20، (3) نجحت تاريخياً بنسبة مقبولة على نفس الزوج. الصفقة قصيرة: وقف 1×ATR، هدف 1.5×ATR، وخروج بسعر السوق بعد <b>90 دقيقة كحد أقصى</b>. الحساسية تحدد مدى صرامة الشروط، وتحت النتائج ستجد سبب غياب الإشارة لكل زوج وقائمة مراقبة بالأقرب لتكوين فرصة.</p>
     <div>
       <label for="scanMode">الحساسية</label>
       <select id="scanMode">
         <option value="strict">صارم — صفقات أقل وجودة أعلى</option>
-        <option value="balanced">متوازن — صفقات أكثر وشروط أخف</option>
+        <option value="balanced" selected>متوازن — صفقات أكثر وشروط أخف</option>
+        <option value="flex">مرن — أخف الشروط (جودة أقل)</option>
       </select>
     </div>
     <button class="primary" id="scanBtn" type="button"><i class="fa-solid fa-magnifying-glass-chart"></i> افحص السوق الآن</button>
@@ -310,6 +311,22 @@ async function refPrice(p) {
     }
   } catch (e) {}
   return null;
+}
+
+// السعر اللحظي من نفس مصدر الشموع (آخر صفقة منفذة)
+async function livePrice(p, sym) {
+  try {
+    const src = p.src.find(x => x[1] === sym); if (!src) return null;
+    if (src[0] === "kraken") {
+      await krakenGate();
+      const j = await (await fetch(`https://api.kraken.com/0/public/Ticker?pair=${sym}`)).json();
+      if (j.error && j.error.length) return null;
+      return parseFloat(j.result[Object.keys(j.result)[0]].c[0]);
+    }
+    const base = src[0] === "fut" ? HOSTS.fut[0] + "/fapi/v1/ticker/price" : HOSTS.spot[0] + "/api/v3/ticker/price";
+    const j = await (await fetch(`${base}?symbol=${sym}`)).json();
+    return parseFloat(j.price) || null;
+  } catch (e) { return null; }
 }
 
 // يجرّب المصادر بالترتيب ويرفض أي مصدر بياناته قديمة أو سعره لا يطابق المرجع
@@ -507,6 +524,9 @@ async function run() {
     const {candles, sym} = await fetchCandles(p, tf);
     const a = analyze(candles), d = p.dec;
     const warns = validate(p, tf, candles, a);
+    let px = a.last, isLive = false;
+    const lp = await livePrice(p, sym);
+    if (lp && Math.abs(lp / a.last - 1) < 0.05) { px = lp; isLive = true; }
     const buy = a.type === "BUY", sell = a.type === "SELL";
     const dir = buy ? 1 : -1, risk = a.atr * 1.5;
 
@@ -517,13 +537,13 @@ async function run() {
     $("rsi").textContent = a.rsi.toFixed(1);
     $("trend").textContent = a.bull ? "صاعد" : "هابط";
     $("atr").textContent = a.atr.toFixed(d);
-    $("entry").textContent = a.last.toFixed(d);
+    $("entry").textContent = px.toFixed(d);
     const lv = (x) => (buy || sell) ? x.toFixed(d) : "—";
-    $("sl").textContent = lv(a.last - dir * risk);
-    $("tp1").textContent = lv(a.last + dir * risk * 1.5);
-    $("tp2").textContent = lv(a.last + dir * risk * 2.5);
+    $("sl").textContent = lv(px - dir * risk);
+    $("tp1").textContent = lv(px + dir * risk * 1.5);
+    $("tp2").textContent = lv(px + dir * risk * 2.5);
     $("reasons").innerHTML = a.why.map(x => `<li>${x}</li>`).join("") + (a.type === "WAIT" ? "<li>لا يوجد توافق كافٍ بين المؤشرات — الأفضل عدم الدخول</li>" : "");
-    $("src").textContent = `${p.note} (${sym}) • ${TF[tf].lbl} • الوقف = 1.5×ATR`;
+    $("src").textContent = `${p.note} (${sym}) • ${TF[tf].lbl} • الوقف = 1.5×ATR • ${isLive ? "السعر لحظي" : "السعر = آخر إغلاق شمعة"}`;
     $("wrn").innerHTML = warns.map(x => "⚠ " + x).join("<br>");
     const trade = buy || sell;
     document.querySelectorAll(".lv").forEach(e => e.style.display = trade ? "" : "none");
@@ -572,7 +592,11 @@ async function calcLot() {
 // ================== الصفقات: ماسح الفرص ==================
 // صفقة قصيرة: وقف 1×ATR، هدف1 1.5×ATR، هدف2 2.5×ATR، خروج زمني بعد 6 شموع 15د = 90 دقيقة
 const SCAN = {SL: 1, TP1: 1.5, TP2: 2.5, H: 6};
-const MODES = {strict: {minN: 15, minHit: 0.5, minExp: 0.15}, balanced: {minN: 12, minHit: 0.4, minExp: 0.05}};
+const MODES = {
+  strict:   {minScore: 3, minN: 15, minHit: 0.50, minExp: 0.15, need4h: true,  maxDist: 1.2, rsiMax: 68},
+  balanced: {minScore: 3, minN: 12, minHit: 0.40, minExp: 0.05, need4h: true,  maxDist: 1.8, rsiMax: 72},
+  flex:     {minScore: 2, minN: 10, minHit: 0.38, minExp: 0.00, need4h: false, maxDist: 2.2, rsiMax: 75}
+};
 const pct = x => Math.round(x * 100) + "%";
 const trendDir = a => a.score >= 2 ? 1 : a.score <= -2 ? -1 : 0;
 function wilson(k, n, z = 1.28) {         // الحد الأدنى المحافظ لنسبة النجاح (فاصل ثقة ~80%)
@@ -586,25 +610,41 @@ function alignIdx(arr, t) {               // آخر شمعة مغلقة في ا�
   return r;
 }
 // شروط الدخول عند الشمعة i (كلها تعتمد على شموع مغلقة فقط)
-function scalpAt(c15, i, h1, h4, k1, k4, memo) {
+function scalpAt(c15, i, h1, h4, k1, k4, memo, cfg, why) {
   const a = analyze(c15.slice(0, i + 1));
-  if (a.type === "WAIT") return null;
-  const dir = a.type === "BUY" ? 1 : -1;
-  if (dir === 1 ? a.rsi >= 68 : a.rsi <= 32) return null;               // لا نطارد سعراً متشبعاً
-  if (Math.abs(a.last - a.ema20) > 1.2 * a.atr) return null;             // السعر قريب من EMA20 (ارتداد لا مطاردة)
+  const dir = a.score >= cfg.minScore ? 1 : a.score <= -cfg.minScore ? -1 : 0;
+  const no = m => { if (why) why.r = m; return null; };
+  if (!dir) return no("إشارة 15د محايدة (لا توافق كافٍ بين المؤشرات)");
+  if (dir === 1 ? a.rsi >= cfg.rsiMax : a.rsi <= 100 - cfg.rsiMax) return no("RSI متشبع (خطر ارتداد عكسي)");
+  if (Math.abs(a.last - a.ema20) > cfg.maxDist * a.atr) return no("السعر بعيد عن EMA20 (لا نطارد الحركة)");
   if (!(k1 in memo.h1)) memo.h1[k1] = trendDir(analyze(h1.slice(0, k1 + 1)));
-  if (memo.h1[k1] !== dir) return null;
-  if (!(k4 in memo.h4)) memo.h4[k4] = trendDir(analyze(h4.slice(0, k4 + 1)));
-  if (memo.h4[k4] !== dir) return null;
+  if (memo.h1[k1] !== dir) return no(memo.h1[k1] === 0 ? "اتجاه 1س غير واضح" : "اتجاه 1س عكس إشارة 15د");
+  if (cfg.need4h) {
+    if (!(k4 in memo.h4)) memo.h4[k4] = trendDir(analyze(h4.slice(0, k4 + 1)));
+    if (memo.h4[k4] !== dir) return no(memo.h4[k4] === 0 ? "اتجاه 4س غير واضح" : "اتجاه 4س عكس إشارة 15د");
+  }
   return {dir, atr: a.atr, last: a.last, a};
 }
+// قائمة مراقبة: أي الشروط تحققت وأيها ينقص (لا تُعتبر صفقة)
+function checklist(c15, h1, h4, k1, k4, cfg) {
+  const a = analyze(c15), m1 = trendDir(analyze(h1.slice(0, k1 + 1))), m4 = trendDir(analyze(h4.slice(0, k4 + 1)));
+  const dir = m4 || m1 || (a.score >= 0 ? 1 : -1);
+  const conds = [
+    [dir * a.score >= cfg.minScore, "إشارة 15د"],
+    [dir === 1 ? a.rsi < cfg.rsiMax : a.rsi > 100 - cfg.rsiMax, "RSI غير متشبع"],
+    [Math.abs(a.last - a.ema20) <= cfg.maxDist * a.atr, "السعر قريب من EMA20"],
+    [m1 === dir, "اتجاه 1س"]
+  ];
+  if (cfg.need4h) conds.push([m4 === dir, "اتجاه 4س"]);
+  return {dir, total: conds.length, passed: conds.filter(x => x[0]).length, missing: conds.filter(x => !x[0]).map(x => x[1])};
+}
 // اختبار تاريخي لنفس الشروط بالضبط، صفقات غير متداخلة، ولو لمس الوقف والهدف في شمعة واحدة يُحتسب الوقف
-function scalpBacktest(c15, h1, h4) {
+function scalpBacktest(c15, h1, h4, cfg) {
   const memo = {h1: {}, h4: {}}, out = [], H = SCAN.H;
   for (let i = 210; i < c15.length - H; i++) {
     const k1 = alignIdx(h1, c15[i].t), k4 = alignIdx(h4, c15[i].t);
     if (k1 < 209 || k4 < 209) continue;
-    const s = scalpAt(c15, i, h1, h4, k1, k4, memo); if (!s) continue;
+    const s = scalpAt(c15, i, h1, h4, k1, k4, memo, cfg); if (!s) continue;
     const e = c15[i].c, risk = s.atr * SCAN.SL, sl = e - s.dir * risk, tp = e + s.dir * risk * SCAN.TP1;
     let res = null;
     for (let j = i + 1; j <= i + H; j++) {
@@ -622,26 +662,35 @@ function scalpBacktest(c15, h1, h4) {
 
 async function scanPair(key, cfg) {
   const p = PAIRS[key];
-  let c15, h1, h4;
+  let c15, h1, h4, sym15;
   try {
-    [c15, h1, h4] = (await Promise.all([fetchCandles(p, "15m"), fetchCandles(p, "1h"), fetchCandles(p, "4h")])).map(x => x.candles);
+    const rs = await Promise.all([fetchCandles(p, "15m"), fetchCandles(p, "1h"), fetchCandles(p, "4h")]);
+    [c15, h1, h4] = rs.map(x => x.candles); sym15 = rs[0].sym;
   } catch (e) { return {key, status: "fail", why: e.message}; }
   await sleep(0);
   if (Date.now() - c15.at(-1).t > 2 * TFMS["15m"]) return {key, status: "fail", why: "آخر شمعة 15د متأخرة (السوق مغلق أو المصدر متوقف)"};
   const t = c15.at(-1).t, k1 = alignIdx(h1, t), k4 = alignIdx(h4, t);
   if (k1 < 209 || k4 < 209) return {key, status: "fail", why: "بيانات الأطر الأعلى غير كافية"};
-  const live = scalpAt(c15, c15.length - 1, h1, h4, k1, k4, {h1: {}, h4: {}});
-  if (!live) return {key, status: "none"};
+  const why = {};
+  const live = scalpAt(c15, c15.length - 1, h1, h4, k1, k4, {h1: {}, h4: {}}, cfg, why);
+  if (!live) return {key, status: "none", why: why.r, watch: checklist(c15, h1, h4, k1, k4, cfg)};
   let warns;
   try { warns = validate(p, "15m", c15, live.a); } catch (e) { return {key, status: "fail", why: e.message}; }
   if (warns.length) return {key, status: "filtered", why: warns[0]};
-  const bt = scalpBacktest(c15, h1, h4), n = bt.length;
+  const bt = scalpBacktest(c15, h1, h4, cfg), n = bt.length;
   const tp = bt.filter(x => x.o === "tp"), sl = bt.filter(x => x.o === "sl").length, to = n - tp.length - sl;
   const hit = n ? tp.length / n : 0, exp = n ? bt.reduce((a, x) => a + x.r, 0) / n : 0, lb = wilson(tp.length, n);
   if (n < cfg.minN || hit < cfg.minHit || exp < cfg.minExp)
     return {key, status: "filtered", why: `نجاح تاريخي ${pct(hit)} من ${n} حالة، عائد ${exp.toFixed(2)}R — لا يجتاز الشروط`};
-  const risk = live.atr * SCAN.SL, e = live.last, dir = live.dir;
-  return {key, status: "signal", dir, e, sl: e - dir * risk, tp1: e + dir * risk * SCAN.TP1, tp2: e + dir * risk * SCAN.TP2,
+  // نستخدم السعر اللحظي للدخول، ونرفض الصفقة لو ابتعد السعر كثيراً عن سعر الإشارة
+  let e = live.last, isLive = false;
+  const lp = await livePrice(p, sym15);
+  if (lp && Math.abs(lp / live.last - 1) < 0.05) {
+    if (Math.abs(lp - live.last) > 0.6 * live.atr) return {key, status: "filtered", why: "السعر تحرك أكثر من 0.6×ATR منذ إغلاق الشمعة — فات الدخول المثالي"};
+    e = lp; isLive = true;
+  }
+  const risk = live.atr * SCAN.SL, dir = live.dir;
+  return {key, status: "signal", dir, e, live: isLive, sl: e - dir * risk, tp1: e + dir * risk * SCAN.TP1, tp2: e + dir * risk * SCAN.TP2,
     n, hit, exp, lb, sls: sl, tos: to, med: quant(tp.map(x => x.b), .5) * 15, slPips: risk / p.pip, until: t + TFMS["15m"]};
 }
 
@@ -658,7 +707,7 @@ async function cardHTML(r) {
   return `<div class="tcard ${buy ? "buy-c" : "sell-c"}">
     <div class="thead"><b style="font-size:15px">${name}</b><span class="sbadge ${buy ? "buy" : "sell"}">${buy ? "BUY" : "SELL"}</span></div>
     <div class="tgrid">
-      <div>الدخول (إغلاق آخر شمعة)<b>${r.e.toFixed(d)}</b></div>
+      <div>${r.live ? "الدخول (سعر لحظي)" : "الدخول (إغلاق آخر شمعة)"}<b>${r.e.toFixed(d)}</b></div>
       <div>وقف الخسارة<b style="color:var(--red)">${r.sl.toFixed(d)}</b></div>
       <div>الهدف 1 (1:1.5)<b style="color:var(--green)">${r.tp1.toFixed(d)}</b></div>
       <div>الهدف 2 (1:2.5)<b style="color:var(--green)">${r.tp2.toFixed(d)}</b></div>
@@ -699,9 +748,12 @@ async function runScan() {
   if (!sig.length) html += `<div class="tcard"><b>لا توجد صفقة مناسبة الآن</b><p class="note">هذا طبيعي: الشروط صارمة عمداً، وعدم وجود فرصة أفضل من صفقة ضعيفة. أعد الفحص بعد إغلاق الشمعة القادمة (كل 15 دقيقة) أو جرّب وضع "متوازن".</p></div>`;
   else html += (await Promise.all(sig.map(cardHTML))).join("");
   html += `<div class="card"><p class="note">تم فحص ${keys.length} زوج • صفقات مؤهلة: ${cnt("signal")} • بلا إشارة الآن: ${cnt("none")} • لم تجتز الفلاتر: ${cnt("filtered")} • تعذر فحصها: ${cnt("fail")} • وقت الفحص ${new Date().toLocaleTimeString("ar-EG")}</p>
+    ${cnt("none") ? `<details class="note"><summary>سبب غياب الإشارة لكل زوج</summary>${list("none")}</details>` : ""}
     ${cnt("filtered") ? `<details class="note"><summary>لم تجتز الفلاتر</summary>${list("filtered")}</details>` : ""}
     ${cnt("fail") ? `<details class="note"><summary>تعذر فحصها (بيانات)</summary>${list("fail")}</details>` : ""}
     <p class="note">تنبيه: بعض الأزواج مترابطة (مثل EUR/USD وGBP/USD أو أزواج الين)، فلا تفتحها كلها معاً. الإحصاء لا يشمل السبريد والانزلاق، ولا يضمن المستقبل، واختيار الأفضل من عدة أزواج يرفع النتائج التاريخية قليلاً عن الواقع.</p></div>`;
+  const watch = results.filter(r => r.status === "none" && r.watch).sort((a, b) => b.watch.passed / b.watch.total - a.watch.passed / a.watch.total).slice(0, 4);
+  if (watch.length) html = html.replace('<div class="card"><p class="note">تم فحص', `<div class="card"><div class="card-title"><span><i class="fa-regular fa-eye"></i> قائمة المراقبة (ليست صفقات)</span></div>${watch.map(r => `<p class="note">• <b>${pairName(r.key)}</b> — ${r.watch.dir === 1 ? "شراء" : "بيع"} محتمل (${r.watch.passed}/${r.watch.total}) • ينقصه: ${r.watch.missing.join("، ")}</p>`).join("")}</div>\n<div class="card"><p class="note">تم فحص`);
   out.innerHTML = html;
   $("scanProg").textContent = ""; $("scanBar").style.display = "none"; btn.disabled = false;
 }
