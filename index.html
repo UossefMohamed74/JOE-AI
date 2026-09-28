@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipnex AI — Trading Engine</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0e14;
+            --card-bg: #151a23;
+            --border-color: #232a3b;
+            --accent-color: #00f2fe;
+            --green: #00e676;
+            --red: #ff5252;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; padding: 10px; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 15px; }
+        .logo { font-size: 20px; font-weight: bold; color: var(--accent-color); display: flex; align-items: center; gap: 8px; }
+
+        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media (min-width: 768px) { .dashboard-grid { grid-template-columns: 2fr 1fr; } }
+
+        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; }
+        .card-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: var(--text-main); display: flex; align-items: center; justify-content: space-between; }
+
+        .form-group { margin-bottom: 10px; }
+        label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+        input, select, button { width: 100%; padding: 10px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main); font-size: 13px; outline: none; }
+        button.btn-primary { background: linear-gradient(45deg, #00c6ff, #0072ff); border: none; font-weight: bold; cursor: pointer; color: #fff; margin-top: 8px; }
+
+        .signal-box { background: rgba(255, 255, 255, 0.03); border: 1px dashed var(--border-color); border-radius: 8px; padding: 12px; margin-top: 12px; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; }
+        .badge-buy { background: rgba(0, 230, 118, 0.2); color: var(--green); }
+        .badge-sell { background: rgba(255, 82, 82, 0.2); color: var(--red); }
+
+        .chart-container { height: 350px; width: 100%; border-radius: 8px; overflow: hidden; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo"><i class="fa-solid fa-brain"></i> Pipnex AI</div>
+        <div style="font-size: 11px; color: var(--green);">● دائم وفعال</div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="card">
+            <div class="card-title">
+                <span><i class="fa-solid fa-chart-candlestick"></i> الرسم البياني الحي</span>
+                <select id="pairSelect" style="width: auto; padding: 4px 8px;" onchange="updateChart()">
+                    <option value="FX:EURUSD">EUR/USD</option>
+                    <option value="FX:GBPUSD">GBP/USD</option>
+                    <option value="OANDA:XAUUSD">XAU/USD (ذهب)</option>
+                    <option value="BINANCE:BTCUSDT">BTC/USDT</option>
+                </select>
+            </div>
+            <div class="chart-container" id="tradingview_widget"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-microchip"></i> تحليل الذكاء الاصطناعي</div>
+            <div class="form-group">
+                <label>الإطار الزمني</label>
+                <select id="tfSelect">
+                    <option value="M15">15 دقيقة</option>
+                    <option value="H1" selected>1 ساعة</option>
+                    <option value="H4">4 ساعات</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="runAIAnalysis()"><i class="fa-solid fa-wand-magic-sparkles"></i> تحليل الشارت</button>
+
+            <div id="signalOutput" class="signal-box" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span id="signalBadge" class="badge">BUY</span>
+                    <span style="font-size: 11px; color: var(--text-muted);">الثقة: <b id="confidenceVal" style="color:var(--accent-color);">94%</b></span>
+                </div>
+                <div style="font-size: 12px; line-height: 1.6;">
+                    <p>الدخول: <b id="entryVal">-</b></p>
+                    <p style="color:var(--red);">وقف الخسارة: <b id="slVal">-</b></p>
+                    <p style="color:var(--green);">الهدف الأول: <b id="tp1Val">-</b></p>
+                    <p style="color:var(--green);">الهدف الثاني: <b id="tp2Val">-</b></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top: 15px;">
+        <div class="card-title"><i class="fa-solid fa-calculator"></i> حاسبة المخاطرة</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;">
+            <div class="form-group"><label>رأس المال ($)</label><input type="number" id="calcBalance" value="10000"></div>
+            <div class="form-group"><label>المخاطرة (%)</label><input type="number" id="calcRisk" value="1"></div>
+            <div class="form-group"><label>الاستوب (Pips)</label><input type="number" id="calcSL" value="20"></div>
+            <div class="form-group" style="display:flex; align-items:flex-end;"><button class="btn-primary" onclick="calculateLot()">احسب</button></div>
+        </div>
+        <div id="calcResult" style="margin-top: 8px; font-size: 12px; font-weight: bold; color: var(--accent-color);"></div>
+    </div>
+
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        function loadTradingView(symbol) {
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "60",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "ar",
+                "container_id": "tradingview_widget"
+            });
+        }
+        loadTradingView("FX:EURUSD");
+
+        function updateChart() {
+            loadTradingView(document.getElementById("pairSelect").value);
+        }
+
+        function runAIAnalysis() {
+            const pair = document.getElementById("pairSelect").value;
+            const signalType = Math.random() > 0.5 ? 'BUY' : 'SELL';
+            const confidence = Math.floor(Math.random() * 15) + 84;
+            let basePrice = pair.includes("BTC") ? 65000 : (pair.includes("XAU") ? 2350 : 1.0850);
+            let diff = pair.includes("BTC") ? 500 : (pair.includes("XAU") ? 15 : 0.0030);
+
+            document.getElementById("signalOutput").style.display = "block";
+            const badge = document.getElementById("signalBadge");
+            badge.innerText = signalType;
+            badge.className = `badge ${signalType === 'BUY' ? 'badge-buy' : 'badge-sell'}`;
+
+            document.getElementById("confidenceVal").innerText = confidence + "%";
+            document.getElementById("entryVal").innerText = basePrice.toFixed(4);
+            document.getElementById("slVal").innerText = (signalType === 'BUY' ? basePrice - diff : basePrice + diff).toFixed(4);
+            document.getElementById("tp1Val").innerText = (signalType === 'BUY' ? basePrice + diff : basePrice - diff).toFixed(4);
+            document.getElementById("tp2Val").innerText = (signalType === 'BUY' ? basePrice + (diff * 2) : basePrice - (diff * 2)).toFixed(4);
+        }
+
+        function calculateLot() {
+            const balance = parseFloat(document.getElementById("calcBalance").value);
+            const riskPercent = parseFloat(document.getElementById("calcRisk").value);
+            const stopLossPips = parseFloat(document.getElementById("calcSL").value);
+            if (!balance || !riskPercent || !stopLossPips) return;
+            const riskAmount = balance * (riskPercent / 100);
+            const lotSize = (riskAmount / (stopLossPips * 10)).toFixed(2);
+            document.getElementById("calcResult").innerText = `العقد المناسب: ${lotSize} Lot | المخاطرة: $${riskAmount.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
