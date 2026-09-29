@@ -268,6 +268,7 @@ document.documentElement.dataset.theme=t;})();
     <p class="note" id="scanProg"></p>
     <div class="bar" id="scanBar" style="display:none"><i id="scanFill"></i></div>
   </div>
+  <div id="openTrades" class="card" style="display:flex"></div>
   <div id="diagOut" class="card" style="display:none"></div>
   <div id="scanOut" style="display:flex;flex-direction:column;gap:12px"></div>
 </div>
@@ -813,7 +814,7 @@ function pairName(key) {
   const o = [...($("pair").options || [])].find(x => x.value === key);
   return o ? o.textContent : key;
 }
-async function cardHTML(r) {
+async function cardHTML(r, uid) {
   const p = PAIRS[r.key], d = p.dec, buy = r.dir === 1, name = pairName(r.key);
   const {v, approx} = await pipUSD(p);
   const bal = parseFloat($("bal").value) || 0, rp = parseFloat($("riskPct").value) || 0;
@@ -821,7 +822,8 @@ async function cardHTML(r) {
   const untilTs = Math.ceil(Date.now() / TFMS["15m"]) * TFMS["15m"];   // من الآن (وقت العرض الفعلي) لأقرب إغلاق شمعة 15د قادم، وليس من وقت جلب البيانات
   const until = new Date(untilTs).toLocaleTimeString("ar-EG", {hour: "2-digit", minute: "2-digit"});
   const minsLeft = Math.max(1, Math.round((untilTs - Date.now()) / 60000));
-  return `<div class="tcard ${buy ? "buy-c" : "sell-c"}">
+  const cid = uid || ("c" + Math.random().toString(36).slice(2, 9));
+  return `<div class="tcard ${buy ? "buy-c" : "sell-c"}" id="${cid}">
     <div class="thead"><b style="font-size:15px">${name}</b><span class="sbadge ${buy ? "buy" : "sell"}">${buy ? "BUY" : "SELL"}</span></div>
     <div class="row" style="justify-content:flex-start;gap:14px">
       <span>توافق المدارس: <b style="color:${r.conf.score === r.conf.total ? "var(--green)" : r.conf.score >= r.conf.total - 1 ? "var(--accent)" : "var(--muted)"}">${r.conf.score}/${r.conf.total}</b></span>
@@ -837,15 +839,104 @@ async function cardHTML(r) {
     </div>
     <p class="note" style="color:var(--warn)">⚠ هذه ليست توصية مضمونة، وأي صفقة قد تنعكس رغم استيفاء كل الشروط. الوقف موجود عشان لو انعكست الصفقة تكون الخسارة محدودة ومعروفة مقدماً — لا تلغِه ولا توسّعه يدوياً.</p><p class="note">إحصاء تاريخي لنفس الشروط على هذا الزوج (${r.n} صفقة غير متداخلة): الهدف 1 تحقق في ${pct(r.hit)}، الوقف في ${pct(r.sls / r.n)}، وخروج زمني في ${pct(r.tos / r.n)} • متوسط العائد ${r.exp >= 0 ? "+" : ""}${r.exp.toFixed(2)}R (1R = المخاطرة) • الحد المحافظ لنسبة النجاح ${pct(r.lb)}</p>
     <p class="note">${lot > 0 ? `لوت مقترح بمخاطرة ${rp}% من $${bal}: <b>${lot.toFixed(lot < 1 ? 3 : 2)}</b> (وقف ${Math.round(r.slPips)} نقطة${approx ? "، قيمة النقطة تقريبية" : ""}) • ` : ""}الصفقة صالحة حتى ${until} (${minsLeft} دقيقة من الآن) — بعدها أعد الفحص.</p>
-    <div class="tbtns">
+    <div class="tbtns" data-role="mainBtns">
       <button type="button" class="primary" data-act="timer" data-min="${r.med}" data-lbl="${name} • الهدف 1"><i class="fa-solid fa-stopwatch"></i> تايمر المدة المتوقعة</button>
       <button type="button" data-act="timer" data-min="90" data-lbl="${name} • خروج زمني"><i class="fa-solid fa-hourglass-end"></i> تايمر الخروج (90د)</button>
       <button type="button" data-act="go" data-key="${r.key}"><i class="fa-solid fa-chart-line"></i> افتح التحليل</button>
     </div>
+    <div class="tbtns" data-role="mainBtns">
+      <button type="button" class="primary" style="background:var(--grad-gold)" data-act="enter-ask" data-uid="${cid}"><i class="fa-regular fa-square-check"></i> دخلت الصفقة دي</button>
+    </div>
+    <div class="row" data-role="confirmBar" style="display:none;justify-content:space-between;align-items:center;border:1px solid var(--gold)">
+      <span style="font-weight:700">متأكد إنك دخلت الصفقة فعلاً؟</span>
+      <span style="display:flex;gap:8px">
+        <button type="button" class="primary" style="width:auto;padding:7px 16px" data-act="enter-yes" data-uid="${cid}" data-key="${r.key}" data-dir="${r.dir}" data-e="${r.e}" data-sl="${r.sl}" data-tp1="${r.tp1}" data-tp2="${r.tp2}">أيوه، دخلتها</button>
+        <button type="button" style="width:auto;padding:7px 16px" data-act="enter-no" data-uid="${cid}">لأ، إلغاء</button>
+      </span>
+    </div>
+    <div class="row" data-role="enteredBar" style="display:none;background:var(--tint-green);border:1px solid var(--green);color:var(--green);font-weight:700;justify-content:center">
+      <span><i class="fa-solid fa-circle-check"></i> اتسجلت في "الصفقات المفتوحة" — تابعها من فوق</span>
+    </div>
   </div>`;
 }
 
+// ===== سجل الصفقات المفتوحة: يُحفظ في متصفح هذا الجهاز فقط (localStorage)، عشان يفضل موجود حتى لو قفلت الموقع =====
+const TRADES_KEY = "jbbg_open_trades_v1";
+function loadTrades() {
+  try { return JSON.parse(localStorage.getItem(TRADES_KEY) || "[]"); } catch (e) { return []; }
+}
+function saveTrades(list) {
+  try { localStorage.setItem(TRADES_KEY, JSON.stringify(list)); } catch (e) {}
+}
+function addTrade(t) {
+  const list = loadTrades();
+  list.unshift(Object.assign({id: "t" + Date.now() + Math.random().toString(36).slice(2, 6), enteredAt: Date.now(), status: "open"}, t));
+  saveTrades(list);
+  renderOpenTrades();
+}
+function removeTrade(id) {
+  saveTrades(loadTrades().filter(t => t.id !== id));
+  renderOpenTrades();
+}
+function timeAgo(ms) {
+  const m = Math.round((Date.now() - ms) / 60000);
+  if (m < 1) return "الآن";
+  if (m < 60) return "منذ " + m + " دقيقة";
+  const h = Math.floor(m / 60);
+  return "منذ " + h + (h === 1 ? " ساعة" : " ساعات") + (m % 60 ? " و" + (m % 60) + "د" : "");
+}
+async function tradeRowHTML(t) {
+  const p = PAIRS[t.key], d = p.dec, buy = t.dir === 1, name = pairName(t.key);
+  return `<div class="tcard ${buy ? "buy-c" : "sell-c"}" id="${t.id}" style="padding:14px">
+    <div class="thead">
+      <b style="font-size:14px">${name} <span class="sbadge ${buy ? "buy" : "sell"}" style="font-size:11px;padding:3px 10px">${buy ? "BUY" : "SELL"}</span></b>
+      <span class="note">${timeAgo(t.enteredAt)}</span>
+    </div>
+    <div class="tgrid" style="font-size:11.5px">
+      <div>الدخول<b>${t.e.toFixed(d)}</b></div>
+      <div>وقف<b style="color:var(--red)">${t.sl.toFixed(d)}</b></div>
+      <div>هدف 1<b style="color:var(--green)">${t.tp1.toFixed(d)}</b></div>
+      <div>هدف 2<b style="color:var(--green)">${t.tp2.toFixed(d)}</b></div>
+    </div>
+    <p class="note" id="${t.id}_status">لسه محدّثتش الحالة — دوس "تحقق من السعر الآن".</p>
+    <div class="tbtns">
+      <button type="button" class="primary" data-act="check-trade" data-id="${t.id}"><i class="fa-solid fa-rotate"></i> تحقق من السعر الآن</button>
+      <button type="button" data-act="close-ask" data-id="${t.id}"><i class="fa-solid fa-xmark"></i> إغلاق/حذف من القائمة</button>
+    </div>
+    <div class="row" data-role="closeConfirm" style="display:none;justify-content:space-between;align-items:center;border:1px solid var(--red)">
+      <span style="font-weight:700">تأكيد الحذف من القائمة؟</span>
+      <span style="display:flex;gap:8px">
+        <button type="button" style="width:auto;padding:6px 14px;color:var(--red);border-color:var(--red)" data-act="close-yes" data-id="${t.id}">أيوه، احذفها</button>
+        <button type="button" style="width:auto;padding:6px 14px" data-act="close-no" data-id="${t.id}">لأ</button>
+      </span>
+    </div>
+  </div>`;
+}
+async function renderOpenTrades() {
+  const box = $("openTrades"), list = loadTrades();
+  if (!list.length) { box.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-list-check"></i> الصفقات المفتوحة</span></div><p class="note">لا توجد صفقات مسجّلة الآن. لما تدخل صفقة من نتائج الفحص ودوس "دخلت الصفقة دي" هتظهر هنا وتفضل محفوظة حتى لو قفلت الموقع (محفوظة في متصفح هذا الجهاز فقط).</p>'; return; }
+  box.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-list-check"></i> الصفقات المفتوحة (' + list.length + ')</span></div>' + (await Promise.all(list.map(tradeRowHTML))).join("");
+}
+async function checkTradeNow(id) {
+  const list = loadTrades(), t = list.find(x => x.id === id); if (!t) return;
+  const st = $(id + "_status"); if (st) st.textContent = "جاري التحقق من السعر...";
+  try {
+    const p = PAIRS[t.key], sym = (p.src.find(s => s[0] === "kraken") || p.src[0])[1];
+    const lp = await livePrice(p, sym);
+    if (!lp) { if (st) st.textContent = "تعذر جلب السعر الحالي الآن، حاول تاني بعد شوية."; return; }
+    const dir = t.dir, hitSL = dir === 1 ? lp <= t.sl : lp >= t.sl, hitTP1 = dir === 1 ? lp >= t.tp1 : lp <= t.tp1;
+    const prog = Math.max(0, Math.min(100, Math.round(Math.abs(lp - t.e) / Math.abs(t.tp1 - t.e) * 100 * (dir === 1 ? (lp > t.e ? 1 : -1) : (lp < t.e ? 1 : -1)))));
+    let msg = `السعر الحالي: ${lp.toFixed(p.dec)} • `;
+    if (hitSL) msg += "⚠ السعر لمس أو تخطى وقف الخسارة.";
+    else if (hitTP1) msg += "✅ السعر وصل الهدف الأول أو تخطاه.";
+    else msg += (prog >= 0 ? "تقدم نحو الهدف 1 تقريباً " + prog + "%" : "السعر تحرك عكس الصفقة");
+    if (st) st.textContent = msg;
+  } catch (e) { if (st) st.textContent = "تعذر التحقق: " + e.message; }
+}
+
 async function runScan() {
+
+
   const btn = $("scanBtn"), out = $("scanOut"), cfg = MODES[$("scanMode").value] || MODES.strict;
   btn.disabled = true; out.innerHTML = "";
   $("scanBar").style.display = "block"; $("scanFill").style.width = "0";
@@ -867,7 +958,7 @@ async function runScan() {
   const list = st => results.filter(r => r.status === st).map(r => `• ${pairName(r.key)}: ${r.why}`).join("<br>");
   let html = "";
   if (!sig.length) html += `<div class="tcard"><b>لا توجد صفقة مناسبة الآن</b><p class="note">هذا طبيعي: الشروط صارمة عمداً، وعدم وجود فرصة أفضل من صفقة ضعيفة. أعد الفحص بعد إغلاق الشمعة القادمة (كل 15 دقيقة) أو جرّب وضع "متوازن".</p></div>`;
-  else html += (await Promise.all(sig.map(cardHTML))).join("");
+  else html += (await Promise.all(sig.map((r, idx) => cardHTML(r, "sc" + Date.now() + "_" + idx)))).join("");
   html += `<div class="card"><p class="note">تم فحص ${keys.length} زوج • صفقات مؤهلة: ${cnt("signal")} • بلا إشارة الآن: ${cnt("none")} • لم تجتز الفلاتر: ${cnt("filtered")} • تعذر فحصها: ${cnt("fail")} • وقت الفحص ${new Date().toLocaleTimeString("ar-EG")}</p>
     ${cnt("none") ? `<details class="note"><summary>سبب غياب الإشارة لكل زوج</summary>${list("none")}</details>` : ""}
     ${cnt("filtered") ? `<details class="note"><summary>لم تجتز الفلاتر</summary>${list("filtered")}</details>` : ""}
@@ -910,7 +1001,7 @@ async function runChartScan() {
   try {
     const r = await scanPair(key, MODES.strict);
     if (r.status === "signal") {
-      box.innerHTML = await cardHTML(r);
+      box.innerHTML = await cardHTML(r, "cs" + Date.now());
     } else {
       const reason = r.why || (r.watch ? `${r.watch.passed}/${r.watch.total} شروط متحققة، ينقصه: ${r.watch.missing.join("، ")}` : "لا توجد فرصة مؤهلة الآن");
       box.innerHTML = `<div class="tcard"><b>لا توجد صفقة قوية على ${pairName(key)} الآن</b><p class="note">${reason}</p><p class="note">هذا أفضل من صفقة ضعيفة: لو ظهرت إشارة هنا فهي اجتازت أعلى مستوى فلترة متاح (تأكيد شمعتين + توافق 3 أطر + حد أدنى صارم للنجاح التاريخي). أعد المسح بعد إغلاق الشمعة القادمة (كل 15 دقيقة).</p></div>`;
@@ -943,11 +1034,27 @@ $("tabS").addEventListener("click", () => showTab("S"));
 $("scanBtn").addEventListener("click", runScan);
 $("diagBtn").addEventListener("click", runDiag);
 $("chartScanBtn").addEventListener("click", runChartScan);
-$("scanOut").addEventListener("click", e => {
+function cardActionHandler(e) {
   const b = e.target.closest("button[data-act]"); if (!b) return;
+  const card = b.closest(".tcard");
+  const show = (role, on) => { const el = card && card.querySelector(`[data-role="${role}"]`); if (el) el.style.display = on ? "flex" : "none"; };
   if (b.dataset.act === "timer") startTimer(+b.dataset.min, b.dataset.lbl);
   else if (b.dataset.act === "go") { $("pair").value = b.dataset.key; showTab("A"); run(); }
-});
+  else if (b.dataset.act === "enter-ask") { show("mainBtns", false); card.querySelectorAll('[data-role="mainBtns"]').forEach(x => x.style.display = "none"); show("confirmBar", true); }
+  else if (b.dataset.act === "enter-no") { show("confirmBar", false); card.querySelectorAll('[data-role="mainBtns"]').forEach(x => x.style.display = "flex"); }
+  else if (b.dataset.act === "enter-yes") {
+    addTrade({key: b.dataset.key, dir: +b.dataset.dir, e: +b.dataset.e, sl: +b.dataset.sl, tp1: +b.dataset.tp1, tp2: +b.dataset.tp2});
+    show("confirmBar", false); show("enteredBar", true);
+  }
+  else if (b.dataset.act === "close-ask") { show("closeConfirm", true); }
+  else if (b.dataset.act === "close-no") { show("closeConfirm", false); }
+  else if (b.dataset.act === "close-yes") { removeTrade(b.dataset.id); }
+  else if (b.dataset.act === "check-trade") { checkTradeNow(b.dataset.id); }
+}
+$("scanOut").addEventListener("click", cardActionHandler);
+$("chartScanOut").addEventListener("click", cardActionHandler);
+$("openTrades").addEventListener("click", cardActionHandler);
+renderOpenTrades();
 
 function syncThemeIcon() {
   const light = document.documentElement.dataset.theme === "light";
