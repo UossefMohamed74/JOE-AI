@@ -135,7 +135,9 @@ document.documentElement.dataset.theme=t;})();
       </select>
     </div>
     <button class="primary" id="run"><i class="fa-solid fa-wand-magic-sparkles"></i> حلّل الآن</button>
+    <button class="primary" id="chartScanBtn" type="button" style="background:linear-gradient(135deg,#ff8a00,#ff3d81)"><i class="fa-solid fa-magnifying-glass-chart"></i> ماسح الشارت — أقوى صفقة على هذا الزوج</button>
     <div class="err" id="err"></div>
+    <div id="chartScanOut" style="display:none"></div>
 
     
 
@@ -192,8 +194,8 @@ document.documentElement.dataset.theme=t;})();
     <div>
       <label for="scanMode">الحساسية</label>
       <select id="scanMode">
-        <option value="strict">صارم — صفقات أقل وجودة أعلى</option>
-        <option value="balanced" selected>متوازن — صفقات أكثر وشروط أخف</option>
+        <option value="strict" selected>صارم — أعلى جودة (موصى به)</option>
+        <option value="balanced">متوازن — صفقات أكثر وشروط أخف</option>
         <option value="flex">مرن — أخف الشروط (جودة أقل)</option>
       </select>
     </div>
@@ -593,9 +595,9 @@ async function calcLot() {
 // صفقة قصيرة: وقف 1×ATR، هدف1 1.5×ATR، هدف2 2.5×ATR، خروج زمني بعد 6 شموع 15د = 90 دقيقة
 const SCAN = {SL: 1, TP1: 1.5, TP2: 2.5, H: 6};
 const MODES = {
-  strict:   {minScore: 3, minN: 15, minHit: 0.50, minExp: 0.15, need4h: true,  maxDist: 1.2, rsiMax: 68},
-  balanced: {minScore: 3, minN: 12, minHit: 0.40, minExp: 0.05, need4h: true,  maxDist: 1.8, rsiMax: 72},
-  flex:     {minScore: 2, minN: 10, minHit: 0.38, minExp: 0.00, need4h: false, maxDist: 2.2, rsiMax: 75}
+  strict:   {minScore: 3, minN: 15, minHit: 0.55, minExp: 0.20, need4h: true,  maxDist: 1.2, rsiMax: 65, confirm: 2},
+  balanced: {minScore: 3, minN: 12, minHit: 0.45, minExp: 0.10, need4h: true,  maxDist: 1.8, rsiMax: 70, confirm: 1},
+  flex:     {minScore: 2, minN: 10, minHit: 0.38, minExp: 0.00, need4h: false, maxDist: 2.2, rsiMax: 75, confirm: 0}
 };
 const pct = x => Math.round(x * 100) + "%";
 const trendDir = a => a.score >= 2 ? 1 : a.score <= -2 ? -1 : 0;
@@ -615,6 +617,15 @@ function scalpAt(c15, i, h1, h4, k1, k4, memo, cfg, why) {
   const dir = a.score >= cfg.minScore ? 1 : a.score <= -cfg.minScore ? -1 : 0;
   const no = m => { if (why) why.r = m; return null; };
   if (!dir) return no("إشارة 15د محايدة (لا توافق كافٍ بين المؤشرات)");
+  // تأكيد: الإشارة لازم تفضل بنفس الاتجاه عدة شموع متتالية قبل اعتمادها (يقلل الإشارات الكاذبة اللي ترتد فوراً)
+  if (cfg.confirm > 0) {
+    if (i - cfg.confirm < 209) return no("بيانات غير كافية للتأكيد");
+    for (let j = 1; j <= cfg.confirm; j++) {
+      const pa = analyze(c15.slice(0, i - j + 1));
+      const pd = pa.score >= cfg.minScore ? 1 : pa.score <= -cfg.minScore ? -1 : 0;
+      if (pd !== dir) return no(`الإشارة جديدة ولم تتأكد بعد (تحتاج ${cfg.confirm} شمعة متتالية بنفس الاتجاه)`);
+    }
+  }
   if (dir === 1 ? a.rsi >= cfg.rsiMax : a.rsi <= 100 - cfg.rsiMax) return no("RSI متشبع (خطر ارتداد عكسي)");
   if (Math.abs(a.last - a.ema20) > cfg.maxDist * a.atr) return no("السعر بعيد عن EMA20 (لا نطارد الحركة)");
   if (!(k1 in memo.h1)) memo.h1[k1] = trendDir(analyze(h1.slice(0, k1 + 1)));
@@ -714,7 +725,7 @@ async function cardHTML(r) {
       <div>المدة المتوقعة للهدف 1<b>${fmtDur(r.med)}</b></div>
       <div>الخروج الإجباري<b>بعد ساعة ونصف</b></div>
     </div>
-    <p class="note">إحصاء تاريخي لنفس الشروط على هذا الزوج (${r.n} صفقة غير متداخلة): الهدف 1 تحقق في ${pct(r.hit)}، الوقف في ${pct(r.sls / r.n)}، وخروج زمني في ${pct(r.tos / r.n)} • متوسط العائد ${r.exp >= 0 ? "+" : ""}${r.exp.toFixed(2)}R (1R = المخاطرة) • الحد المحافظ لنسبة النجاح ${pct(r.lb)}</p>
+    <p class="note" style="color:var(--warn)">⚠ هذه ليست توصية مضمونة، وأي صفقة قد تنعكس رغم استيفاء كل الشروط. الوقف موجود عشان لو انعكست الصفقة تكون الخسارة محدودة ومعروفة مقدماً — لا تلغِه ولا توسّعه يدوياً.</p><p class="note">إحصاء تاريخي لنفس الشروط على هذا الزوج (${r.n} صفقة غير متداخلة): الهدف 1 تحقق في ${pct(r.hit)}، الوقف في ${pct(r.sls / r.n)}، وخروج زمني في ${pct(r.tos / r.n)} • متوسط العائد ${r.exp >= 0 ? "+" : ""}${r.exp.toFixed(2)}R (1R = المخاطرة) • الحد المحافظ لنسبة النجاح ${pct(r.lb)}</p>
     <p class="note">${lot > 0 ? `لوت مقترح بمخاطرة ${rp}% من $${bal}: <b>${lot.toFixed(lot < 1 ? 3 : 2)}</b> (وقف ${Math.round(r.slPips)} نقطة${approx ? "، قيمة النقطة تقريبية" : ""}) • ` : ""}الصفقة صالحة حتى ${until} — بعدها أعد الفحص.</p>
     <div class="tbtns">
       <button type="button" class="primary" data-act="timer" data-min="${r.med}" data-lbl="${name} • الهدف 1"><i class="fa-solid fa-stopwatch"></i> تايمر المدة المتوقعة</button>
@@ -780,6 +791,28 @@ async function runDiag() {
   btn.disabled = false;
 }
 
+
+// ===== ماسح الشارت: يفحص الزوج المختار حالياً على 15د+1س+4س ويطلع أقوى صفقة واحدة (أو لا شيء) =====
+async function runChartScan() {
+  const btn = $("chartScanBtn"), box = $("chartScanOut"), key = $("pair").value;
+  btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري مسح الشارت...';
+  box.style.display = "block"; box.innerHTML = '<p class="note">جاري فحص ' + pairName(key) + ' على 15د و1س و4س بأعلى معايير الجودة...</p>';
+  try {
+    const r = await scanPair(key, MODES.strict);
+    if (r.status === "signal") {
+      box.innerHTML = await cardHTML(r);
+    } else {
+      const reason = r.why || (r.watch ? `${r.watch.passed}/${r.watch.total} شروط متحققة، ينقصه: ${r.watch.missing.join("، ")}` : "لا توجد فرصة مؤهلة الآن");
+      box.innerHTML = `<div class="tcard"><b>لا توجد صفقة قوية على ${pairName(key)} الآن</b><p class="note">${reason}</p><p class="note">هذا أفضل من صفقة ضعيفة: لو ظهرت إشارة هنا فهي اجتازت أعلى مستوى فلترة متاح (تأكيد شمعتين + توافق 3 أطر + حد أدنى صارم للنجاح التاريخي). أعد المسح بعد إغلاق الشمعة القادمة (كل 15 دقيقة).</p></div>`;
+    }
+  } catch (e) {
+    box.innerHTML = `<div class="err" style="display:block">تعذر مسح الشارت: ${e.message}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-magnifying-glass-chart"></i> ماسح الشارت — أقوى صفقة على هذا الزوج';
+  }
+}
+
 function showTab(t) {
   const A = t === "A";
   $("viewAnalysis").style.display = A ? "flex" : "none";
@@ -788,7 +821,7 @@ function showTab(t) {
   if (A) loadChart();
 }
 
-$("pair").addEventListener("change", () => { loadChart(); run(); });
+$("pair").addEventListener("change", () => { loadChart(); run(); $("chartScanOut").style.display = "none"; });
 $("tf").addEventListener("change", () => { loadChart(); run(); });
 $("run").addEventListener("click", run);
 $("calcBtn").addEventListener("click", calcLot);
@@ -799,6 +832,7 @@ $("tabA").addEventListener("click", () => showTab("A"));
 $("tabS").addEventListener("click", () => showTab("S"));
 $("scanBtn").addEventListener("click", runScan);
 $("diagBtn").addEventListener("click", runDiag);
+$("chartScanBtn").addEventListener("click", runChartScan);
 $("scanOut").addEventListener("click", e => {
   const b = e.target.closest("button[data-act]"); if (!b) return;
   if (b.dataset.act === "timer") startTimer(+b.dataset.min, b.dataset.lbl);
