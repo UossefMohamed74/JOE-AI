@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pipnex — تحليل فني</title>
+<title>Joe BBG — تحليل فني</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
 :root{--bg:#0a0d14;--bg2:#0e131c;--card:#141a24;--line:#232c3d;--accent:#00e5f0;--grad:linear-gradient(135deg,#00c6ff,#0072ff);--green:#00e676;--red:#ff5252;--warn:#ffb74d;--text:#f1f5f9;--muted:#94a3b8;--soft:rgba(255,255,255,.03);--inset:rgba(0,0,0,.32);--shadow:0 8px 28px rgba(0,0,0,.35);--glow:rgba(0,198,255,.18);--tint-accent:rgba(0,229,240,.07);--tint-green:rgba(0,230,118,.16);--tint-red:rgba(255,82,82,.16);--tint-warn:rgba(255,183,77,.09);--tint-mute:rgba(148,163,184,.15)}
@@ -78,7 +78,7 @@ document.documentElement.dataset.theme=t;})();
 <body>
 
 <div class="header">
-  <div class="logo"><i class="fa-solid fa-chart-line"></i> Pipnex <span class="badge">PRO</span></div>
+  <div class="logo"><i class="fa-solid fa-chart-line"></i> Joe BBG <span class="badge">PRO</span></div>
   <div class="hright">
     <div id="status" style="font-size:11px;color:var(--muted)"><i class="fa-solid fa-circle" style="font-size:8px"></i> بانتظار التحليل</div>
     <button class="theme-btn" id="themeBtn" type="button" aria-label="تبديل الوضع الليلي والنهاري" title="تبديل الوضع"><i class="fa-solid fa-sun"></i></button>
@@ -187,7 +187,7 @@ document.documentElement.dataset.theme=t;})();
 
 <div id="viewScan" style="display:none;flex-direction:column;gap:14px">
   <div class="card">
-    <div class="card-title"><span><i class="fa-solid fa-bullseye"></i> الصفقات — ماسح الفرص الفني</span></div>
+    <div class="card-title"><span><i class="fa-solid fa-bullseye"></i> الصفقات — ماسح الفرص الفني (Joe BBG)</span></div>
     <p class="note">يفحص كل الأزواج (15د + 1س + 4س) ولا يعرض إلا الصفقة التي: (1) اتجاه 1س و4س معها، (2) إشارة 15د قائمة والسعر غير بعيد عن EMA20، (3) نجحت تاريخياً بنسبة مقبولة على نفس الزوج. الصفقة قصيرة: وقف 1×ATR، هدف 1.5×ATR، وخروج بسعر السوق بعد <b>90 دقيقة كحد أقصى</b>. الحساسية تحدد مدى صرامة الشروط، وتحت النتائج ستجد سبب غياب الإشارة لكل زوج وقائمة مراقبة بالأقرب لتكوين فرصة.</p>
     <div>
       <label for="scanMode">الحساسية</label>
@@ -479,7 +479,7 @@ function tick() {
     $("timerClock").textContent = "انتهى الوقت";
     $("timerLbl").textContent = "حان وقت مراجعة الصفقة";
     try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch (e) {}
-    try { if ("Notification" in window && Notification.permission === "granted") new Notification("Pipnex", {body: "انتهى الوقت المتوقع للصفقة — راجع السعر"}); } catch (e) {}
+    try { if ("Notification" in window && Notification.permission === "granted") new Notification("Joe BBG", {body: "انتهى الوقت المتوقع للصفقة — راجع السعر"}); } catch (e) {}
   }
 }
 function startTimer(minutes, label) {
