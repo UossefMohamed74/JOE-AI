@@ -702,7 +702,7 @@ async function scanPair(key, cfg) {
   }
   const risk = live.atr * SCAN.SL, dir = live.dir;
   return {key, status: "signal", dir, e, live: isLive, sl: e - dir * risk, tp1: e + dir * risk * SCAN.TP1, tp2: e + dir * risk * SCAN.TP2,
-    n, hit, exp, lb, sls: sl, tos: to, med: quant(tp.map(x => x.b), .5) * 15, slPips: risk / p.pip, until: t + TFMS["15m"]};
+    n, hit, exp, lb, sls: sl, tos: to, med: quant(tp.map(x => x.b), .5) * 15, slPips: risk / p.pip};
 }
 
 function pairName(key) {
@@ -714,7 +714,9 @@ async function cardHTML(r) {
   const {v, approx} = await pipUSD(p);
   const bal = parseFloat($("bal").value) || 0, rp = parseFloat($("riskPct").value) || 0;
   const lot = bal > 0 && rp > 0 ? (bal * rp / 100) / (r.slPips * v) : 0;
-  const until = new Date(r.until).toLocaleTimeString("ar-EG", {hour: "2-digit", minute: "2-digit"});
+  const untilTs = Math.ceil(Date.now() / TFMS["15m"]) * TFMS["15m"];   // من الآن (وقت العرض الفعلي) لأقرب إغلاق شمعة 15د قادم، وليس من وقت جلب البيانات
+  const until = new Date(untilTs).toLocaleTimeString("ar-EG", {hour: "2-digit", minute: "2-digit"});
+  const minsLeft = Math.max(1, Math.round((untilTs - Date.now()) / 60000));
   return `<div class="tcard ${buy ? "buy-c" : "sell-c"}">
     <div class="thead"><b style="font-size:15px">${name}</b><span class="sbadge ${buy ? "buy" : "sell"}">${buy ? "BUY" : "SELL"}</span></div>
     <div class="tgrid">
@@ -726,7 +728,7 @@ async function cardHTML(r) {
       <div>الخروج الإجباري<b>بعد ساعة ونصف</b></div>
     </div>
     <p class="note" style="color:var(--warn)">⚠ هذه ليست توصية مضمونة، وأي صفقة قد تنعكس رغم استيفاء كل الشروط. الوقف موجود عشان لو انعكست الصفقة تكون الخسارة محدودة ومعروفة مقدماً — لا تلغِه ولا توسّعه يدوياً.</p><p class="note">إحصاء تاريخي لنفس الشروط على هذا الزوج (${r.n} صفقة غير متداخلة): الهدف 1 تحقق في ${pct(r.hit)}، الوقف في ${pct(r.sls / r.n)}، وخروج زمني في ${pct(r.tos / r.n)} • متوسط العائد ${r.exp >= 0 ? "+" : ""}${r.exp.toFixed(2)}R (1R = المخاطرة) • الحد المحافظ لنسبة النجاح ${pct(r.lb)}</p>
-    <p class="note">${lot > 0 ? `لوت مقترح بمخاطرة ${rp}% من $${bal}: <b>${lot.toFixed(lot < 1 ? 3 : 2)}</b> (وقف ${Math.round(r.slPips)} نقطة${approx ? "، قيمة النقطة تقريبية" : ""}) • ` : ""}الصفقة صالحة حتى ${until} — بعدها أعد الفحص.</p>
+    <p class="note">${lot > 0 ? `لوت مقترح بمخاطرة ${rp}% من $${bal}: <b>${lot.toFixed(lot < 1 ? 3 : 2)}</b> (وقف ${Math.round(r.slPips)} نقطة${approx ? "، قيمة النقطة تقريبية" : ""}) • ` : ""}الصفقة صالحة حتى ${until} (${minsLeft} دقيقة من الآن) — بعدها أعد الفحص.</p>
     <div class="tbtns">
       <button type="button" class="primary" data-act="timer" data-min="${r.med}" data-lbl="${name} • الهدف 1"><i class="fa-solid fa-stopwatch"></i> تايمر المدة المتوقعة</button>
       <button type="button" data-act="timer" data-min="90" data-lbl="${name} • خروج زمني"><i class="fa-solid fa-hourglass-end"></i> تايمر الخروج (90د)</button>
