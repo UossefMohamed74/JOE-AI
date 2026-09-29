@@ -3,68 +3,183 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Joe BBG — تحليل فني</title>
+<title>Joe BBG — تحليل فني احترافي</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0a0d14;--bg2:#0e131c;--card:#141a24;--line:#232c3d;--accent:#00e5f0;--grad:linear-gradient(135deg,#00c6ff,#0072ff);--green:#00e676;--red:#ff5252;--warn:#ffb74d;--text:#f1f5f9;--muted:#94a3b8;--soft:rgba(255,255,255,.03);--inset:rgba(0,0,0,.32);--shadow:0 8px 28px rgba(0,0,0,.35);--glow:rgba(0,198,255,.18);--tint-accent:rgba(0,229,240,.07);--tint-green:rgba(0,230,118,.16);--tint-red:rgba(255,82,82,.16);--tint-warn:rgba(255,183,77,.09);--tint-mute:rgba(148,163,184,.15)}
-:root[data-theme="light"]{--bg:#eef2f8;--bg2:#e6ecf5;--card:#ffffff;--line:#dbe3ef;--accent:#0072ff;--green:#00a86b;--red:#e5383b;--warn:#b7791f;--text:#0f172a;--muted:#5b6b82;--soft:rgba(15,23,42,.025);--inset:rgba(15,23,42,.05);--shadow:0 8px 24px rgba(30,60,110,.10);--glow:rgba(0,114,255,.16);--tint-accent:rgba(0,114,255,.07);--tint-green:rgba(0,168,107,.13);--tint-red:rgba(229,56,59,.12);--tint-warn:rgba(183,121,31,.10);--tint-mute:rgba(91,107,130,.13)}
-*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Tahoma,sans-serif}
+:root{
+  --bg:#070a10;
+  --bg2:#0d121d;
+  --card:rgba(18, 24, 38, 0.85);
+  --card-solid:#121826;
+  --line:rgba(255, 255, 255, 0.08);
+  --line-bright:rgba(0, 229, 240, 0.35);
+  --accent:#00e5f0;
+  --grad:linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+  --grad-gold:linear-gradient(135deg, #ffb74d 0%, #ffa726 100%);
+  --green:#00e676;
+  --red:#ff5252;
+  --warn:#ffb74d;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --soft:rgba(255, 255, 255, 0.03);
+  --inset:rgba(0,0,0,0.4);
+  --shadow:0 12px 32px rgba(0,0,0,0.45);
+  --glow:rgba(0, 229, 240, 0.2);
+  --tint-accent:rgba(0,229,240,0.08);
+  --tint-green:rgba(0,230,118,0.12);
+  --tint-red:rgba(255,82,82,0.12);
+  --tint-warn:rgba(255,183,77,0.1);
+  --tint-mute:rgba(148,163,184,0.12);
+  --blur:blur(16px);
+}
+:root[data-theme="light"]{
+  --bg:#edf2f7;
+  --bg2:#e2e8f0;
+  --card:rgba(255, 255, 255, 0.9);
+  --card-solid:#ffffff;
+  --line:rgba(15, 23, 42, 0.08);
+  --line-bright:rgba(0, 114, 255, 0.35);
+  --accent:#0072ff;
+  --grad:linear-gradient(135deg, #0072ff 0%, #00c6ff 100%);
+  --green:#00a86b;
+  --red:#e5383b;
+  --warn:#b7791f;
+  --text:#0f172a;
+  --muted:#64748b;
+  --soft:rgba(15,23,42,0.03);
+  --inset:rgba(15,23,42,0.04);
+  --shadow:0 12px 28px rgba(15,23,42,0.08);
+  --glow:rgba(0,114,255,0.15);
+  --tint-accent:rgba(0,114,255,0.08);
+  --tint-green:rgba(0,168,107,0.1);
+  --tint-red:rgba(229,56,59,0.1);
+  --tint-warn:rgba(183,121,31,0.1);
+  --tint-mute:rgba(100,116,139,0.1);
+  --blur:blur(12px);
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',system-ui,-apple-system,sans-serif}
 html{color-scheme:dark}
 html[data-theme="light"]{color-scheme:light}
-body{background:radial-gradient(1100px 500px at 85% -10%,var(--glow),transparent 60%),var(--bg);color:var(--text);display:flex;flex-direction:column;min-height:100vh;padding:14px;gap:14px;transition:background-color .25s,color .25s}
-.header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 18px;background:var(--card);border-radius:16px;border:1px solid var(--line);box-shadow:var(--shadow)}
-.hright{display:flex;align-items:center;gap:12px}
-.logo{font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;letter-spacing:.2px}
-.logo i{color:var(--accent)}
-.badge{background:var(--grad);color:#fff;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:700}
-.theme-btn{width:38px;height:38px;padding:0;border-radius:50%;background:var(--soft);border:1px solid var(--line);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:transform .2s,border-color .2s,background .2s}
-.theme-btn:hover{border-color:var(--accent);transform:rotate(18deg)}
-.grid{display:grid;grid-template-columns:1fr;gap:14px}
-@media(min-width:992px){.grid{grid-template-columns:2fr 1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0;box-shadow:var(--shadow);transition:background-color .25s,border-color .25s}
-.card-title{font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:8px}
+body{
+  background:radial-gradient(1200px 600px at 85% -10%, var(--glow), transparent 60%), radial-gradient(800px 400px at 15% 110%, rgba(0, 114, 255, 0.12), transparent 50%), var(--bg);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  padding:16px;
+  gap:16px;
+  transition:background-color .3s,color .3s;
+  font-variant-numeric: tabular-nums;
+}
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:16px 22px;
+  background:var(--card);
+  backdrop-filter:var(--blur);
+  -webkit-backdrop-filter:var(--blur);
+  border-radius:20px;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+.header::after{
+  content:'';
+  position:absolute;
+  top:0; right:0; left:0;
+  height:2px;
+  background:var(--grad);
+}
+.hright{display:flex;align-items:center;gap:14px}
+.logo{font-size:22px;font-weight:900;display:flex;align-items:center;gap:10px;letter-spacing:-0.3px}
+.logo i{color:var(--accent);filter:drop-shadow(0 0 8px var(--glow))}
+.badge{background:var(--grad);color:#fff;font-size:10px;padding:3px 10px;border-radius:20px;font-weight:800;letter-spacing:1px;box-shadow:0 2px 10px var(--glow)}
+.theme-btn{width:42px;height:42px;padding:0;border-radius:50%;background:var(--soft);border:1px solid var(--line);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .25s ease}
+.theme-btn:hover{border-color:var(--accent);transform:rotate(20px) scale(1.05);box-shadow:0 0 12px var(--glow)}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.2)}}
+.grid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:992px){.grid{grid-template-columns:2.1fr 1fr}}
+.card{
+  background:var(--card);
+  backdrop-filter:var(--blur);
+  -webkit-backdrop-filter:var(--blur);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  min-width:0;
+  box-shadow:var(--shadow);
+  transition:all .25s ease;
+}
+.card:hover{border-color:var(--line-bright)}
+.card-title{font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--text)}
 .card-title i{color:var(--accent);margin-left:6px}
-label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:600}
-select,input,button{width:100%;padding:10px 12px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s,box-shadow .2s,background-color .25s}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:700}
+select,input,button{width:100%;padding:11px 14px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;color:var(--text);font-size:13px;font-weight:600;outline:none;transition:all .2s ease}
 select:hover,input:hover{border-color:var(--muted)}
 select:focus,input:focus,button:focus-visible{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
-button.primary{background:var(--grad);border:none;font-weight:700;cursor:pointer;color:#fff;display:flex;justify-content:center;align-items:center;gap:8px;box-shadow:0 6px 16px var(--glow);transition:transform .15s,box-shadow .2s,opacity .2s}
-button.primary:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 22px var(--glow)}
+button.primary{
+  background:var(--grad);
+  border:none;
+  font-weight:800;
+  cursor:pointer;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  box-shadow:0 6px 20px var(--glow);
+  transition:all .2s ease;
+  padding:12px 16px;
+  font-size:14px;
+}
+button.primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 25px var(--glow)}
 button.primary:active:not(:disabled){transform:translateY(0)}
 button.primary:disabled{opacity:.5;cursor:wait}
-.chart{height:420px;width:100%;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
-.signal{background:var(--soft);border:1px dashed var(--line);border-radius:14px;padding:14px;display:none;flex-direction:column;gap:10px}
-.sbadge{padding:5px 14px;border-radius:20px;font-weight:800;font-size:13px;border:1px solid}
-.buy{background:var(--tint-green);color:var(--green);border-color:var(--green)}
-.sell{background:var(--tint-red);color:var(--red);border-color:var(--red)}
+.chart{height:440px;width:100%;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:inset 0 0 20px rgba(0,0,0,0.2)}
+.signal{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:16px;display:none;flex-direction:column;gap:12px;backdrop-filter:blur(8px)}
+.sbadge{padding:6px 16px;border-radius:20px;font-weight:900;font-size:13px;border:1px solid;letter-spacing:0.5px}
+.buy{background:var(--tint-green);color:var(--green);border-color:var(--green);box-shadow:0 0 12px var(--tint-green)}
+.sell{background:var(--tint-red);color:var(--red);border-color:var(--red);box-shadow:0 0 12px var(--tint-red)}
 .wait{background:var(--tint-mute);color:var(--muted);border-color:var(--muted)}
-.row{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;background:var(--inset);padding:9px 12px;border-radius:10px;font-size:12px}
-.details{font-size:13px;line-height:1.9}
-.reasons{font-size:11px;color:var(--muted);line-height:1.8;padding-right:16px}
+.row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;background:var(--inset);padding:10px 14px;border-radius:12px;font-size:13px;border:1px solid var(--line)}
+.details{font-size:13px;line-height:2}
+.details b{font-size:14px}
+.reasons{font-size:12px;color:var(--muted);line-height:1.9;padding-right:18px}
 .note{font-size:11px;color:var(--muted);line-height:1.7}
-.err{display:none;font-size:12px;color:var(--red);background:var(--tint-red);padding:9px 12px;border-radius:10px}
-.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
-.result{display:none;padding:11px 12px;background:var(--tint-accent);border:1px solid var(--line);border-radius:10px;font-size:12px;font-weight:700;color:var(--accent)}
-.warn{font-size:11px;color:var(--warn);background:var(--tint-warn);border-radius:12px;padding:11px 14px;line-height:1.7}
-.timer{display:none;flex-direction:column;gap:9px;background:var(--tint-accent);border:1px solid var(--accent);border-radius:14px;padding:12px 14px}
+.err{display:none;font-size:12px;color:var(--red);background:var(--tint-red);padding:11px 14px;border-radius:12px;border:1px solid var(--red)}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+.result{display:none;padding:12px 16px;background:var(--tint-accent);border:1px solid var(--accent);border-radius:12px;font-size:13px;font-weight:800;color:var(--accent);box-shadow:0 4px 15px var(--tint-accent)}
+.warn{font-size:11px;color:var(--warn);background:var(--tint-warn);border:1px solid var(--warn);border-radius:14px;padding:12px 16px;line-height:1.8}
+.timer{display:none;flex-direction:column;gap:10px;background:var(--tint-accent);border:1px solid var(--accent);border-radius:16px;padding:14px 16px;box-shadow:0 6px 20px var(--tint-accent)}
 .timer.done{background:var(--tint-green);border-color:var(--green)}
 .timer.done #timerClock{color:var(--green)}
-.bar{height:6px;background:var(--inset);border-radius:9px;overflow:hidden}
+.bar{height:8px;background:var(--inset);border-radius:10px;overflow:hidden;border:1px solid var(--line)}
 .bar i{display:block;height:100%;width:0;background:var(--grad);transition:width 1s linear}
-.chip{padding:3px 10px;border-radius:14px;font-size:11px;font-weight:700;border:1px solid}
-.tabs{display:flex;gap:8px}
-.tab{flex:1;padding:11px;border-radius:12px;background:var(--card);border:1px solid var(--line);color:var(--muted);font-weight:700;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:8px}
-.tab.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 6px 16px var(--glow)}
-.tcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow)}
-.tcard.buy-c{border-inline-start:4px solid var(--green)}
-.tcard.sell-c{border-inline-start:4px solid var(--red)}
+.chip{padding:4px 12px;border-radius:16px;font-size:11px;font-weight:800;border:1px solid}
+.tabs{display:flex;gap:10px}
+.tab{flex:1;padding:13px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--muted);font-weight:800;font-size:14px;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:8px;transition:all .2s ease}
+.tab.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 8px 24px var(--glow)}
+.tcard{background:var(--card);backdrop-filter:var(--blur);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow);transition:all .25s ease}
+.tcard:hover{transform:translateY(-2px);border-color:var(--line-bright)}
+.tcard.buy-c{border-inline-start:5px solid var(--green)}
+.tcard.sell-c{border-inline-start:5px solid var(--red)}
 .thead{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}
-.tgrid div{background:var(--inset);border-radius:10px;padding:8px 10px}
-.tgrid b{display:block;font-size:13px;margin-top:2px}
-.tbtns{display:flex;gap:8px;flex-wrap:wrap}
-.tbtns button{width:auto;flex:1;min-width:130px;padding:9px;font-size:12px;cursor:pointer}
-button.ghost{width:auto;align-self:flex-start;padding:5px 12px;font-size:11px;cursor:pointer;color:var(--muted);background:transparent}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px}
+.tgrid div{background:var(--inset);border-radius:12px;padding:10px 12px;border:1px solid var(--line)}
+.tgrid b{display:block;font-size:14px;margin-top:3px;color:var(--text)}
+.tbtns{display:flex;gap:10px;flex-wrap:wrap}
+.tbtns button{width:auto;flex:1;min-width:130px;padding:10px;font-size:12px;cursor:pointer}
+button.ghost{width:auto;align-self:flex-start;padding:6px 14px;font-size:11px;cursor:pointer;color:var(--muted);background:transparent;border:1px solid var(--line)}
 button.ghost:hover{color:var(--red);border-color:var(--red)}
 button.primary:disabled{cursor:not-allowed}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -80,30 +195,31 @@ document.documentElement.dataset.theme=t;})();
 <div class="header">
   <div class="logo"><i class="fa-solid fa-chart-line"></i> Joe BBG <span class="badge">PRO</span></div>
   <div class="hright">
-    <div id="status" style="font-size:11px;color:var(--muted)"><i class="fa-solid fa-circle" style="font-size:8px"></i> بانتظار التحليل</div>
+    <div id="status" style="font-size:12px;color:var(--muted);font-weight:700"><span class="pulse-dot"></span> بانتظار التحليل</div>
     <button class="theme-btn" id="themeBtn" type="button" aria-label="تبديل الوضع الليلي والنهاري" title="تبديل الوضع"><i class="fa-solid fa-sun"></i></button>
   </div>
 </div>
 
 <div class="tabs">
-  <button class="tab active" id="tabA" type="button"><i class="fa-solid fa-chart-line"></i> التحليل</button>
-  <button class="tab" id="tabS" type="button"><i class="fa-solid fa-bullseye"></i> الصفقات</button>
+  <button class="tab active" id="tabA" type="button"><i class="fa-solid fa-chart-line"></i> التحليل الفني</button>
+  <button class="tab" id="tabS" type="button"><i class="fa-solid fa-bullseye"></i> ماسح الفرص</button>
 </div>
-<div class="timer" id="timerBox" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-        <span id="timerLbl" style="font-size:12px"></span>
-        <b id="timerClock" style="font-size:18px;font-variant-numeric:tabular-nums;color:var(--accent)">00:00</b>
-      </div>
-      <div class="bar"><i id="timerFill"></i></div>
-      <button type="button" id="tStop" class="ghost">إيقاف التايمر</button>
-    </div>
 
-<div id="viewAnalysis" style="display:flex;flex-direction:column;gap:14px">
+<div class="timer" id="timerBox" style="display:none">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+    <span id="timerLbl" style="font-size:13px;font-weight:700"></span>
+    <b id="timerClock" style="font-size:20px;font-variant-numeric:tabular-nums;color:var(--accent)">00:00</b>
+  </div>
+  <div class="bar"><i id="timerFill"></i></div>
+  <button type="button" id="tStop" class="ghost">إيقاف التايمر</button>
+</div>
+
+<div id="viewAnalysis" style="display:flex;flex-direction:column;gap:16px">
 <div class="grid">
   <div class="card">
     <div class="card-title">
-      <span><i class="fa-solid fa-chart-column"></i> الرسم البياني</span>
-      <select id="pair" style="width:auto;padding:4px 10px">
+      <span><i class="fa-solid fa-chart-column"></i> الرسم البياني المباشر</span>
+      <select id="pair" style="width:auto;padding:6px 12px;font-weight:700">
         <optgroup label="فوركس — رئيسية">
           <option value="EURUSD">EUR/USD</option><option value="GBPUSD">GBP/USD</option><option value="USDJPY">USD/JPY</option>
           <option value="AUDUSD">AUD/USD</option><option value="USDCAD">USD/CAD</option><option value="USDCHF">USD/CHF</option>
@@ -125,7 +241,7 @@ document.documentElement.dataset.theme=t;})();
   </div>
 
   <div class="card">
-    <div class="card-title"><span><i class="fa-solid fa-microchip"></i> التحليل الفني</span></div>
+    <div class="card-title"><span><i class="fa-solid fa-microchip"></i> محرك التحليل الذكي</span></div>
     <div>
       <label for="tf">الإطار الزمني</label>
       <select id="tf">
@@ -139,12 +255,10 @@ document.documentElement.dataset.theme=t;})();
     <div class="err" id="err"></div>
     <div id="chartScanOut" style="display:none"></div>
 
-    
-
     <div class="signal" id="out">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <span id="sig" class="sbadge wait">—</span>
-        <span style="font-size:11px;color:var(--muted)">قوة التوافق: <b id="score" style="color:var(--accent)">-</b></span>
+        <span style="font-size:12px;color:var(--muted);font-weight:700">قوة التوافق: <b id="score" style="color:var(--accent)">-</b></span>
       </div>
       <div class="row"><span>RSI(14): <b id="rsi">-</b></span><span>الاتجاه: <b id="trend">-</b></span><span>ATR: <b id="atr">-</b></span></div>
       <div class="details">
@@ -153,7 +267,7 @@ document.documentElement.dataset.theme=t;})();
         <p class="lv" style="color:var(--green)">الهدف 1 (1:1.5): <b id="tp1">-</b></p>
         <p class="lv" style="color:var(--green)">الهدف 2 (1:2.5): <b id="tp2">-</b></p>
       </div>
-      <div id="mtfBox" style="display:flex;flex-direction:column;gap:6px">
+      <div id="mtfBox" style="display:flex;flex-direction:column;gap:8px">
         <div style="display:flex;gap:6px;flex-wrap:wrap" id="mtfChips"></div>
         <p class="note" id="mtfNote"></p>
       </div>
@@ -174,7 +288,7 @@ document.documentElement.dataset.theme=t;})();
 </div>
 
 <div class="card">
-  <div class="card-title"><span><i class="fa-solid fa-calculator"></i> حاسبة حجم اللوت</span></div>
+  <div class="card-title"><span><i class="fa-solid fa-calculator"></i> حاسبة حجم اللوت والمخاطرة</span></div>
   <div class="calc">
     <div><label for="bal">رأس المال ($)</label><input type="number" id="bal" value="1000" min="1"></div>
     <div><label for="riskPct">المخاطرة (%)</label><input type="number" id="riskPct" value="1" min="0.1" step="0.1"></div>
@@ -187,12 +301,12 @@ document.documentElement.dataset.theme=t;})();
 
 </div>
 
-<div id="viewScan" style="display:none;flex-direction:column;gap:14px">
+<div id="viewScan" style="display:none;flex-direction:column;gap:16px">
   <div class="card">
-    <div class="card-title"><span><i class="fa-solid fa-bullseye"></i> الصفقات — ماسح الفرص الفني (Joe BBG)</span></div>
-    <p class="note">يفحص كل الأزواج (15د + 1س + 4س) ولا يعرض إلا الصفقة التي: (1) اتجاه 1س و4س معها، (2) إشارة 15د قائمة والسعر غير بعيد عن EMA20، (3) نجحت تاريخياً بنسبة مقبولة على نفس الزوج. الصفقة قصيرة: وقف 1×ATR، هدف 1.5×ATR، وخروج بسعر السوق بعد <b>90 دقيقة كحد أقصى</b>. الحساسية تحدد مدى صرامة الشروط، وتحت النتائج ستجد سبب غياب الإشارة لكل زوج وقائمة مراقبة بالأقرب لتكوين فرصة.</p>
+    <div class="card-title"><span><i class="fa-solid fa-bullseye"></i> الصفقات — ماسح الفرص الفني الفائق</span></div>
+    <p class="note">يفحص كل الأزواج (15د + 1س + 4س) ولا يعرض إلا الصفقة التي: (1) اتجاه 1س و4س معها، (2) إشارة 15د قائمة والسعر غير بعيد عن EMA20، (3) نجحت تاريخياً بنسبة مقبولة على نفس الزوج. الصفقة قصيرة: وقف 1×ATR، هدف 1.5×ATR، وخروج بسعر السوق بعد <b>90 دقيقة كحد أقصى</b>.</p>
     <div>
-      <label for="scanMode">الحساسية</label>
+      <label for="scanMode">الحساسية المعيارية</label>
       <select id="scanMode">
         <option value="strict" selected>صارم — أعلى جودة (موصى به)</option>
         <option value="balanced">متوازن — صفقات أكثر وشروط أخف</option>
@@ -200,24 +314,20 @@ document.documentElement.dataset.theme=t;})();
       </select>
     </div>
     <button class="primary" id="scanBtn" type="button"><i class="fa-solid fa-magnifying-glass-chart"></i> افحص السوق الآن</button>
-    <button type="button" id="diagBtn" class="ghost" style="width:100%;align-self:stretch;padding:9px"><i class="fa-solid fa-shield-halved"></i> فحص جودة البيانات لكل الأزواج (سعر ومرجع وعمر الشمعة)</button>
+    <button type="button" id="diagBtn" class="ghost" style="width:100%;align-self:stretch;padding:10px;margin-top:4px"><i class="fa-solid fa-shield-halved"></i> فحص جودة البيانات لكل الأزواج</button>
     <p class="note" id="scanProg"></p>
     <div class="bar" id="scanBar" style="display:none"><i id="scanFill"></i></div>
   </div>
   <div id="diagOut" class="card" style="display:none"></div>
-  <div id="scanOut" style="display:flex;flex-direction:column;gap:12px"></div>
+  <div id="scanOut" style="display:flex;flex-direction:column;gap:14px"></div>
 </div>
 
-<div class="warn"><i class="fa-solid fa-triangle-exclamation"></i> عقود Binance تعمل 24/7 بينما الفوركس والذهب والنفط الفعلية تغلق في عطلة الأسبوع، فقد تختلف الأسعار قليلاً عن حساب وسيطك. هذه قراءة آلية للمؤشرات وليست نصيحة استثمارية ولا تضمن الربح. لا تخاطر بأكثر مما تتحمل خسارته، وجرّب على حساب تجريبي أولاً.</div>
+<div class="warn"><i class="fa-solid fa-triangle-exclamation"></i> عقود Binance تعمل 24/7 بينما الفوركس والذهب والنفط تغلق في عطلة الأسبوع. هذه قراءة آلية للمؤشرات وليست نصيحة استثمارية ولا تضمن الربح. لا تخاطر بأكثر مما تتحمل خسارته.</div>
 
 <script src="https://s3.tradingview.com/tv.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 
-// تعريف كل رمز: رمز TradingView + رمز Binance للبيانات + حجم الـ pip وقيمته لكل لوت
-// src: مصادر البيانات بالترتيب (kraken = Kraken Spot، spot/fut = Binance Spot/Futures)
-// range: النطاق المنطقي للسعر | atr: النطاق المتوقع لـ ATR كنسبة % من السعر | ref: سعر مرجعي للتحقق | tol: أقصى فرق مسموح
-// pip: حجم النقطة | فوركس: quote+pipQ (قيمة النقطة بعملة التسعير لكل لوت) وتُحوَّل للدولار | غيره: pipVal بالدولار
 const FXATR = [0.01, 0.8];
 function fx(name, base, quote, range, o = {}) {
   const jpy = quote === "JPY";
@@ -243,7 +353,7 @@ const PAIRS = {
   SOLUSDT: {tv:"BINANCE:SOLUSDT", src:[["spot","SOLUSDT"]],                     dec:3, pip:0.01,   pipVal:0.01,   range:[5,5000],       atr:[0.05,9], note:"بيانات Binance"},
   XRPUSDT: {tv:"BINANCE:XRPUSDT", src:[["spot","XRPUSDT"]],                     dec:4, pip:0.0001, pipVal:0.0001, range:[0.1,50],       atr:[0.05,9], note:"بيانات Binance"}
 };
-// أسعار تحويل تقريبية تُستخدم فقط لو فشل جلب الأسعار الحية
+
 const ER_FALLBACK = {JPY:150, CAD:1.38, CHF:0.8, GBP:0.76, EUR:0.92, AUD:1.5};
 let ER = null, ERt = 0;
 async function getRates() {
@@ -275,14 +385,14 @@ async function binanceKlines(kind, sym, tf) {
       const r = await fetch(`${h}${path}?symbol=${sym}&interval=${tf}&limit=1000`);
       if (!r.ok) throw new Error("HTTP " + r.status);
       const now = Date.now();
-      return (await r.json()).filter(k => +k[6] < now).map(k => ({h:+k[2], l:+k[3], c:+k[4], t:+k[6]}));
+      return (await r.json()).filter(k => +k[6] < now).map(k => ({o:+k[1], h:+k[2], l:+k[3], c:+k[4], v:+k[5], t:+k[6]}));
     } catch (e) { last = e; }
   }
   throw last;
 }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 let krakenNext = 0;
-async function krakenGate() {           // Kraken يحدد معدل الطلبات العامة: نفصل بين الطلبات بـ 1.1 ثانية
+async function krakenGate() {
   const now = Date.now(), at = Math.max(now, krakenNext);
   krakenNext = at + 1100;
   if (at > now) await sleep(at - now);
@@ -297,9 +407,9 @@ async function krakenKlines(sym, tf, retry = true) {
   }
   const rows = j.result[Object.keys(j.result).find(k => k !== "last")];
   const now = Date.now();
-  return rows.map(k => ({h:+k[2], l:+k[3], c:+k[4], t:(+k[0] + KR[tf] * 60) * 1000})).filter(x => x.t < now);
+  return rows.map(k => ({o:+k[1], h:+k[2], l:+k[3], c:+k[4], v:+k[6], t:(+k[0] + KR[tf] * 60) * 1000})).filter(x => x.t < now);
 }
-// سعر مرجعي مستقل للتحقق من صحة المصدر (اختياري: لو فشل جلبه نتجاوز الفحص)
+
 async function refPrice(p) {
   try {
     if (!p.ref) return null;
@@ -315,7 +425,6 @@ async function refPrice(p) {
   return null;
 }
 
-// السعر اللحظي من نفس مصدر الشموع (آخر صفقة منفذة)
 async function livePrice(p, sym) {
   try {
     const src = p.src.find(x => x[1] === sym); if (!src) return null;
@@ -331,9 +440,8 @@ async function livePrice(p, sym) {
   } catch (e) { return null; }
 }
 
-// يجرّب المصادر بالترتيب ويرفض أي مصدر بياناته قديمة أو سعره لا يطابق المرجع
 const CCACHE = {};
-async function fetchCandles(p, tf) {     // كاش 60 ثانية (الشموع مغلقة فقط فلا تتغير داخل الدقيقة)
+async function fetchCandles(p, tf) {
   const ck = p.tv + "|" + tf, hit = CCACHE[ck];
   if (hit && Date.now() - hit.at < 60000) return hit.v;
   const v = await fetchCandlesRaw(p, tf);
@@ -361,7 +469,6 @@ async function fetchCandlesRaw(p, tf) {
   throw new Error(errs.join(" | "));
 }
 
-// فحص سلامة البيانات: نطاق السعر، حداثة الشموع، ونسبة ATR
 function validate(p, tf, candles, a) {
   const w = [], last = a.last;
   if (!(last >= p.range[0] && last <= p.range[1])) throw new Error(`السعر ${last} خارج النطاق المنطقي لهذا الرمز`);
@@ -372,7 +479,6 @@ function validate(p, tf, candles, a) {
   return w;
 }
 
-// ===== المؤشرات =====
 function ema(vals, n) {
   const k = 2 / (n + 1);
   let e = vals.slice(0, n).reduce((a, b) => a + b, 0) / n;
@@ -380,7 +486,7 @@ function ema(vals, n) {
   for (let i = n; i < vals.length; i++) { e = vals[i] * k + e * (1 - k); out.push(e); }
   return out;
 }
-function rsi(closes, n = 14) {           // Wilder smoothing
+function rsi(closes, n = 14) {
   let g = 0, l = 0;
   for (let i = 1; i <= n; i++) { const d = closes[i] - closes[i-1]; d >= 0 ? g += d : l -= d; }
   g /= n; l /= n;
@@ -421,7 +527,6 @@ function analyze(candles) {
   return {type, score, strength: Math.round(Math.abs(score) / 4 * 100), rsi: r, atr: a, last, bull: f > m, why, ema20: f};
 }
 
-// ===== تقدير مدة الصفقة من التاريخ الفعلي =====
 function atrSeries(c, n = 14) {
   const o = new Array(c.length).fill(null); let sum = 0;
   for (let i = 1; i < c.length; i++) {
@@ -430,8 +535,6 @@ function atrSeries(c, n = 14) {
   }
   return o;
 }
-// لكل شمعة سابقة: نفترض دخولاً بنفس قواعدنا (وقف 1.5 ATR، هدف 1 = 1:1.5، هدف 2 = 1:2.5) ونقيس كم شمعة احتاج السعر
-// (لو لمس الوقف والهدف في نفس الشمعة نحتسب الوقف — تقدير متحفظ)
 function backtest(c, dir, H = 48) {
   const A = atrSeries(c), t1 = [], t2 = []; let n = 0, sl = 0;
   for (let i = 14; i < c.length - H; i++) {
@@ -463,7 +566,6 @@ function etaOf(arr, mins) {
   return {mid: quant(arr, .5) * mins, lo: quant(arr, .25) * mins, hi: quant(arr, .75) * mins};
 }
 
-// ===== التايمر =====
 let timerId = null, tEnd = 0, tStart = 0;
 function stopTimer() { clearInterval(timerId); timerId = null; $("timerBox").style.display = "none"; }
 function clock(ms) {
@@ -496,7 +598,6 @@ function startTimer(minutes, label) {
 let ETA = {t1: null, t2: null};
 let runId = 0;
 
-// توافق الأطر الزمنية الثلاثة (يعمل بالخلفية ولا يعطل التحليل الرئيسي)
 async function runMTF(p, tf0, a0, id) {
   $("mtfChips").innerHTML = ""; $("mtfNote").textContent = "جاري فحص الأطر الأخرى...";
   const res = {[tf0]: a0};
@@ -563,7 +664,7 @@ async function run() {
     }
     $("out").style.display = "flex";
     runMTF(p, tf, a, myRun);
-    $("status").innerHTML = '<i class="fa-solid fa-circle" style="font-size:8px;color:var(--green)"></i> <span style="color:var(--green)">تم التحديث ' + new Date().toLocaleTimeString("ar-EG") + "</span>";
+    $("status").innerHTML = '<span class="pulse-dot"></span> <span style="color:var(--green)">تم التحديث ' + new Date().toLocaleTimeString("ar-EG") + "</span>";
 
     if (buy || sell) $("slp").value = Math.max(1, Math.round(risk / p.pip));
   } catch (e) {
@@ -591,8 +692,6 @@ async function calcLot() {
   res.style.display = "block";
 }
 
-// ================== الصفقات: ماسح الفرص ==================
-// صفقة قصيرة: وقف 1×ATR، هدف1 1.5×ATR، هدف2 2.5×ATR، خروج زمني بعد 6 شموع 15د = 90 دقيقة
 const SCAN = {SL: 1, TP1: 1.5, TP2: 2.5, H: 6};
 const MODES = {
   strict:   {minScore: 3, minN: 15, minHit: 0.55, minExp: 0.20, need4h: true,  maxDist: 1.2, rsiMax: 65, confirm: 2},
@@ -601,23 +700,21 @@ const MODES = {
 };
 const pct = x => Math.round(x * 100) + "%";
 const trendDir = a => a.score >= 2 ? 1 : a.score <= -2 ? -1 : 0;
-function wilson(k, n, z = 1.28) {         // الحد الأدنى المحافظ لنسبة النجاح (فاصل ثقة ~80%)
+function wilson(k, n, z = 1.28) {
   if (!n) return 0;
   const p = k / n, d = 1 + z * z / n;
   return (p + z * z / (2 * n) - z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))) / d;
 }
-function alignIdx(arr, t) {               // آخر شمعة مغلقة في الإطار الأعلى وقت t
+function alignIdx(arr, t) {
   let lo = 0, hi = arr.length - 1, r = -1;
   while (lo <= hi) { const m = (lo + hi) >> 1; if (arr[m].t <= t) { r = m; lo = m + 1; } else hi = m - 1; }
   return r;
 }
-// شروط الدخول عند الشمعة i (كلها تعتمد على شموع مغلقة فقط)
 function scalpAt(c15, i, h1, h4, k1, k4, memo, cfg, why) {
   const a = analyze(c15.slice(0, i + 1));
   const dir = a.score >= cfg.minScore ? 1 : a.score <= -cfg.minScore ? -1 : 0;
   const no = m => { if (why) why.r = m; return null; };
   if (!dir) return no("إشارة 15د محايدة (لا توافق كافٍ بين المؤشرات)");
-  // تأكيد: الإشارة لازم تفضل بنفس الاتجاه عدة شموع متتالية قبل اعتمادها (يقلل الإشارات الكاذبة اللي ترتد فوراً)
   if (cfg.confirm > 0) {
     if (i - cfg.confirm < 209) return no("بيانات غير كافية للتأكيد");
     for (let j = 1; j <= cfg.confirm; j++) {
@@ -636,7 +733,6 @@ function scalpAt(c15, i, h1, h4, k1, k4, memo, cfg, why) {
   }
   return {dir, atr: a.atr, last: a.last, a};
 }
-// قائمة مراقبة: أي الشروط تحققت وأيها ينقص (لا تُعتبر صفقة)
 function checklist(c15, h1, h4, k1, k4, cfg) {
   const a = analyze(c15), m1 = trendDir(analyze(h1.slice(0, k1 + 1))), m4 = trendDir(analyze(h4.slice(0, k4 + 1)));
   const dir = m4 || m1 || (a.score >= 0 ? 1 : -1);
@@ -649,7 +745,42 @@ function checklist(c15, h1, h4, k1, k4, cfg) {
   if (cfg.need4h) conds.push([m4 === dir, "اتجاه 4س"]);
   return {dir, total: conds.length, passed: conds.filter(x => x[0]).length, missing: conds.filter(x => !x[0]).map(x => x[1])};
 }
-// اختبار تاريخي لنفس الشروط بالضبط، صفقات غير متداخلة، ولو لمس الوقف والهدف في شمعة واحدة يُحتسب الوقف
+
+function priceActionScore(c15, i, dir) {
+  const k = c15[i], body = Math.abs(k.c - k.o) || 1e-9;
+  const lowerWick = Math.min(k.o, k.c) - k.l, upperWick = k.h - Math.max(k.o, k.c);
+  const wick = dir === 1 ? lowerWick : upperWick;
+  const closeOk = dir === 1 ? k.c >= k.o : k.c <= k.o;
+  return (wick / body >= 1.2 && closeOk) ? 1 : 0;
+}
+function volumeScore(c15, i, n = 20) {
+  if (i < n || !c15[i].v) return 0;
+  let avg = 0; for (let j = i - n; j < i; j++) avg += c15[j].v || 0; avg /= n;
+  return avg > 0 && c15[i].v > avg * 1.1 ? 1 : 0;
+}
+function swingLevels(c15, i, n = 100, look = 3) {
+  const from = Math.max(look, i - n), levels = [];
+  for (let j = from; j < i - look; j++) {
+    const w = c15.slice(j - look, j + look + 1);
+    if (c15[j].h === Math.max(...w.map(x => x.h))) levels.push(c15[j].h);
+    if (c15[j].l === Math.min(...w.map(x => x.l))) levels.push(c15[j].l);
+  }
+  return levels;
+}
+function structureScore(c15, i, dir, entry, target) {
+  const lo = Math.min(entry, target), hi = Math.max(entry, target);
+  const blocking = swingLevels(c15, i).some(lv => lv > lo && lv < hi);
+  return blocking ? 0 : 1;
+}
+function confluence(c15, i, dir, entry, target) {
+  const items = [
+    {k: "trend", label: "الاتجاه (EMA/RSI)", v: 1},
+    {k: "pa", label: "حركة السعر (شمعة انعكاس)", v: priceActionScore(c15, i, dir)},
+    {k: "vol", label: "حجم التداول", v: volumeScore(c15, i)},
+    {k: "struct", label: "هيكل السوق (لا عائق قريب)", v: structureScore(c15, i, dir, entry, target)}
+  ];
+  return {score: items.reduce((a, x) => a + x.v, 0), total: items.length, items};
+}
 function scalpBacktest(c15, h1, h4, cfg) {
   const memo = {h1: {}, h4: {}}, out = [], H = SCAN.H;
   for (let i = 210; i < c15.length - H; i++) {
@@ -664,9 +795,9 @@ function scalpBacktest(c15, h1, h4, cfg) {
       if (hitSL) { res = {r: -1, b: j - i, o: "sl"}; break; }
       if (hitTP) { res = {r: SCAN.TP1, b: j - i, o: "tp"}; break; }
     }
-    if (!res) res = {r: (c15[i + H].c - e) * s.dir / risk, b: H, o: "to"};   // خروج زمني بسعر الإغلاق
+    if (!res) res = {r: (c15[i + H].c - e) * s.dir / risk, b: H, o: "to"};
     out.push(res);
-    i += res.b;                                                              // نتجاوز مدة الصفقة حتى لا تتداخل العينات
+    i += res.b;
   }
   return out;
 }
@@ -693,7 +824,7 @@ async function scanPair(key, cfg) {
   const hit = n ? tp.length / n : 0, exp = n ? bt.reduce((a, x) => a + x.r, 0) / n : 0, lb = wilson(tp.length, n);
   if (n < cfg.minN || hit < cfg.minHit || exp < cfg.minExp)
     return {key, status: "filtered", why: `نجاح تاريخي ${pct(hit)} من ${n} حالة، عائد ${exp.toFixed(2)}R — لا يجتاز الشروط`};
-  // نستخدم السعر اللحظي للدخول، ونرفض الصفقة لو ابتعد السعر كثيراً عن سعر الإشارة
+
   let e = live.last, isLive = false;
   const lp = await livePrice(p, sym15);
   if (lp && Math.abs(lp / live.last - 1) < 0.05) {
@@ -701,8 +832,10 @@ async function scanPair(key, cfg) {
     e = lp; isLive = true;
   }
   const risk = live.atr * SCAN.SL, dir = live.dir;
-  return {key, status: "signal", dir, e, live: isLive, sl: e - dir * risk, tp1: e + dir * risk * SCAN.TP1, tp2: e + dir * risk * SCAN.TP2,
-    n, hit, exp, lb, sls: sl, tos: to, med: quant(tp.map(x => x.b), .5) * 15, slPips: risk / p.pip};
+  const tp1v = e + dir * risk * SCAN.TP1;
+  const conf = confluence(c15, c15.length - 1, dir, e, tp1v);
+  return {key, status: "signal", dir, e, live: isLive, sl: e - dir * risk, tp1: tp1v, tp2: e + dir * risk * SCAN.TP2,
+    n, hit, exp, lb, sls: sl, tos: to, med: quant(tp.map(x => x.b), .5) * 15, slPips: risk / p.pip, conf};
 }
 
 function pairName(key) {
@@ -712,13 +845,17 @@ function pairName(key) {
 async function cardHTML(r) {
   const p = PAIRS[r.key], d = p.dec, buy = r.dir === 1, name = pairName(r.key);
   const {v, approx} = await pipUSD(p);
-  const bal = parseFloat($("bal").value) || 0, rp = parseFloat($("riskPct").value) || 0;
+  const bal = parseFloat($("bal").value) \vert{}\vert{} 0, rp = parseFloat($("riskPct").value) || 0;
   const lot = bal > 0 && rp > 0 ? (bal * rp / 100) / (r.slPips * v) : 0;
-  const untilTs = Math.ceil(Date.now() / TFMS["15m"]) * TFMS["15m"];   // من الآن (وقت العرض الفعلي) لأقرب إغلاق شمعة 15د قادم، وليس من وقت جلب البيانات
+  const untilTs = Math.ceil(Date.now() / TFMS["15m"]) * TFMS["15m"];
   const until = new Date(untilTs).toLocaleTimeString("ar-EG", {hour: "2-digit", minute: "2-digit"});
   const minsLeft = Math.max(1, Math.round((untilTs - Date.now()) / 60000));
   return `<div class="tcard ${buy ? "buy-c" : "sell-c"}">
-    <div class="thead"><b style="font-size:15px">${name}</b><span class="sbadge ${buy ? "buy" : "sell"}">${buy ? "BUY" : "SELL"}</span></div>
+    <div class="thead"><b style="font-size:16px">${name}</b><span class="sbadge ${buy ? "buy" : "sell"}">${buy ? "BUY" : "SELL"}</span></div>
+    <div class="row" style="justify-content:flex-start;gap:14px">
+      <span>توافق المدارس: <b style="color:${r.conf.score === r.conf.total ? "var(--green)" : r.conf.score >= r.conf.total - 1 ? "var(--accent)" : "var(--muted)"}">${r.conf.score}/${r.conf.total}</b></span>
+      <span style="color:var(--muted)">${r.conf.items.map(x => (x.v ? "✅ " : "▫️ ") + x.label).join(" • ")}</span>
+    </div>
     <div class="tgrid">
       <div>${r.live ? "الدخول (سعر لحظي)" : "الدخول (إغلاق آخر شمعة)"}<b>${r.e.toFixed(d)}</b></div>
       <div>وقف الخسارة<b style="color:var(--red)">${r.sl.toFixed(d)}</b></div>
@@ -728,7 +865,7 @@ async function cardHTML(r) {
       <div>الخروج الإجباري<b>بعد ساعة ونصف</b></div>
     </div>
     <p class="note" style="color:var(--warn)">⚠ هذه ليست توصية مضمونة، وأي صفقة قد تنعكس رغم استيفاء كل الشروط. الوقف موجود عشان لو انعكست الصفقة تكون الخسارة محدودة ومعروفة مقدماً — لا تلغِه ولا توسّعه يدوياً.</p><p class="note">إحصاء تاريخي لنفس الشروط على هذا الزوج (${r.n} صفقة غير متداخلة): الهدف 1 تحقق في ${pct(r.hit)}، الوقف في ${pct(r.sls / r.n)}، وخروج زمني في ${pct(r.tos / r.n)} • متوسط العائد ${r.exp >= 0 ? "+" : ""}${r.exp.toFixed(2)}R (1R = المخاطرة) • الحد المحافظ لنسبة النجاح ${pct(r.lb)}</p>
-    <p class="note">${lot > 0 ? `لوت مقترح بمخاطرة ${rp}% من $${bal}: <b>${lot.toFixed(lot < 1 ? 3 : 2)}</b> (وقف ${Math.round(r.slPips)} نقطة${approx ? "، قيمة النقطة تقريبية" : ""}) • ` : ""}الصفقة صالحة حتى ${until} (${minsLeft} دقيقة من الآن) — بعدها أعد الفحص.</p>
+    <p class="note">${lot > 0 ? `لوت مقترح بمخاطرة ${rp}\% من $${bal}: <b>${lot.toFixed(lot < 1 ? 3 : 2)}</b> (وقف ${Math.round(r.slPips)} نقطة${approx ? "، قيمة النقطة تقريبية" : ""}) • ` : ""}الصفقة صالحة حتى ${until} (${minsLeft} دقيقة من الآن) — بعدها أعد الفحص.</p>
     <div class="tbtns">
       <button type="button" class="primary" data-act="timer" data-min="${r.med}" data-lbl="${name} • الهدف 1"><i class="fa-solid fa-stopwatch"></i> تايمر المدة المتوقعة</button>
       <button type="button" data-act="timer" data-min="90" data-lbl="${name} • خروج زمني"><i class="fa-solid fa-hourglass-end"></i> تايمر الخروج (90د)</button>
@@ -741,7 +878,6 @@ async function runScan() {
   const btn = $("scanBtn"), out = $("scanOut"), cfg = MODES[$("scanMode").value] || MODES.strict;
   btn.disabled = true; out.innerHTML = "";
   $("scanBar").style.display = "block"; $("scanFill").style.width = "0";
-  // أزواج Binance أولاً (سريعة)، ثم Kraken (محدود المعدل: ~1 طلب/ثانية)
   const keys = Object.keys(PAIRS).sort((a, b) => (PAIRS[a].src[0][0] === "kraken") - (PAIRS[b].src[0][0] === "kraken"));
   const results = []; let idx = 0;
   const upd = () => { $("scanProg").textContent = `جاري الفحص ${results.length}/${keys.length} — قد يستغرق حتى دقيقة بسبب حدود معدل المصادر`; $("scanFill").style.width = (results.length / keys.length * 100) + "%"; };
@@ -764,15 +900,13 @@ async function runScan() {
     ${cnt("none") ? `<details class="note"><summary>سبب غياب الإشارة لكل زوج</summary>${list("none")}</details>` : ""}
     ${cnt("filtered") ? `<details class="note"><summary>لم تجتز الفلاتر</summary>${list("filtered")}</details>` : ""}
     ${cnt("fail") ? `<details class="note"><summary>تعذر فحصها (بيانات)</summary>${list("fail")}</details>` : ""}
-    <p class="note">تنبيه: بعض الأزواج مترابطة (مثل EUR/USD وGBP/USD أو أزواج الين)، فلا تفتحها كلها معاً. الإحصاء لا يشمل السبريد والانزلاق، ولا يضمن المستقبل، واختيار الأفضل من عدة أزواج يرفع النتائج التاريخية قليلاً عن الواقع.</p></div>`;
+    <p class="note">تنبيه: بعض الأزواج مترابطة (مثل EUR/USD وGBP/USD أو أزواج الين)، فلا تفتحها كلها معاً.</p></div>`;
   const watch = results.filter(r => r.status === "none" && r.watch).sort((a, b) => b.watch.passed / b.watch.total - a.watch.passed / a.watch.total).slice(0, 4);
   if (watch.length) html = html.replace('<div class="card"><p class="note">تم فحص', `<div class="card"><div class="card-title"><span><i class="fa-regular fa-eye"></i> قائمة المراقبة (ليست صفقات)</span></div>${watch.map(r => `<p class="note">• <b>${pairName(r.key)}</b> — ${r.watch.dir === 1 ? "شراء" : "بيع"} محتمل (${r.watch.passed}/${r.watch.total}) • ينقصه: ${r.watch.missing.join("، ")}</p>`).join("")}</div>\n<div class="card"><p class="note">تم فحص`);
   out.innerHTML = html;
   $("scanProg").textContent = ""; $("scanBar").style.display = "none"; btn.disabled = false;
 }
 
-
-// ===== فحص جودة البيانات: يعرض لكل زوج آخر سعر ومقارنته بالمرجع وعمر آخر شمعة =====
 async function runDiag() {
   const btn = $("diagBtn"), box = $("diagOut");
   btn.disabled = true; box.style.display = "flex"; box.innerHTML = '<p class="note">جاري فحص المصادر...</p>';
@@ -789,12 +923,10 @@ async function runDiag() {
     }
   }));
   box.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-shield-halved"></i> جودة البيانات</span></div>' + rows.join("") +
-    '<p class="note">قارن الأسعار بالشارت يدوياً: فرق صغير طبيعي (المصدر عقد أو زوج بديل)، أما الفرق الكبير أو الشمعة القديمة فتعني أن الزوج لا يُعتمد عليه الآن. الأزواج بدون مرجع تُقارن يدوياً فقط.</p>';
+    '<p class="note">قارن الأسعار بالشارت يدوياً: فرق صغير طبيعي، أما الفرق الكبير فيعني عدم اعتماد الزوج حالياً.</p>';
   btn.disabled = false;
 }
 
-
-// ===== ماسح الشارت: يفحص الزوج المختار حالياً على 15د+1س+4س ويطلع أقوى صفقة واحدة (أو لا شيء) =====
 async function runChartScan() {
   const btn = $("chartScanBtn"), box = $("chartScanOut"), key = $("pair").value;
   btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري مسح الشارت...';
@@ -805,7 +937,7 @@ async function runChartScan() {
       box.innerHTML = await cardHTML(r);
     } else {
       const reason = r.why || (r.watch ? `${r.watch.passed}/${r.watch.total} شروط متحققة، ينقصه: ${r.watch.missing.join("، ")}` : "لا توجد فرصة مؤهلة الآن");
-      box.innerHTML = `<div class="tcard"><b>لا توجد صفقة قوية على ${pairName(key)} الآن</b><p class="note">${reason}</p><p class="note">هذا أفضل من صفقة ضعيفة: لو ظهرت إشارة هنا فهي اجتازت أعلى مستوى فلترة متاح (تأكيد شمعتين + توافق 3 أطر + حد أدنى صارم للنجاح التاريخي). أعد المسح بعد إغلاق الشمعة القادمة (كل 15 دقيقة).</p></div>`;
+      box.innerHTML = `<div class="tcard"><b>لا توجد صفقة قوية على ${pairName(key)} الآن</b><p class="note">${reason}</p></div>`;
     }
   } catch (e) {
     box.innerHTML = `<div class="err" style="display:block">تعذر مسح الشارت: ${e.message}</div>`;
