@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Joe BBG — تحليل فني</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Joe BBG">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#08090c" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f4f5f7" media="(prefers-color-scheme: light)">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -932,7 +941,7 @@ function tickOpenTradeTimers() {
 setInterval(tickOpenTradeTimers, 1000);
 tickOpenTradeTimers();
 async function renderOpenTrades() {
-  const box = $("openTrades"), list = loadTrades();
+  const box = $("openTrades"), list = loadTrades().sort((a, b) => (a.enteredAt + 90 * 60000) - (b.enteredAt + 90 * 60000));
   if (!list.length) { box.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-list-check"></i> الصفقات المفتوحة</span></div><p class="note">لا توجد صفقات مسجّلة الآن. لما تدخل صفقة من نتائج الفحص ودوس "دخلت الصفقة دي" هتظهر هنا وتفضل محفوظة حتى لو قفلت الموقع (محفوظة في متصفح هذا الجهاز فقط).</p>'; return; }
   box.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-list-check"></i> الصفقات المفتوحة (' + list.length + ')</span></div>' + (await Promise.all(list.map(tradeRowHTML))).join("");
 }
@@ -1089,6 +1098,10 @@ $("themeBtn").addEventListener("click", () => {
 });
 syncThemeIcon();
 loadChart();
+// تسجيل Service Worker عشان يقدر Chrome يعرض خيار "تثبيت التطبيق" — لو الملف بيتفتح من الجهاز مباشرة (file://) أو sw.js مش موجود، بيتجاهل الخطأ بهدوء
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
 </script>
 </body>
 </html>
