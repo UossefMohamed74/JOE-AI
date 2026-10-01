@@ -524,6 +524,13 @@ function etaOf(arr, mins) {
 }
 
 // ===== التايمر =====
+function notifyUser(body) {   // إشعار + اهتزاز موحّد، يُستخدم لتايمر الصفقة الواحدة ولانتهاء وقت الصفقات المثبّتة
+  try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch (e) {}
+  try { if ("Notification" in window && Notification.permission === "granted") new Notification("Joe BBG", {body}); } catch (e) {}
+}
+function askNotifyPermission() {
+  try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission(); } catch (e) {}
+}
 let timerId = null, tEnd = 0, tStart = 0;
 function stopTimer() { clearInterval(timerId); timerId = null; $("timerBox").style.display = "none"; }
 function clock(ms) {
@@ -540,8 +547,7 @@ function tick() {
     $("timerBox").classList.add("done");
     $("timerClock").textContent = "انتهى الوقت";
     $("timerLbl").textContent = "حان وقت مراجعة الصفقة";
-    try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch (e) {}
-    try { if ("Notification" in window && Notification.permission === "granted") new Notification("Joe BBG", {body: "انتهى الوقت المتوقع للصفقة — راجع السعر"}); } catch (e) {}
+    notifyUser("انتهى الوقت المتوقع للصفقة — راجع السعر");
   }
 }
 function startTimer(minutes, label) {
@@ -550,7 +556,7 @@ function startTimer(minutes, label) {
   $("timerBox").classList.remove("done");
   $("timerLbl").textContent = label + " — المدة المتوقعة " + fmtDur(minutes);
   $("timerBox").style.display = "flex";
-  try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission(); } catch (e) {}
+  askNotifyPermission();
   tick(); timerId = setInterval(tick, 1000);
 }
 let ETA = {t1: null, t2: null};
@@ -604,7 +610,7 @@ async function run() {
     $("sl").textContent = lv(px - dir * risk);
     $("tp1").textContent = lv(px + dir * risk * 1.5);
     $("tp2").textContent = lv(px + dir * risk * 2.5);
-    $("reasons").innerHTML = a.why.map(x => `<li>${x}</li>`).join("") + (a.type === "WAIT" ? "<li>لا يوجد توافق كافٍ بين المؤشرات — الأفضل عدم الدخول</li>" : "");
+    $("reasons").innerHTML = a.why.map(x => `<li>${x}</li>`).join("") + (a.type === "WAIT" ? "<li>لا يوجد توافق كافٍ بين المؤشرات — الأفضل عدم الدخول</li>" : (buy || sell) ? `<li>SMC: ${smcScore(candles, candles.length - 1, dir, px).label}</li>` : "");
     $("src").textContent = `${p.note} (${sym}) • ${TF[tf].lbl} • الوقف = 1.5×ATR • ${isLive ? "السعر لحظي" : "السعر = آخر إغلاق شمعة"}`;
     $("wrn").innerHTML = warns.map(x => "⚠ " + x).join("<br>");
     const trade = buy || sell;
@@ -727,7 +733,7 @@ function volumeScore(c15, i, n = 20) {              // حجم أعلى من مت
   let avg = 0; for (let j = i - n; j < i; j++) avg += c15[j].v || 0; avg /= n;
   return avg > 0 && c15[i].v > avg * 1.1 ? 1 : 0;
 }
-function swingLevels(c15, i, n = 100, look = 3) {   // قمم وقيعان محلية بارزة في آخر n شمعة (هيكل السوق)
+function swingLevels(c15, i, n = 100, look = 3) {   // قمم وقيعان محلية بارزة في آخر n شمعة (تُستخدم لرصد الـ swings)
   const from = Math.max(look, i - n), levels = [];
   for (let j = from; j < i - look; j++) {
     const w = c15.slice(j - look, j + look + 1);
@@ -736,17 +742,77 @@ function swingLevels(c15, i, n = 100, look = 3) {   // قمم وقيعان مح�
   }
   return levels;
 }
-function structureScore(c15, i, dir, entry, target) {  // لا يوجد دعم/مقاومة قوي بين الدخول والهدف يعيق الوصول له
-  const lo = Math.min(entry, target), hi = Math.max(entry, target);
-  const blocking = swingLevels(c15, i).some(lv => lv > lo && lv < hi);
-  return blocking ? 0 : 1;
+// ===== Smart Money Concepts (SMC): كسر الهيكل (BOS/CHoCH)، Order Blocks، Fair Value Gaps =====
+// منهجية منشورة ومعروفة في التحليل الفني، مبنية فقط على الشموع المغلقة (لا نظر للمستقبل)
+function findSwings(c, i, look = 3, lookback = 220) {   // قائمة زمنية بالقمم/القيعان المؤكدة
+  const from = Math.max(look, i - lookback), out = [];
+  for (let j = from; j <= i - look; j++) {
+    const w = c.slice(j - look, j + look + 1);
+    if (c[j].h === Math.max(...w.map(x => x.h))) out.push({idx: j, price: c[j].h, type: "H"});
+    if (c[j].l === Math.min(...w.map(x => x.l))) out.push({idx: j, price: c[j].l, type: "L"});
+  }
+  return out;
+}
+function smcStructure(c, i, look = 3, lookback = 220) {   // يتتبع الاتجاه الهيكلي وآخر كسر (BOS = استمرار، CHoCH = تغيّر الطابع)
+  const swings = findSwings(c, i, look, lookback);
+  let trend = 0, refHigh = null, refLow = null, lastBreak = null, si = 0;
+  for (let j = Math.max(look, i - lookback); j <= i; j++) {
+    while (si < swings.length && swings[si].idx === j - look) {
+      const s = swings[si];
+      if (s.type === "H") refHigh = s; else refLow = s;
+      si++;
+    }
+    if (refHigh && c[j].c > refHigh.price) {
+      lastBreak = {type: (trend === 1 || trend === 0) ? "BOS" : "CHoCH", dir: 1, idx: j, level: refHigh.price};
+      trend = 1; refHigh = null;
+    } else if (refLow && c[j].c < refLow.price) {
+      lastBreak = {type: (trend === -1 || trend === 0) ? "BOS" : "CHoCH", dir: -1, idx: j, level: refLow.price};
+      trend = -1; refLow = null;
+    }
+  }
+  return {trend, lastBreak};
+}
+function avgRange(c, j, n = 14) {
+  let s = 0, from = Math.max(0, j - n); for (let k = from; k < j; k++) s += c[k].h - c[k].l;
+  return s / Math.max(1, j - from);
+}
+function findOrderBlock(c, i, dir, lookback = 50) {   // آخر شمعة معاكسة قبل الاندفاعة القوية في اتجاه الصفقة
+  const from = Math.max(1, i - lookback), ar = avgRange(c, i);
+  for (let j = i; j > from; j--) {
+    const k = c[j], prev = c[j - 1], impulse = (k.h - k.l) > ar * 1.3;
+    if (!impulse) continue;
+    if (dir === 1 && k.c > k.o && prev.c < prev.o) return {idx: j - 1, low: prev.l, high: prev.h};
+    if (dir === -1 && k.c < k.o && prev.c > prev.o) return {idx: j - 1, low: prev.l, high: prev.h};
+  }
+  return null;
+}
+function findFVG(c, i, dir, lookback = 50) {   // فجوة سعرية بين الشمعة الأولى والثالثة من ثلاثية شموع، تتكون أثناء حركة اندفاعية
+  const from = Math.max(2, i - lookback);
+  for (let j = i; j > from; j--) {
+    if (dir === 1 && c[j - 2].h < c[j].l) return {idx: j - 1, low: c[j - 2].h, high: c[j].l};
+    if (dir === -1 && c[j - 2].l > c[j].h) return {idx: j - 1, low: c[j].h, high: c[j - 2].l};
+  }
+  return null;
+}
+function smcScore(c15, i, dir, entry) {
+  const {lastBreak} = smcStructure(c15, i);
+  const ob = findOrderBlock(c15, i, dir), fvg = findFVG(c15, i, dir);
+  const nearZone = z => { if (!z) return false; const pad = (z.high - z.low) * 0.2 || 1e-9; return entry >= z.low - pad && entry <= z.high + pad; };
+  let label, pass;
+  if (!lastBreak) { label = "هيكل السوق غير واضح بعد"; pass = 0; }
+  else if (lastBreak.dir !== dir) { label = "آخر كسر هيكلي (SMC) كان عكس اتجاه الصفقة"; pass = 0; }
+  else { label = (lastBreak.type === "BOS" ? "BOS مؤكد بنفس اتجاه الصفقة" : "CHoCH حديث بنفس الاتجاه (بداية انعكاس)"); pass = 1; }
+  if (nearZone(ob)) label += " • عند منطقة Order Block";
+  else if (nearZone(fvg)) label += " • عند فجوة سعرية (FVG)";
+  return {v: pass, label};
 }
 function confluence(c15, i, dir, entry, target) {
+  const smc = smcScore(c15, i, dir, entry);
   const items = [
     {k: "trend", label: "الاتجاه (EMA/RSI)", v: 1},                              // شرط أساسي محقق أصلاً بما أن فيه إشارة
     {k: "pa", label: "حركة السعر (شمعة انعكاس)", v: priceActionScore(c15, i, dir)},
     {k: "vol", label: "حجم التداول", v: volumeScore(c15, i)},
-    {k: "struct", label: "هيكل السوق (لا عائق قريب)", v: structureScore(c15, i, dir, entry, target)}
+    {k: "struct", label: "هيكل السوق — " + smc.label, v: smc.v}
   ];
   return {score: items.reduce((a, x) => a + x.v, 0), total: items.length, items};
 }
@@ -867,6 +933,7 @@ function saveTrades(list) {
   try { localStorage.setItem(TRADES_KEY, JSON.stringify(list)); } catch (e) {}
 }
 function addTrade(t) {
+  askNotifyPermission();
   const list = loadTrades();
   list.unshift(Object.assign({id: "t" + Date.now() + Math.random().toString(36).slice(2, 6), enteredAt: Date.now(), status: "open"}, t));
   saveTrades(list);
@@ -924,6 +991,7 @@ function fmtClock(ms) {
   return (h ? h + ":" : "") + p(m) + ":" + p(s);
 }
 function tickOpenTradeTimers() {
+  let list = null, changed = false;
   document.querySelectorAll(".jbbg-cd").forEach(row => {
     const entered = +row.dataset.entered, med = +row.dataset.med || 0;
     const forcedEnd = entered + 90 * 60000, cd2 = row.querySelector(".cd2"), bar2 = row.querySelector(".cd2bar");
@@ -936,14 +1004,24 @@ function tickOpenTradeTimers() {
       if (cd1) { cd1.textContent = fmtClock(targetEnd - Date.now()); cd1.style.color = Date.now() >= targetEnd ? "var(--warn)" : ""; }
       if (bar1) bar1.style.width = Math.min(100, Math.max(0, (Date.now() - entered) / (med * 60000) * 100)) + "%";
     } else if (cd1) { cd1.textContent = "غير متاح"; }
+    if (Date.now() >= forcedEnd) {
+      const card = row.closest(".tcard"); if (!card) return;
+      if (list === null) list = loadTrades();
+      const t = list.find(x => x.id === card.id);
+      if (t && !t.notified) {
+        t.notified = true; changed = true;
+        notifyUser(pairName(t.key) + " — انتهى وقت الخروج الإجباري (90 دقيقة)، راجع الصفقة الآن");
+      }
+    }
   });
+  if (changed) saveTrades(list);
 }
 setInterval(tickOpenTradeTimers, 1000);
 tickOpenTradeTimers();
 async function renderOpenTrades() {
   const box = $("openTrades"), list = loadTrades().sort((a, b) => (a.enteredAt + 90 * 60000) - (b.enteredAt + 90 * 60000));
   if (!list.length) { box.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-list-check"></i> الصفقات المفتوحة</span></div><p class="note">لا توجد صفقات مسجّلة الآن. لما تدخل صفقة من نتائج الفحص ودوس "دخلت الصفقة دي" هتظهر هنا وتفضل محفوظة حتى لو قفلت الموقع (محفوظة في متصفح هذا الجهاز فقط).</p>'; return; }
-  box.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-list-check"></i> الصفقات المفتوحة (' + list.length + ')</span></div>' + (await Promise.all(list.map(tradeRowHTML))).join("");
+  box.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-list-check"></i> الصفقات المفتوحة (' + list.length + ')</span></div><p class="note">هتوصلك رسالة تنبيه (وهزة لو موبايل) لما وقت الخروج الإجباري (90 دقيقة) يخلص لأي صفقة، بشرط إن المتصفح مسموحله بالإشعارات والصفحة لسه مفتوحة أو شغالة في الخلفية — الإشعارات مش مضمونة 100% لو المتصفح اتقفل تمامًا.</p>' + (await Promise.all(list.map(tradeRowHTML))).join("");
 }
 async function checkTradeNow(id) {
   const list = loadTrades(), t = list.find(x => x.id === id); if (!t) return;
