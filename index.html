@@ -11,105 +11,106 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Joe BBG">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#08090c" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#f4f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#08090c;--card:#111318;--card2:#0d0f13;--line:#22252c;--line-soft:#1a1c22;
-  --accent:#ff9d2e;--accent-dim:#8a5a1e;
-  --green:#3ecf8e;--red:#e5566e;--warn:#e0a542;--text:#eef0f3;--muted:#868c96;
-  --soft:rgba(255,255,255,.025);--inset:rgba(0,0,0,.25);
-  --shadow:0 2px 10px rgba(0,0,0,.3);
-  --tint-accent:rgba(255,157,46,.10);--tint-green:rgba(62,207,142,.12);--tint-red:rgba(229,86,110,.12);--tint-warn:rgba(224,165,66,.10);--tint-mute:rgba(134,140,150,.12);
-  --r:8px;--r-sm:6px;
+  --bg:#0b0e14;--card:#131722;--card2:#0f1219;--line:#232938;--line-soft:#1b2029;
+  --accent:#5b8cff;--accent-dim:#2d4a8f;
+  --green:#2fd999;--red:#ff5c7a;--warn:#f0ab4e;--text:#eef1f8;--muted:#8891a7;
+  --soft:rgba(255,255,255,.03);--inset:rgba(0,0,0,.22);
+  --shadow:0 4px 18px rgba(0,0,0,.35);
+  --tint-accent:rgba(91,140,255,.12);--tint-green:rgba(47,217,153,.13);--tint-red:rgba(255,92,122,.13);--tint-warn:rgba(240,171,78,.11);--tint-mute:rgba(136,145,167,.13);
+  --r:14px;--r-sm:9px;
 }
 :root[data-theme="light"]{
-  --bg:#f4f5f7;--card:#ffffff;--card2:#fafafb;--line:#dfe2e8;--line-soft:#e8eaee;
-  --accent:#b8600a;--accent-dim:#e0a563;
-  --green:#0f8f5c;--red:#c8324a;--warn:#a3690f;--text:#15171b;--muted:#666d78;
-  --soft:rgba(15,20,30,.02);--inset:rgba(15,20,30,.035);
-  --shadow:0 1px 6px rgba(20,25,35,.06);
-  --tint-accent:rgba(184,96,10,.08);--tint-green:rgba(15,143,92,.09);--tint-red:rgba(200,50,74,.08);--tint-warn:rgba(163,105,15,.08);--tint-mute:rgba(102,109,120,.08);
+  --bg:#f2f4f9;--card:#ffffff;--card2:#f8f9fd;--line:#e1e5f0;--line-soft:#ebeef6;
+  --accent:#3457d5;--accent-dim:#9fb3ea;
+  --green:#0f9d6f;--red:#d93a58;--warn:#b5790f;--text:#131624;--muted:#636d84;
+  --soft:rgba(20,30,60,.025);--inset:rgba(20,30,60,.04);
+  --shadow:0 4px 16px rgba(30,45,90,.08);
+  --tint-accent:rgba(52,87,213,.08);--tint-green:rgba(15,157,111,.09);--tint-red:rgba(217,58,88,.08);--tint-warn:rgba(181,121,15,.09);--tint-mute:rgba(99,109,132,.09);
 }
-*{box-sizing:border-box;margin:0;padding:0;font-family:"IBM Plex Sans Arabic",system-ui,-apple-system,"Segoe UI",Roboto,Tahoma,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Cairo",system-ui,-apple-system,"Segoe UI",Roboto,Tahoma,sans-serif}
 html{color-scheme:dark}
 html[data-theme="light"]{color-scheme:light}
-::selection{background:var(--accent);color:#0a0a0a}
+::selection{background:var(--accent);color:#fff}
 ::-webkit-scrollbar{width:9px;height:9px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--line);border-radius:20px}
 ::-webkit-scrollbar-thumb:hover{background:var(--muted)}
-body{background:var(--bg);color:var(--text);display:flex;flex-direction:column;min-height:100vh;padding:14px;gap:12px;max-width:1120px;margin:0 auto;width:100%;transition:background-color .2s,color .2s}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.35}}
-.header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 18px;background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+body{background:var(--bg);color:var(--text);display:flex;flex-direction:column;min-height:100vh;padding:14px;gap:14px;max-width:1120px;margin:0 auto;width:100%;transition:background-color .2s,color .2s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.3}}
+.header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 20px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
 .hright{display:flex;align-items:center;gap:14px}
-.logo{font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px;letter-spacing:0}
-.logo i{color:var(--accent);font-size:16px}
-.badge{background:transparent;border:1px solid var(--accent);color:var(--accent);font-size:9.5px;padding:3px 8px;border-radius:4px;font-weight:700;letter-spacing:.6px}
+.logo{font-size:19px;font-weight:800;display:flex;align-items:center;gap:9px;letter-spacing:-.2px}
+.logo i{color:var(--accent);font-size:17px}
+.badge{background:var(--accent);color:#fff;font-size:9.5px;padding:3px 9px;border-radius:20px;font-weight:700;letter-spacing:.5px}
 #status{font-size:11px;color:var(--muted);font-weight:500;display:flex;align-items:center;gap:6px}
-#status i{font-size:7px;animation:pulseDot 2.4s ease-in-out infinite}
-.theme-btn{width:34px;height:34px;padding:0;border-radius:var(--r-sm);background:transparent;border:1px solid var(--line);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:border-color .15s,color .15s}
-.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
-.grid{display:grid;grid-template-columns:1fr;gap:12px}
+#status i{font-size:7px;animation:pulseDot 2.4s ease-in-out infinite;color:var(--green)}
+.theme-btn{width:36px;height:36px;padding:0;border-radius:50%;background:var(--soft);border:1px solid var(--line);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:border-color .15s,color .15s,background .15s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--tint-accent)}
+.grid{display:grid;grid-template-columns:1fr;gap:14px}
 @media(min-width:992px){.grid{grid-template-columns:1.7fr 1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0;transition:border-color .2s}
-.card-title{font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding-bottom:10px;border-bottom:1px solid var(--line-soft)}
-.card-title>span:first-child{display:flex;align-items:center;gap:8px}
-.card-title i{color:var(--accent);font-size:12px}
-label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:500}
-select,input,button{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);color:var(--text);font-size:13px;outline:none;transition:border-color .15s;font-family:inherit;font-weight:500}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:13px;min-width:0;box-shadow:var(--shadow);transition:border-color .2s}
+.card-title{font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--text)}
+.card-title>span:first-child{display:flex;align-items:center;gap:9px}
+.card-title i{color:var(--accent);font-size:13px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;background:var(--tint-accent);border-radius:8px}
+label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:6px;font-weight:600}
+select,input,button{width:100%;padding:11px 13px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r-sm);color:var(--text);font-size:13.5px;outline:none;transition:border-color .15s,box-shadow .15s;font-family:inherit;font-weight:500}
+select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238891a7' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 13px center;padding-left:32px}
 select:hover,input:hover{border-color:var(--muted)}
-select:focus,input:focus,button:focus-visible{border-color:var(--accent)}
+select:focus,input:focus,button:focus-visible{border-color:var(--accent);box-shadow:0 0 0 3px var(--tint-accent)}
 select{cursor:pointer}
-button.primary{background:var(--accent);border:1px solid var(--accent);font-weight:700;cursor:pointer;color:#100900;display:flex;justify-content:center;align-items:center;gap:8px;transition:opacity .15s,transform .12s}
-button.primary:hover:not(:disabled){opacity:.88}
-button.primary:active:not(:disabled){transform:scale(.99)}
+button.primary{background:var(--accent);border:1px solid var(--accent);font-weight:700;cursor:pointer;color:#fff;display:flex;justify-content:center;align-items:center;gap:8px;transition:opacity .15s,transform .1s,box-shadow .15s;box-shadow:0 3px 10px var(--tint-accent)}
+button.primary:hover:not(:disabled){opacity:.9;box-shadow:0 5px 16px var(--tint-accent)}
+button.primary:active:not(:disabled){transform:scale(.98)}
 button.primary:disabled{opacity:.4;cursor:wait}
 .chart{height:420px;width:100%;border-radius:var(--r-sm);overflow:hidden;border:1px solid var(--line)}
-.signal{background:var(--card2);border:1px solid var(--line-soft);border-radius:var(--r);padding:15px;display:none;flex-direction:column;gap:11px;animation:fadeIn .2s ease both}
-.sbadge{padding:5px 14px;border-radius:var(--r-sm);font-weight:700;font-size:12px;border:1px solid;letter-spacing:.4px}
+.signal{background:var(--card2);border:1px solid var(--line-soft);border-radius:var(--r);padding:16px;display:none;flex-direction:column;gap:12px;animation:fadeIn .25s ease both}
+.sbadge{padding:5px 15px;border-radius:20px;font-weight:700;font-size:12px;border:1px solid;letter-spacing:.3px}
 .buy{background:var(--tint-green);color:var(--green);border-color:var(--green)}
 .sell{background:var(--tint-red);color:var(--red);border-color:var(--red)}
 .wait{background:var(--tint-mute);color:var(--muted);border-color:var(--muted)}
-.row{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;background:var(--inset);padding:9px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:500}
+.row{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;background:var(--inset);padding:10px 13px;border-radius:var(--r-sm);font-size:12px;font-weight:500}
 .row b,.details b,.tgrid b{font-variant-numeric:tabular-nums}
-.details{font-size:13px;line-height:2;font-weight:500}
+.details{font-size:13.5px;line-height:2.1;font-weight:500}
 .details b{font-weight:700}
-.reasons{font-size:11px;color:var(--muted);line-height:1.9;padding-right:18px}
-.note{font-size:11px;color:var(--muted);line-height:1.8;font-weight:500}
-.err{display:none;font-size:12px;color:var(--red);background:var(--tint-red);padding:10px 13px;border-radius:var(--r-sm);font-weight:600;border:1px solid rgba(229,86,110,.25)}
+.reasons{font-size:11.5px;color:var(--muted);line-height:1.9;padding-right:18px}
+.note{font-size:11.5px;color:var(--muted);line-height:1.85;font-weight:500}
+.err{display:none;font-size:12px;color:var(--red);background:var(--tint-red);padding:11px 14px;border-radius:var(--r-sm);font-weight:600;border:1px solid rgba(255,92,122,.25)}
 .calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
-.result{display:none;padding:12px 14px;background:var(--tint-accent);border:1px solid var(--accent);border-radius:var(--r-sm);font-size:12px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
-.warn{font-size:11px;color:var(--warn);background:var(--tint-warn);border:1px solid rgba(224,165,66,.2);border-radius:var(--r);padding:12px 15px;line-height:1.9;font-weight:500}
-.timer{display:none;flex-direction:column;gap:10px;background:var(--tint-accent);border:1px solid var(--accent);border-radius:var(--r);padding:13px 15px;animation:fadeIn .15s ease both}
+.result{display:none;padding:13px 15px;background:var(--tint-accent);border:1px solid var(--accent);border-radius:var(--r-sm);font-size:12.5px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.warn{font-size:11.5px;color:var(--warn);background:var(--tint-warn);border:1px solid rgba(240,171,78,.22);border-radius:var(--r);padding:13px 16px;line-height:1.9;font-weight:500}
+.timer{display:none;flex-direction:column;gap:11px;background:var(--tint-accent);border:1px solid var(--accent);border-radius:var(--r);padding:14px 16px;animation:fadeIn .2s ease both}
 .timer.done{background:var(--tint-green);border-color:var(--green)}
 .timer.done #timerClock{color:var(--green)}
-.bar{height:5px;background:var(--inset);border-radius:6px;overflow:hidden}
-.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .5s ease;border-radius:6px}
-.chip{padding:3px 10px;border-radius:var(--r-sm);font-size:10.5px;font-weight:700;border:1px solid;letter-spacing:.2px}
-.tabs{display:flex;gap:2px;background:var(--card);padding:3px;border-radius:var(--r);border:1px solid var(--line)}
-.tab{flex:1;padding:10px;border-radius:var(--r-sm);background:transparent;border:none;color:var(--muted);font-weight:700;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:7px;font-size:12.5px;transition:background-color .15s,color .15s}
-.tab.active{background:var(--accent);color:#100900}
+.bar{height:6px;background:var(--inset);border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .5s ease;border-radius:8px}
+.chip{padding:4px 11px;border-radius:20px;font-size:10.5px;font-weight:700;border:1px solid;letter-spacing:.2px}
+.tabs{display:flex;gap:4px;background:var(--card);padding:4px;border-radius:var(--r);border:1px solid var(--line);box-shadow:var(--shadow)}
+.tab{flex:1;padding:11px;border-radius:var(--r-sm);background:transparent;border:none;color:var(--muted);font-weight:700;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:7px;font-size:13px;transition:background-color .15s,color .15s}
+.tab.active{background:var(--accent);color:#fff}
 .tab:not(.active):hover{color:var(--text)}
-.tcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:11px;animation:fadeIn .2s ease both}
+.tcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:17px;display:flex;flex-direction:column;gap:12px;animation:fadeIn .25s ease both;box-shadow:var(--shadow)}
 .tcard.buy-c{border-inline-start:3px solid var(--green)}
 .tcard.sell-c{border-inline-start:3px solid var(--red)}
 .thead{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.thead b{font-size:14.5px;font-weight:700}
-.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}
-.tgrid div{background:var(--inset);border-radius:var(--r-sm);padding:9px 11px;font-weight:500}
-.tgrid b{display:block;font-size:13px;margin-top:2px;font-weight:700}
+.thead b{font-size:15px;font-weight:800}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;font-size:12px}
+.tgrid div{background:var(--inset);border-radius:var(--r-sm);padding:10px 12px;font-weight:500}
+.tgrid b{display:block;font-size:13.5px;margin-top:3px;font-weight:700}
 .tbtns{display:flex;gap:8px;flex-wrap:wrap}
 .tbtns button{width:auto;flex:1;min-width:140px;padding:10px;font-size:12px;cursor:pointer}
-button.ghost{width:auto;align-self:flex-start;padding:6px 13px;font-size:11px;cursor:pointer;color:var(--muted);background:transparent;font-weight:600;border:1px solid var(--line)}
+button.ghost{width:auto;align-self:flex-start;padding:7px 14px;font-size:11px;cursor:pointer;color:var(--muted);background:transparent;font-weight:600;border:1px solid var(--line)}
 button.ghost:hover{color:var(--red);border-color:var(--red)}
 button.primary:disabled{cursor:not-allowed}
-#chartScanBtn{background:transparent!important;color:var(--accent)!important;border:1px solid var(--accent)!important}
+#chartScanBtn{background:var(--tint-accent)!important;color:var(--accent)!important;border:1px dashed var(--accent)!important;box-shadow:none}
 #chartScanBtn:hover:not(:disabled){background:var(--tint-accent)!important;opacity:1}
 details.note{cursor:pointer}
 details.note summary{font-weight:600;color:var(--text);cursor:pointer}
@@ -156,6 +157,7 @@ document.documentElement.dataset.theme=t;})();
         </optgroup>
         <optgroup label="فوركس — متقاطعة">
           <option value="EURGBP">EUR/GBP</option><option value="EURJPY">EUR/JPY</option><option value="AUDJPY">AUD/JPY</option>
+          <option value="EURCHF">EUR/CHF</option><option value="GBPCAD">GBP/CAD</option><option value="GBPCHF">GBP/CHF</option><option value="CADCHF">CAD/CHF</option>
         </optgroup>
         <optgroup label="معادن وطاقة">
           <option value="XAUUSD">XAU/USD (الذهب)</option><option value="XAGUSD">XAG/USD (الفضة)</option>
@@ -264,6 +266,7 @@ document.documentElement.dataset.theme=t;})();
     <div class="bar" id="scanBar" style="display:none"><i id="scanFill"></i></div>
   </div>
   <div id="openTrades" class="card" style="display:flex"></div>
+  <div id="perfHistory" class="card" style="display:flex"></div>
   <div id="diagOut" class="card" style="display:none"></div>
   <div id="scanOut" style="display:flex;flex-direction:column;gap:12px"></div>
 </div>
@@ -294,6 +297,10 @@ const PAIRS = {
   EURGBP: fx("EURGBP","EUR","GBP",[0.6,1.0]),
   EURJPY: fx("EURJPY","EUR","JPY",[100,250]),
   AUDJPY: fx("AUDJPY","AUD","JPY",[50,150]),
+  EURCHF: fx("EURCHF","EUR","CHF",[0.85,1.1]),
+  GBPCAD: fx("GBPCAD","GBP","CAD",[1.5,2.0]),
+  GBPCHF: fx("GBPCHF","GBP","CHF",[1.0,1.35]),
+  CADCHF: fx("CADCHF","CAD","CHF",[0.55,0.75]),
   XAUUSD:  {tv:"OANDA:XAUUSD",    src:[["fut","XAUUSDT"],["spot","PAXGUSDT"]], dec:2, pip:0.1,    pipVal:10,     range:[1000,10000],   atr:[0.03,3], ref:{t:"paxg"}, tol:0.03, note:"عقد الذهب الدائم"},
   XAGUSD:  {tv:"OANDA:XAGUSD",    src:[["fut","XAGUSDT"]],                      dec:3, pip:0.01,   pipVal:50,     range:[10,500],       atr:[0.05,8], note:"عقد الفضة الدائم"},
   USOIL:   {tv:"TVC:USOIL",       src:[["fut","CLUSDT"]],                       dec:2, pip:0.01,   pipVal:10,     range:[20,250],       atr:[0.05,6], note:"عقد WTI الدائم"},
@@ -1011,6 +1018,7 @@ function tickOpenTradeTimers() {
       if (t && !t.notified) {
         t.notified = true; changed = true;
         notifyUser(pairName(t.key) + " — انتهى وقت الخروج الإجباري (90 دقيقة)، راجع الصفقة الآن");
+        setTimeout(() => checkTradeNow(t.id), 0);   // محاولة إغلاق تلقائي بالسعر اللحظي عند لحظة الانتهاء بالظبط
       }
     }
   });
@@ -1018,24 +1026,57 @@ function tickOpenTradeTimers() {
 }
 setInterval(tickOpenTradeTimers, 1000);
 tickOpenTradeTimers();
+function closeTrade(t, outcome, price) {
+  t.status = "closed"; t.outcome = outcome; t.exitPrice = price; t.closedAt = Date.now();
+}
+function isWin(outcome) { return outcome === "tp1" || outcome === "tp2" || outcome === "expired_profit"; }
+const OUTCOME_LABEL = {tp1: "✅ وصل الهدف 1", tp2: "✅ وصل الهدف 2", sl: "❌ ضرب الوقف", expired_profit: "⏱ انتهى الوقت باتجاه مربح", expired_loss: "⏱ انتهى الوقت باتجاه خاسر"};
 async function renderOpenTrades() {
-  const box = $("openTrades"), list = loadTrades().sort((a, b) => (a.enteredAt + 90 * 60000) - (b.enteredAt + 90 * 60000));
-  if (!list.length) { box.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-list-check"></i> الصفقات المفتوحة</span></div><p class="note">لا توجد صفقات مسجّلة الآن. لما تدخل صفقة من نتائج الفحص ودوس "دخلت الصفقة دي" هتظهر هنا وتفضل محفوظة حتى لو قفلت الموقع (محفوظة في متصفح هذا الجهاز فقط).</p>'; return; }
-  box.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-list-check"></i> الصفقات المفتوحة (' + list.length + ')</span></div><p class="note">هتوصلك رسالة تنبيه (وهزة لو موبايل) لما وقت الخروج الإجباري (90 دقيقة) يخلص لأي صفقة، بشرط إن المتصفح مسموحله بالإشعارات والصفحة لسه مفتوحة أو شغالة في الخلفية — الإشعارات مش مضمونة 100% لو المتصفح اتقفل تمامًا.</p>' + (await Promise.all(list.map(tradeRowHTML))).join("");
+  const all = loadTrades();
+  const open = all.filter(t => t.status !== "closed").sort((a, b) => (a.enteredAt + 90 * 60000) - (b.enteredAt + 90 * 60000));
+  const closed = all.filter(t => t.status === "closed").sort((a, b) => b.closedAt - a.closedAt);
+  const box = $("openTrades");
+  if (!open.length) box.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-list-check"></i> الصفقات المفتوحة</span></div><p class="note">لا توجد صفقات مفتوحة الآن. لما تدخل صفقة من نتائج الفحص ودوس "دخلت الصفقة دي" هتظهر هنا، وتفضل محفوظة حتى لو قفلت الموقع (محفوظة في متصفح هذا الجهاز فقط).</p>';
+  else box.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-list-check"></i> الصفقات المفتوحة (' + open.length + ')</span></div><p class="note">هتوصلك رسالة تنبيه (وهزة لو موبايل) لما وقت الخروج الإجباري (90 دقيقة) يخلص، وهتتقفل تلقائيًا بالنتيجة الحقيقية وقتها. دوس "تحقق من السعر الآن" في أي وقت لإغلاقها فورًا لو وصلت هدفها أو وقفها.</p>' + (await Promise.all(open.map(tradeRowHTML))).join("");
+
+  const perf = $("perfHistory");
+  if (!closed.length) {
+    perf.innerHTML = '<div class="card-title"><span><i class="fa-solid fa-chart-pie"></i> سجل الأداء الحقيقي</span></div><p class="note">لسه مفيش صفقة اتقفلت. بمجرد ما أي صفقة تصل هدفها أو وقفها أو ينتهي وقتها، هتتسجل هنا تلقائيًا بالنتيجة الفعلية — ده رقم حقيقي مش باكتست.</p>';
+  } else {
+    const wins = closed.filter(t => isWin(t.outcome)).length, losses = closed.length - wins;
+    const rate = Math.round(wins / closed.length * 100);
+    const rows = closed.slice(0, 15).map(t => {
+      const win = isWin(t.outcome), p = PAIRS[t.key];
+      return `<div class="row"><span>${pairName(t.key)} ${t.dir === 1 ? "BUY" : "SELL"}</span><span style="color:${win ? "var(--green)" : "var(--red)"}">${OUTCOME_LABEL[t.outcome] || t.outcome}</span><span class="note">${new Date(t.closedAt).toLocaleString("ar-EG", {day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"})}</span></div>`;
+    }).join("");
+    perf.innerHTML = `<div class="card-title"><span><i class="fa-solid fa-chart-pie"></i> سجل الأداء الحقيقي (${closed.length})</span></div>
+      <div class="row"><span>فوز: <b style="color:var(--green)">${wins}</b></span><span>خسارة: <b style="color:var(--red)">${losses}</b></span><span>نسبة النجاح الفعلية: <b>${rate}%</b></span></div>
+      <p class="note">هذا الرقم من صفقات حقيقية ظهرت وتابعناها فعليًا من لحظة ظهورها، وليس باكتست على بيانات سابقة.</p>
+      ${rows}`;
+  }
 }
 async function checkTradeNow(id) {
-  const list = loadTrades(), t = list.find(x => x.id === id); if (!t) return;
+  const list = loadTrades(), t = list.find(x => x.id === id); if (!t || t.status === "closed") return;
   const st = $(id + "_status"); if (st) st.textContent = "جاري التحقق من السعر...";
   try {
     const p = PAIRS[t.key], sym = (p.src.find(s => s[0] === "kraken") || p.src[0])[1];
     const lp = await livePrice(p, sym);
     if (!lp) { if (st) st.textContent = "تعذر جلب السعر الحالي الآن، حاول تاني بعد شوية."; return; }
     const dir = t.dir, hitSL = dir === 1 ? lp <= t.sl : lp >= t.sl, hitTP1 = dir === 1 ? lp >= t.tp1 : lp <= t.tp1;
-    const prog = Math.max(0, Math.min(100, Math.round(Math.abs(lp - t.e) / Math.abs(t.tp1 - t.e) * 100 * (dir === 1 ? (lp > t.e ? 1 : -1) : (lp < t.e ? 1 : -1)))));
-    let msg = `السعر الحالي: ${lp.toFixed(p.dec)} • `;
-    if (hitSL) msg += "⚠ السعر لمس أو تخطى وقف الخسارة.";
-    else if (hitTP1) msg += "✅ السعر وصل الهدف الأول أو تخطاه.";
-    else msg += (prog >= 0 ? "تقدم نحو الهدف 1 تقريباً " + prog + "%" : "السعر تحرك عكس الصفقة");
+    const expired = Date.now() >= t.enteredAt + 90 * 60000;
+    let closedNow = false, msg;
+    if (hitSL) { closeTrade(t, "sl", lp); msg = `❌ أُغلقت: السعر لمس وقف الخسارة عند ${lp.toFixed(p.dec)}`; closedNow = true; }
+    else if (hitTP1) { closeTrade(t, "tp1", lp); msg = `✅ أُغلقت: السعر وصل الهدف الأول عند ${lp.toFixed(p.dec)}`; closedNow = true; }
+    else if (expired) {
+      const favorable = dir === 1 ? lp > t.e : lp < t.e;
+      closeTrade(t, favorable ? "expired_profit" : "expired_loss", lp);
+      msg = `⏱ أُغلقت بانتهاء الوقت (90 دقيقة): السعر ${lp.toFixed(p.dec)} — ${favorable ? "في اتجاه مربح جزئيًا" : "في اتجاه خاسر جزئيًا"} من غير ما يوصل هدف أو وقف`;
+      closedNow = true;
+    } else {
+      const prog = Math.max(0, Math.min(100, Math.round(Math.abs(lp - t.e) / Math.abs(t.tp1 - t.e) * 100 * (dir === 1 ? (lp > t.e ? 1 : -1) : (lp < t.e ? 1 : -1)))));
+      msg = `السعر الحالي: ${lp.toFixed(p.dec)} • ` + (prog >= 0 ? "تقدم نحو الهدف 1 تقريباً " + prog + "%" : "السعر تحرك عكس الصفقة");
+    }
+    if (closedNow) { saveTrades(list); renderOpenTrades(); return; }
     if (st) st.textContent = msg;
   } catch (e) { if (st) st.textContent = "تعذر التحقق: " + e.message; }
 }
