@@ -251,7 +251,7 @@ document.documentElement.dataset.theme=t;})();
 <div id="viewScan" style="display:none;flex-direction:column;gap:14px">
   <div class="card">
     <div class="card-title"><span><i class="fa-solid fa-bullseye"></i> الصفقات — ماسح الفرص الفني (Joe BBG)</span></div>
-    <p class="note">يفحص كل الأزواج (15د + 1س + 4س) ولا يعرض إلا الصفقة التي: (1) اتجاه 1س و4س معها، (2) إشارة 15د قائمة والسعر غير بعيد عن EMA20، (3) نجحت تاريخياً بنسبة مقبولة على نفس الزوج. الصفقة قصيرة: وقف 1×ATR، هدف 1.5×ATR، وخروج بسعر السوق بعد <b>90 دقيقة كحد أقصى</b>. الحساسية تحدد مدى صرامة الشروط، وتحت النتائج ستجد سبب غياب الإشارة لكل زوج وقائمة مراقبة بالأقرب لتكوين فرصة.</p>
+    <p class="note">يفحص كل الأزواج (15د + 1س + 4س) ولا يعرض إلا الصفقة التي: (1) اتجاه 1س و4س معها، (2) إشارة 15د قائمة والسعر غير بعيد عن EMA20، (3) نجحت تاريخياً بنسبة مقبولة على نفس الزوج. وقف 1×ATR، هدف 1.5×ATR، وتفضل الصفقة مفتوحة حتى تصل هدفها أو وقفها فعليًا — بلا خروج زمني إجباري. الحساسية تحدد مدى صرامة الشروط، وتحت النتائج ستجد سبب غياب الإشارة لكل زوج وقائمة مراقبة بالأقرب لتكوين فرصة.</p>
     <div>
       <label for="scanMode">الحساسية</label>
       <select id="scanMode">
@@ -668,8 +668,9 @@ async function calcLot() {
 }
 
 // ================== الصفقات: ماسح الفرص ==================
-// صفقة قصيرة: وقف 1×ATR، هدف1 1.5×ATR، هدف2 2.5×ATR، خروج زمني بعد 6 شموع 15د = 90 دقيقة
-const SCAN = {SL: 1, TP1: 1.5, TP2: 2.5, H: 6};
+// لا يوجد خروج زمني إجباري: الصفقة تفضل مفتوحة لحد ما توصل هدفها أو وقفها فعليًا. الوقف والأهداف من ATR وقت الدخول.
+// SAFETY_H: حد أقصى بحت لحساب الباكتست (عشان الحلقة متفضلش شغالة للأبد لو صفقة قديمة جداً ماتحققتش أبداً)، مش قاعدة تداول
+const SCAN = {SL: 1, TP1: 1.5, TP2: 2.5, SAFETY_H: 400};
 const MODES = {
   strict:   {minScore: 3, minN: 15, minHit: 0.55, minExp: 0.20, need4h: true,  maxDist: 1.2, rsiMax: 65, confirm: 2},
   balanced: {minScore: 3, minN: 12, minHit: 0.45, minExp: 0.10, need4h: true,  maxDist: 1.8, rsiMax: 70, confirm: 1},
@@ -823,9 +824,10 @@ function confluence(c15, i, dir, entry, target) {
   ];
   return {score: items.reduce((a, x) => a + x.v, 0), total: items.length, items};
 }
-// اختبار تاريخي لنفس الشروط بالضبط، صفقات غير متداخلة، ولو لمس الوقف والهدف في شمعة واحدة يُحتسب الوقف
+// اختبار تاريخي لنفس الشروط بالضبط، صفقات غير متداخلة. كل صفقة تُتابع حتى تلمس وقفها أو هدفها فعليًا (بلا خروج زمني إجباري)
+// ولو لمس الوقف والهدف في نفس الشمعة يُحتسب الوقف (تحفظًا). SAFETY_H حد حسابي فقط؛ الصفقة النادرة اللي ما تحققتش خلاله تُستبعد من الإحصاء بدل ما تُحسب نتيجة وهمية
 function scalpBacktest(c15, h1, h4, cfg) {
-  const memo = {h1: {}, h4: {}}, out = [], H = SCAN.H;
+  const memo = {h1: {}, h4: {}}, out = [], H = SCAN.SAFETY_H;
   for (let i = 210; i < c15.length - H; i++) {
     const k1 = alignIdx(h1, c15[i].t), k4 = alignIdx(h4, c15[i].t);
     if (k1 < 209 || k4 < 209) continue;
@@ -838,7 +840,7 @@ function scalpBacktest(c15, h1, h4, cfg) {
       if (hitSL) { res = {r: -1, b: j - i, o: "sl"}; break; }
       if (hitTP) { res = {r: SCAN.TP1, b: j - i, o: "tp"}; break; }
     }
-    if (!res) res = {r: (c15[i + H].c - e) * s.dir / risk, b: H, o: "to"};   // خروج زمني بسعر الإغلاق
+    if (!res) { i++; continue; }   // لم تتحقق خلال الحد الحسابي — تُستبعد من الإحصاء، لا تُحسب كنتيجة
     out.push(res);
     i += res.b;                                                              // نتجاوز مدة الصفقة حتى لا تتداخل العينات
   }
@@ -863,7 +865,7 @@ async function scanPair(key, cfg) {
   try { warns = validate(p, "15m", c15, live.a); } catch (e) { return {key, status: "fail", why: e.message}; }
   if (warns.length) return {key, status: "filtered", why: warns[0]};
   const bt = scalpBacktest(c15, h1, h4, cfg), n = bt.length;
-  const tp = bt.filter(x => x.o === "tp"), sl = bt.filter(x => x.o === "sl").length, to = n - tp.length - sl;
+  const tp = bt.filter(x => x.o === "tp"), sl = bt.filter(x => x.o === "sl").length;
   const hit = n ? tp.length / n : 0, exp = n ? bt.reduce((a, x) => a + x.r, 0) / n : 0, lb = wilson(tp.length, n);
   if (n < cfg.minN || hit < cfg.minHit || exp < cfg.minExp)
     return {key, status: "filtered", why: `نجاح تاريخي ${pct(hit)} من ${n} حالة، عائد ${exp.toFixed(2)}R — لا يجتاز الشروط`};
@@ -878,7 +880,7 @@ async function scanPair(key, cfg) {
   const tp1v = e + dir * risk * SCAN.TP1;
   const conf = confluence(c15, c15.length - 1, dir, e, tp1v);
   return {key, status: "signal", dir, e, live: isLive, sl: e - dir * risk, tp1: tp1v, tp2: e + dir * risk * SCAN.TP2,
-    n, hit, exp, lb, sls: sl, tos: to, med: quant(tp.map(x => x.b), .5) * 15, slPips: risk / p.pip, conf};
+    n, hit, exp, lb, sls: sl, med: quant(tp.map(x => x.b), .5) * 15, slPips: risk / p.pip, conf};
 }
 
 function pairName(key) {
@@ -906,13 +908,11 @@ async function cardHTML(r, uid) {
       <div>الهدف 1 (1:1.5)<b style="color:var(--green)">${r.tp1.toFixed(d)}</b></div>
       <div>الهدف 2 (1:2.5)<b style="color:var(--green)">${r.tp2.toFixed(d)}</b></div>
       <div>المدة المتوقعة للهدف 1<b>${fmtDur(r.med)}</b></div>
-      <div>الخروج الإجباري<b>بعد ساعة ونصف</b></div>
     </div>
-    <p class="note" style="color:var(--warn)">⚠ هذه ليست توصية مضمونة، وأي صفقة قد تنعكس رغم استيفاء كل الشروط. الوقف موجود عشان لو انعكست الصفقة تكون الخسارة محدودة ومعروفة مقدماً — لا تلغِه ولا توسّعه يدوياً.</p><p class="note">إحصاء تاريخي لنفس الشروط على هذا الزوج (${r.n} صفقة غير متداخلة): الهدف 1 تحقق في ${pct(r.hit)}، الوقف في ${pct(r.sls / r.n)}، وخروج زمني في ${pct(r.tos / r.n)} • متوسط العائد ${r.exp >= 0 ? "+" : ""}${r.exp.toFixed(2)}R (1R = المخاطرة) • الحد المحافظ لنسبة النجاح ${pct(r.lb)}</p>
+    <p class="note" style="color:var(--warn)">⚠ هذه ليست توصية مضمونة، وأي صفقة قد تنعكس رغم استيفاء كل الشروط. الوقف موجود عشان لو انعكست الصفقة تكون الخسارة محدودة ومعروفة مقدماً — لا تلغِه ولا توسّعه يدوياً.</p><p class="note">إحصاء تاريخي لنفس الشروط على هذا الزوج (${r.n} صفقة وصلت هدفها أو وقفها فعليًا): الهدف 1 تحقق في ${pct(r.hit)}، الوقف في ${pct(r.sls / r.n)} • متوسط العائد ${r.exp >= 0 ? "+" : ""}${r.exp.toFixed(2)}R (1R = المخاطرة) • الحد المحافظ لنسبة النجاح ${pct(r.lb)}</p>
     <p class="note">${lot > 0 ? `لوت مقترح بمخاطرة ${rp}% من $${bal}: <b>${lot.toFixed(lot < 1 ? 3 : 2)}</b> (وقف ${Math.round(r.slPips)} نقطة${approx ? "، قيمة النقطة تقريبية" : ""}) • ` : ""}الصفقة صالحة حتى ${until} (${minsLeft} دقيقة من الآن) — بعدها أعد الفحص.</p>
     <div class="tbtns" data-role="mainBtns">
-      <button type="button" class="primary" data-act="timer" data-min="${r.med}" data-lbl="${name} • الهدف 1"><i class="fa-solid fa-stopwatch"></i> تايمر المدة المتوقعة</button>
-      <button type="button" data-act="timer" data-min="90" data-lbl="${name} • خروج زمني"><i class="fa-solid fa-hourglass-end"></i> تايمر الخروج (90د)</button>
+      <button type="button" class="primary" data-act="timer" data-min="${r.med}" data-lbl="${name} • الوقت المتوقع للوصول للهدف"><i class="fa-solid fa-stopwatch"></i> تايمر الوقت المتوقع</button>
       <button type="button" data-act="go" data-key="${r.key}"><i class="fa-solid fa-chart-line"></i> افتح التحليل</button>
     </div>
     <div class="tbtns" data-role="mainBtns">
