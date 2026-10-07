@@ -74,8 +74,6 @@ button,input,select{font-family:inherit;color:inherit}
 .sig-badge.buy{background:var(--green-dim);color:var(--green);border-color:var(--green);box-shadow:0 0 20px var(--green-glow)}
 .sig-badge.sell{background:var(--red-dim);color:var(--red);border-color:var(--red);box-shadow:0 0 20px var(--red-glow)}
 .sig-badge.wait{background:var(--glass-3);color:var(--text-dim);border-color:var(--border)}
-.sig-badge.confirm{background:var(--yellow-dim);color:var(--yellow);border-color:var(--yellow);box-shadow:0 0 20px var(--yellow-glow)}
-.sig-badge.hold{background:var(--glass-3);color:var(--text-dim);border-color:var(--border)}
 .sig-strat{font-size:11.5px;color:var(--text-dim);font-weight:600}
 .confidence{padding:16px;border-radius:16px;background:var(--glass-2);border:1px solid var(--border)}
 .conf-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:10px}
@@ -137,15 +135,6 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
 .empty{text-align:center;padding:48px 20px}
 .empty i{font-size:52px;color:var(--text-mute);margin-bottom:16px;display:block;opacity:.5}
 .empty p{color:var(--text-dim);font-size:13px;line-height:1.9}
-.quick-signal{padding:16px;background:var(--glass-2);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;gap:12px;border-inline-start:3px solid var(--border);cursor:pointer}
-.quick-signal.buy{border-inline-start-color:var(--green)}
-.quick-signal.sell{border-inline-start-color:var(--red)}
-.qs-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.qs-pair{font-weight:800;font-size:15px}
-.qs-conf{font-weight:900;font-size:18px}
-.qs-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:10.5px}
-.qs-row div{background:rgba(0,0,0,.25);padding:8px 10px;border-radius:8px;text-align:center}
-.qs-row b{display:block;font-size:12.5px;margin-top:3px;font-weight:800}
 .enter-btn{margin-top:12px;padding:14px 20px;border-radius:14px;background:linear-gradient(135deg,var(--green),#059669);border:none;color:#fff;font-weight:800;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;box-shadow:0 8px 24px var(--green-glow)}
 .enter-btn:disabled{cursor:default}
 .enter-btn.success{background:var(--green-dim);color:var(--green);border:1.5px solid var(--green);box-shadow:none}
@@ -153,13 +142,6 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
 .session-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
 .session-name{font-weight:800;font-size:14.5px}
 .session-badge{padding:4px 12px;border-radius:20px;font-size:10.5px;font-weight:800}
-.session-info{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
-.session-info-box{background:rgba(0,0,0,.25);padding:10px 12px;border-radius:10px;font-size:10.5px;color:var(--text-dim);font-weight:600}
-.session-info-box b{display:block;font-size:13px;color:var(--text);margin-top:3px;font-weight:800}
-.session-countdown{padding:10px;background:rgba(0,0,0,.25);border-radius:10px;font-size:11.5px;text-align:center;font-weight:700;margin-bottom:10px}
-.session-pairs{display:flex;flex-wrap:wrap;gap:6px}
-.session-pair-chip{font-size:10.5px;padding:5px 12px;background:var(--glass-3);border:1px solid var(--border);border-radius:20px;font-weight:600}
-.session-pair-chip.hot{background:var(--primary-dim);color:var(--primary);border-color:var(--border-hi)}
 .wlr{display:flex;gap:8px;flex-wrap:wrap;margin:10px 16px 0}
 .wlr button{padding:7px 14px;border-radius:20px;background:var(--primary-dim);border:1px solid var(--border-hi);color:var(--primary);font-weight:700;font-size:12px;cursor:pointer}
 .star{width:100%;margin-top:10px}
@@ -169,9 +151,6 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
 .tg{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;font-weight:700}
 .tg input{width:auto}
 .nta{width:100%;min-height:60px;padding:12px;border-radius:12px;background:rgba(0,0,0,.25);border:1px solid var(--border);font-size:12.5px;resize:vertical;color:var(--text);font-family:inherit}
-.confirm-box{padding:14px;border-radius:14px;border:1.5px solid var(--yellow);background:var(--yellow-dim);display:flex;flex-direction:column;gap:8px}
-.confirm-box .row{display:flex;justify-content:space-between;align-items:center;font-size:12px}
-.confirm-box .row b{color:var(--yellow);font-weight:800}
 @media(min-width:900px){#menuBtn{display:none}.sidebar{transform:translateX(0);width:260px}.sidebar-overlay{display:none}.main-content{margin-inline-end:260px}#closeSidebar{display:none}}
 </style>
 </head>
@@ -211,7 +190,7 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
       <button class="filter-item" data-filter="oil" type="button"><i class="fa-solid fa-oil-can"></i> نفط</button>
     </div>
   </div>
-  <div class="sidebar-foot"><b>Joe BBG Pro</b> • v11</div>
+  <div class="sidebar-foot"><b>Joe BBG Pro</b> • v12</div>
 </aside>
 
 <main class="main-content">
@@ -250,7 +229,6 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
         <option value="strict" selected>صارم — أعلى جودة</option>
         <option value="balanced">متوازن</option>
         <option value="flex">مرن</option>
-        <option value="ultra">🥇 فائق — 90%+ فقط</option>
       </select>
     </div>
     <button class="btn primary block" id="scanBtn" type="button"><i class="fa-solid fa-play"></i> ابدأ الفحص</button>
@@ -276,14 +254,6 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
 
 <section class="view" id="view-settings">
   <div class="card">
-    <div class="card-title"><i class="fa-solid fa-calculator"></i> حاسبة اللوت</div>
-    <div><label>رأس المال ($)</label><input type="number" id="capital" value="1000" min="1"></div>
-    <div><label>المخاطرة (%)</label><input type="number" id="riskPct" value="1" min="0.1" step="0.1"></div>
-    <div><label>الاستوب (نقاط)</label><input type="number" id="stopPips" value="30" min="1"></div>
-    <button class="btn primary block" id="calcBtn" type="button"><i class="fa-solid fa-calculator"></i> احسب</button>
-    <div class="result" id="calcResult"></div>
-  </div>
-  <div class="card">
     <div class="card-title"><i class="fa-solid fa-sliders"></i> إعدادات</div>
     <div><label>أقصى صفقات/يوم</label><input type="number" id="setMaxTrades" value="5" min="1"></div>
     <div><label>Cooldown بعد إغلاق (ساعات)</label><input type="number" id="setCooldown" value="4" min="1" max="24"></div>
@@ -304,7 +274,7 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
 <script src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
-/* ============ Joe BBG Core ============ */
+/* ============ Joe BBG Core v12 ============ */
 const PAIR_TYPES={FOREX:"fx",METAL:"metal",OIL:"oil",CRYPTO:"crypto"};
 function fx(name,base,quote,range,ov){ov=ov||{};const isJPY=quote==="JPY";return Object.assign({tv:"FX:"+name,type:PAIR_TYPES.FOREX,sources:[["kraken",name]],decimals:isJPY?3:5,quote,pipPerLotQuote:isJPY?1000:10,range,ref:{type:"er",base,quote},tolerance:0.02,label:base+"/"+quote,group:"forex"},ov)}
 function crypto(sym,dec,range,atr){return{tv:"BINANCE:"+sym,type:PAIR_TYPES.CRYPTO,sources:[["binance_spot",sym]],decimals:dec,pipValueUSD:1,range,atrRange:atr||[0.05,9],label:sym.replace("USDT","/USDT"),group:"crypto"}}
@@ -346,9 +316,7 @@ const REGISTRY={
   APTUSDT:crypto("APTUSDT",3,[2,100],[0.05,12]),
   ARBUSDT:crypto("ARBUSDT",4,[0.2,10],[0.05,12]),
   OPUSDT:crypto("OPUSDT",4,[0.2,20],[0.05,12]),
-  SUIUSDT:crypto("SUIUSDT",4,[0.1,10],[0.05,15]),
-  GRAMUSDT:crypto("GRAMUSDT",4,[0.1,20],[0.05,15]),
-  TONUSDT:crypto("TONUSDT",3,[0.5,100],[0.05,12])
+  SUIUSDT:crypto("SUIUSDT",4,[0.1,10],[0.05,15])
 };
 const GROUPS={
   forex:Object.keys(REGISTRY).filter(k=>REGISTRY[k].type===PAIR_TYPES.FOREX),
@@ -363,10 +331,10 @@ const getPairsByGroup=g=>GROUPS[g]||[];
 const getAllPairs=()=>Object.keys(REGISTRY);
 
 const SESSIONS=[
-  {id:"tokyo",name:"طوكيو",flag:"🇯🇵",startUTC:0,endUTC:9,quality:3,qualityLabel:"متوسطة",color:"var(--blue)"},
-  {id:"london",name:"لندن",flag:"🇬🇧",startUTC:7,endUTC:16,quality:5,qualityLabel:"ممتازة",color:"var(--green)"},
-  {id:"ny",name:"نيويورك",flag:"🇺🇸",startUTC:12,endUTC:21,quality:5,qualityLabel:"ممتازة",color:"var(--primary)"},
-  {id:"overlap",name:"لندن + نيويورك",flag:"🔥",startUTC:12,endUTC:16,quality:6,qualityLabel:"الأقوى",color:"var(--red)"}
+  {id:"tokyo",name:"طوكيو",flag:"🇯🇵",startUTC:0,endUTC:9,qualityLabel:"متوسطة",color:"var(--blue)"},
+  {id:"london",name:"لندن",flag:"🇬🇧",startUTC:7,endUTC:16,qualityLabel:"ممتازة",color:"var(--green)"},
+  {id:"ny",name:"نيويورك",flag:"🇺🇸",startUTC:12,endUTC:21,qualityLabel:"ممتازة",color:"var(--primary)"},
+  {id:"overlap",name:"لندن + نيويورك",flag:"🔥",startUTC:12,endUTC:16,qualityLabel:"الأقوى",color:"var(--red)"}
 ];
 const isSessionActive=s=>{const n=new Date().getUTCHours();if(s.startUTC<s.endUTC)return n>=s.startUTC&&n<s.endUTC;return n>=s.startUTC||n<s.endUTC};
 
@@ -385,7 +353,7 @@ function renderSessions(){
   if(active.length){
     h+='<p class="note" style="font-weight:700;margin-bottom:10px">🟢 مفتوحة الآن:</p>';
     active.forEach(s=>{
-      h+='<div class="session-box" style="border-color:'+s.color+';background:'+s.color+'dim">';
+      h+='<div class="session-box" style="border-color:'+s.color+';background:'+s.color+'22">';
       h+='<div class="session-head"><span class="session-name">'+s.flag+' '+s.name+'</span><span class="session-badge" style="background:'+s.color+';color:#fff">'+s.qualityLabel+'</span></div></div>';
     });
   }else{h+='<p class="note" style="padding:14px;background:var(--red-dim);border-radius:14px;color:var(--red);font-weight:700">⚠ لا توجد جلسات مفتوحة</p>'}
@@ -403,7 +371,7 @@ function adx(candles,p){p=p||14;const n=candles.length,o=new Array(n).fill(null)
 function highest(v,p){const o=new Array(v.length).fill(null);for(let i=p-1;i<v.length;i++){let mx=-Infinity;for(let j=i-p+1;j<=i;j++)if(v[j]>mx)mx=v[j];o[i]=mx}return o}
 function lowest(v,p){const o=new Array(v.length).fill(null);for(let i=p-1;i<v.length;i++){let mn=Infinity;for(let j=i-p+1;j<=i;j++)if(v[j]<mn)mn=v[j];o[i]=mn}return o}
 
-function computeAll(candles){const cl=candles.map(c=>c.c),hi=candles.map(c=>c.h),lo=candles.map(c=>c.l),vo=candles.map(c=>c.v||0);const m=macd(cl),b=bollinger(cl,20,2),s=stochastic(candles,14,3,3);return{length:candles.length,closes:cl,highs:hi,lows:lo,vols:vo,candles,ema20:ema(cl,20),ema50:ema(cl,50),ema200:ema(cl,200),rsi14:rsi(cl,14),atr14:atr(candles,14),macd:m.macd,macdHist:m.histogram,bbUpper:b.upper,bbLower:b.lower,stochK:s.k,stochD:s.d,adx14:adx(candles,14),highest20:highest(hi,20),lowest20:lowest(lo,20),highest50:highest(hi,50),lowest50:lowest(lo,50),avgVolume20:sma(vo,20)}}
+function computeAll(candles){const cl=candles.map(c=>c.c),hi=candles.map(c=>c.h),lo=candles.map(c=>c.l),vo=candles.map(c=>c.v||0);const m=macd(cl),b=bollinger(cl,20,2),s=stochastic(candles,14,3,3);return{length:candles.length,closes:cl,highs:hi,lows:lo,vols:vo,candles,ema20:ema(cl,20),ema50:ema(cl,50),ema200:ema(cl,200),rsi14:rsi(cl,14),atr14:atr(candles,14),macd:m.macd,macdHist:m.histogram,bbUpper:b.upper,bbLower:b.lower,stochK:s.k,stochD:s.d,adx14:adx(candles,14),highest20:highest(hi,20),lowest20:lowest(lo,20),avgVolume20:sma(vo,20)}}
 
 const TF_MS={"15m":9e5,"1h":36e5,"4h":144e5};
 const KRAKEN_INTERVAL={"15m":15,"1h":60,"4h":240};
@@ -423,115 +391,147 @@ async function fetchCandlesRaw(pair,tf){const errs=[];for(const src of pair.sour
 async function getCandles(pairKey,tf){const pair=getPair(pairKey);if(!pair)throw new Error("زوج غير معروف");const ck=pairKey+"|"+tf;const hit=cacheGet(ck);if(hit)return hit;const result=await fetchCandlesRaw(pair,tf);cacheSet(ck,result);return result}
 async function getLivePrice(sym,kind){try{if(kind==="kraken"){await krakenGate();const r=await fetch("https://api.kraken.com/0/public/Ticker?pair="+sym);const j=await r.json();if(j.error&&j.error.length)return null;const k=Object.keys(j.result)[0];const v=parseFloat(j.result[k].c[0]);return isNaN(v)?null:v}const host=kind==="binance_fut"?HOSTS.binance_fut[0]:HOSTS.binance_spot[0];const path=kind==="binance_fut"?"/fapi/v1/ticker/price":"/api/v3/ticker/price";const r=await fetch(host+path+"?symbol="+sym);const j=await r.json();const v=parseFloat(j.price);return isNaN(v)?null:v}catch(e){return null}}
 
-function analyzeAt(ind,i){if(i<200)return null;const last=ind.closes[i];const e20=ind.ema20[i],e50=ind.ema50[i],e200=ind.ema200[i];const r=ind.rsi14[i],a=ind.atr14[i],adxV=ind.adx14[i];const mh=ind.macdHist[i],mhP=ind.macdHist[i-1];const sK=ind.stochK[i],sD=ind.stochD[i];if(e20==null||e50==null||e200==null||r==null||a==null)return null;const tU=e20>e50&&last>e200,tD=e20<e50&&last<e200;const trend=tU?1:tD?-1:0;const sT=adxV!=null&&adxV>25;const hh20=ind.highest20[i],ll20=ind.lowest20[i];return{i,last,atr:a,rsi:r,adx:adxV,ema20:e20,ema50:e50,ema200:e200,trend,trendUp:tU,trendDn:tD,rsiBull:r>55&&r<70,rsiBear:r<45&&r>30,rsiOB:r>=70,rsiOS:r<=30,macdBull:mh!=null&&mhP!=null&&mh>0&&mh>mhP,macdBear:mh!=null&&mhP!=null&&mh<0&&mh<mhP,stochBull:sK!=null&&sD!=null&&sK>sD&&sK<80,stochBear:sK!=null&&sD!=null&&sK<sD&&sK>20,strongTrend:sT,distEma20:Math.abs(last-e20)/a,highest20:hh20,lowest20:ll20}}
+function analyzeAt(ind,i){if(i<200)return null;const last=ind.closes[i];const e20=ind.ema20[i],e50=ind.ema50[i],e200=ind.ema200[i];const r=ind.rsi14[i],a=ind.atr14[i],adxV=ind.adx14[i];const mh=ind.macdHist[i],mhP=ind.macdHist[i-1];const sK=ind.stochK[i],sD=ind.stochD[i];if(e20==null||e50==null||e200==null||r==null||a==null)return null;const tU=e20>e50&&last>e200,tD=e20<e50&&last<e200;const trend=tU?1:tD?-1:0;const sT=adxV!=null&&adxV>25;return{i,last,atr:a,rsi:r,adx:adxV,ema20:e20,ema50:e50,ema200:e200,trend,trendUp:tU,trendDn:tD,rsiBull:r>55&&r<70,rsiBear:r<45&&r>30,rsiOB:r>=70,rsiOS:r<=30,macdBull:mh!=null&&mhP!=null&&mh>0&&mh>mhP,macdBear:mh!=null&&mhP!=null&&mh<0&&mh<mhP,stochBull:sK!=null&&sD!=null&&sK>sD&&sK<80,stochBear:sK!=null&&sD!=null&&sK<sD&&sK>20,strongTrend:sT,distEma20:Math.abs(last-e20)/a}}
 
 function detectRegime(a){if(!a||a.adx==null)return{regime:"unknown"};const p=a.atr/a.last*100;if(p>5)return{regime:"extreme_volatility"};if(a.adx>30)return{regime:"strong_trend"};if(a.adx>22)return{regime:"weak_trend"};if(a.adx<20)return{regime:"ranging"};return{regime:"mixed"}}
 
 function stratTrendFollow(ctx){const a=analyzeAt(ctx.ind,ctx.i);if(!a)return null;if(!a.trendUp&&!a.trendDn)return null;if(!a.strongTrend)return null;if(a.distEma20>1.2)return null;const d=a.trendUp?1:-1;if(d===1&&!(a.rsiBull||a.macdBull))return null;if(d===-1&&!(a.rsiBear||a.macdBear))return null;return{dir:d,atr:a.atr,entry:a.last,name:"Trend Follow",a}}
 function stratPullback(ctx){const a=analyzeAt(ctx.ind,ctx.i);if(!a)return null;if(a.trend===0)return null;if(a.adx==null||a.adx<22)return null;const d=a.trend;if(a.distEma20>.7)return null;if(d===1&&!(a.rsi>40&&a.rsi<65))return null;if(d===-1&&!(a.rsi<60&&a.rsi>35))return null;return{dir:d,atr:a.atr,entry:a.last,name:"Pullback",a}}
-function stratBreakout(ctx){const a=analyzeAt(ctx.ind,ctx.i);if(!a)return null;if(ctx.i<21)return null;const c=ctx.ind.candles[ctx.i];let d=0;if(c.c>a.highest20&&ctx.ind.vols[ctx.i]>ctx.ind.avgVolume20[ctx.i]*1.1)d=1;else if(c.c<a.lowest20&&ctx.ind.vols[ctx.i]>ctx.ind.avgVolume20[ctx.i]*1.1)d=-1;else return null;return{dir:d,atr:a.atr,entry:a.last,name:"Breakout",a}}
+function stratBreakout(ctx){const a=analyzeAt(ctx.ind,ctx.i);if(!a)return null;if(ctx.i<21)return null;const c=ctx.ind.candles[ctx.i];const hh=ctx.ind.highest20[ctx.i-1],ll=ctx.ind.lowest20[ctx.i-1];let d=0;if(c.c>hh&&ctx.ind.vols[ctx.i]>ctx.ind.avgVolume20[ctx.i]*1.1)d=1;else if(c.c<ll&&ctx.ind.vols[ctx.i]>ctx.ind.avgVolume20[ctx.i]*1.1)d=-1;else return null;return{dir:d,atr:a.atr,entry:a.last,name:"Breakout",a}}
 function stratMeanReversion(ctx){const a=analyzeAt(ctx.ind,ctx.i);if(!a)return null;if(a.adx!=null&&a.adx>22)return null;if(a.trend!==0)return null;const bbP=(ctx.ind.bbUpper[ctx.i]&&ctx.ind.bbLower[ctx.i])?(a.last-ctx.ind.bbLower[ctx.i])/(ctx.ind.bbUpper[ctx.i]-ctx.ind.bbLower[ctx.i]):0.5;if(bbP<.15&&a.rsiOS)return{dir:1,atr:a.atr,entry:a.last,name:"Mean Reversion",a};if(bbP>.85&&a.rsiOB)return{dir:-1,atr:a.atr,entry:a.last,name:"Mean Reversion",a};return null}
 const STRATEGIES={trendFollow:stratTrendFollow,pullback:stratPullback,breakout:stratBreakout,meanReversion:stratMeanReversion};
 
-/* ====== نظام التأكيدات ====== */
-function computeConfirmation(ctx,signal,candles1h){
-  const a=signal.a,d=signal.dir;
-  const last=candles1h[candles1h.length-1];
-  const prev=candles1h[candles1h.length-2];
-  const conditions=[];
-  let level=0; // 0=hold, 1=ready, 2=wait1h, 3=wait4h
-  let waitReason="";
-  let waitPrice=0;
-  let waitMinutes=0;
+/* ============ دالة حساب الأهداف الجديدة ============ */
+function calcTargets(pairKey, dir, entry, atr, candles1h){
+  const dec = getPair(pairKey).decimals;
+  const last50 = candles1h.slice(-50);
+  const highs = last50.map(c=>c.h);
+  const lows = last50.map(c=>c.l);
   
-  // تأكيد 1: إغلاق الشمعة فوق/تحت EMA20
-  const ema20v=ctx.ind1h?ctx.ind1h.ema20[ctx.ind1h.ema20.length-1]:null;
-  if(ema20v!=null){
-    if(d===1&&last.c<ema20v){level=Math.max(level,2);waitPrice=ema20v;waitReason="إغلاق شمعة فوق EMA20 ("+ema20v.toFixed(4)+")";}
-    else if(d===-1&&last.c>ema20v){level=Math.max(level,2);waitPrice=ema20v;waitReason="إغلاق شمعة تحت EMA20 ("+ema20v.toFixed(4)+")";}
+  const hh10 = Math.max(...last50.slice(-10).map(c=>c.h));
+  const ll10 = Math.min(...last50.slice(-10).map(c=>c.l));
+  const hh20 = Math.max(...last50.slice(-20).map(c=>c.h));
+  const ll20 = Math.min(...last50.slice(-20).map(c=>c.l));
+  const hh50 = Math.max(...highs);
+  const ll50 = Math.min(...lows);
+  
+  let sl, tp1, tp2, slDist, tp1Dist, tp2Dist;
+  
+  if(dir===1){
+    const slBase = Math.min(ll10, entry - atr*1.2);
+    sl = slBase - atr*0.3;
+    slDist = entry - sl;
+    
+    const tp1Target = Math.max(hh20, entry + slDist*1.8);
+    tp1Dist = Math.min(Math.max(tp1Target - entry, slDist*1.5), slDist*2.5);
+    tp1 = entry + tp1Dist;
+    
+    const tp2Target = Math.max(hh50, entry + slDist*3);
+    tp2Dist = Math.min(Math.max(tp2Target - entry, slDist*2.5), slDist*4);
+    tp2 = entry + tp2Dist;
+  } else {
+    const slBase = Math.max(hh10, entry + atr*1.2);
+    sl = slBase + atr*0.3;
+    slDist = sl - entry;
+    
+    const tp1Target = Math.min(ll20, entry - slDist*1.8);
+    tp1Dist = Math.min(Math.max(entry - tp1Target, slDist*1.5), slDist*2.5);
+    tp1 = entry - tp1Dist;
+    
+    const tp2Target = Math.min(ll50, entry - slDist*3);
+    tp2Dist = Math.min(Math.max(entry - tp2Target, slDist*2.5), slDist*4);
+    tp2 = entry - tp2Dist;
   }
   
-  // تأكيد 2: RSI في منطقة صحية
-  const r=a.rsi;
-  if(d===1&&r<45){level=Math.max(level,2);waitReason="RSI يطلع فوق 45 (الآن "+r.toFixed(1)+")"}
-  else if(d===-1&&r>55){level=Math.max(level,2);waitReason="RSI ينزل تحت 55 (الآن "+r.toFixed(1)+")"}
+  return {sl, tp1, tp2, slDist, tp1Dist, tp2Dist, rr1: tp1Dist/slDist, rr2: tp2Dist/slDist, hh10, ll10, hh20, ll20, hh50, ll50};
+}
+
+/* ============ دالة التأكيد الجديدة ============ */
+function calcConfirm(pairKey, dir, entry, atr, candles1h, ema20, rsi){
+  const dec = getPair(pairKey).decimals;
+  const last = candles1h[candles1h.length-1];
+  const prev = candles1h[candles1h.length-2];
+  const last50 = candles1h.slice(-50);
+  const hh10 = Math.max(...last50.slice(-10).map(c=>c.h));
+  const ll10 = Math.min(...last50.slice(-10).map(c=>c.l));
   
-  // تأكيد 3: MACD يدعم الاتجاه
-  const mh=ctx.ind.macdHist[ctx.i];
-  if(d===1&&mh<0){level=Math.max(level,3);waitReason="MACD hist يتحول موجب"}
-  else if(d===-1&&mh>0){level=Math.max(level,3);waitReason="MACD hist يتحول سالب"}
+  let level = 1;
+  let reason = "جاهزة الآن ✅";
+  let waitPrice = 0;
+  let waitMinutes = 0;
   
-  // تأكيد 4: ADX > 20
-  if(a.adx!=null&&a.adx<20){level=Math.max(level,2);waitReason="ADX يطلع فوق 20 (الآن "+a.adx.toFixed(1)+")"}
-  
-  // تأكيد 5: شمعة الإغلاق
-  if(!waitReason){
-    if(d===1){
-      if(last.c>last.o&&last.c>prev.c){level=1;waitReason="جاهزة الآن ✅"}
-      else{level=2;waitPrice=Math.max(last.o,prev.c);waitReason="إغلاق شمعة 1h فوق "+waitPrice.toFixed(4)}
-    }else{
-      if(last.c<last.o&&last.c<prev.c){level=1;waitReason="جاهزة الآن ✅"}
-      else{level=2;waitPrice=Math.min(last.o,prev.c);waitReason="إغلاق شمعة 1h تحت "+waitPrice.toFixed(4)}
+  if(dir===1){
+    const breakLevel = Math.max(hh10, ema20);
+    if(last.c > breakLevel && last.c > last.o && last.c > prev.c){
+      level = 1;
+      reason = "شمعة صاعدة مغلقة فوق " + breakLevel.toFixed(dec);
+    } else if(last.c <= breakLevel){
+      level = 2;
+      waitPrice = breakLevel;
+      reason = "انتظر شمعة 1h تغلق فوق " + breakLevel.toFixed(dec);
+      waitMinutes = 60 - new Date().getUTCMinutes();
+    } else {
+      level = 2;
+      waitPrice = Math.max(last.o, prev.c);
+      reason = "انتظر شمعة صاعدة تغلق فوق " + waitPrice.toFixed(dec);
+      waitMinutes = 60 - new Date().getUTCMinutes();
+    }
+  } else {
+    const breakLevel = Math.min(ll10, ema20);
+    if(last.c < breakLevel && last.c < last.o && last.c < prev.c){
+      level = 1;
+      reason = "شمعة هابطة مغلقة تحت " + breakLevel.toFixed(dec);
+    } else if(last.c >= breakLevel){
+      level = 2;
+      waitPrice = breakLevel;
+      reason = "انتظر شمعة 1h تغلق تحت " + breakLevel.toFixed(dec);
+      waitMinutes = 60 - new Date().getUTCMinutes();
+    } else {
+      level = 2;
+      waitPrice = Math.min(last.o, prev.c);
+      reason = "انتظر شمعة هابطة تغلق تحت " + waitPrice.toFixed(dec);
+      waitMinutes = 60 - new Date().getUTCMinutes();
     }
   }
   
-  // وقت الانتظار المتوقع
-  if(level===2){waitMinutes=60-new Date().getUTCMinutes()}
-  if(level===3){waitMinutes=240-new Date().getUTCMinutes()%240}
+  if(dir===1 && rsi>68){ level = 2; reason = "RSI مرتفع (" + rsi.toFixed(1) + ") — انتظر تصحيح" }
+  if(dir===-1 && rsi<32){ level = 2; reason = "RSI منخفض (" + rsi.toFixed(1) + ") — انتظر ارتداد" }
   
-  return{level,waitReason,waitPrice,waitMinutes};
+  return {level, reason, waitPrice, waitMinutes};
 }
 
-/* ====== منع التكرار ====== */
+/* ============ منع التكرار ============ */
 const COOLDOWN_HOURS=4;
 function isPairBlocked(pairKey){
   const all=safeLoad(TRADES_KEY,[]);
   const now=Date.now();
   for(const t of all){
     if(t.pairKey!==pairKey)continue;
-    // صفقة مفتوحة → محظور
     if(t.status==="open")return{blocked:true,reason:"عندك صفقة مفتوحة"};
-    // Cooldown
     if(t.closedAt&&now-t.closedAt<COOLDOWN_HOURS*36e5){
       const remain=Math.ceil((COOLDOWN_HOURS*36e5-(now-t.closedAt))/6e4);
-      return{blocked:true,reason:"انتظر "+remain+" دقيقة بعد إغلاق الصفقة"};
+      return{blocked:true,reason:"انتظر "+remain+" دقيقة"};
     }
   }
   return{blocked:false};
 }
 
-/* ====== الماسح ====== */
-const SCAN_MODES={strict:{minConf:75},balanced:{minConf:65},flex:{minConf:55}};
-async function scanSinglePair(pk,modeKey){
-  const mode=SCAN_MODES[modeKey]||SCAN_MODES.strict;
-  const pair=getPair(pk);if(!pair)throw new Error("غير معروف");
-  
-  // فحص منع التكرار
-  const check=isPairBlocked(pk);
-  if(check.blocked)return{status:"blocked",reason:check.reason};
-  
-  const rs=await Promise.all([getCandles(pk,"15m"),getCandles(pk,"1h"),getCandles(pk,"4h")]);
-  const c15=rs[0],c1h=rs[1],c4h=rs[2];
-  const ind=computeAll(c15.candles),ind1h=computeAll(c1h.candles),ind4h=computeAll(c4h.candles);
-  const i=c15.candles.length-1,i1h=c1h.candles.length-1,i4h=c4h.candles.length-1;
-  const a=analyzeAt(ind,i);if(!a)return{status:"fail",reason:"بيانات قليلة"};
-  const regime=detectRegime(a);
-  const ctx={ind,i,ind1h,i1h,ind4h,i4h,pairKey:pk,pairType:pair.type,regime,a1h:analyzeAt(ind1h,i1h),a4h:analyzeAt(ind4h,i4h)};
-  const signals=[];
-  for(const k of Object.keys(STRATEGIES)){try{const s=STRATEGIES[k](ctx);if(s)signals.push(s)}catch(e){}}
-  if(!signals.length)return{status:"reject",reason:"لا إشارة"};
-  const scored=signals.map(sig=>({sig,conf:computeConfidence(ctx,sig)})).sort((x,y)=>y.conf.confidence-x.conf.confidence);
-  const best=scored[0];
-  if(best.conf.confidence<mode.minConf)return{status:"reject",reason:"ثقة "+best.conf.confidence};
-  const src=pair.sources[0];
-  const lp=await getLivePrice(src[1],src[0]);
-  const entry=lp||best.sig.entry;
-  const dir=best.sig.dir,atr=best.sig.atr;
-  const signal=Object.assign({},best.sig,{entry,sl:entry-dir*atr*1.5,tp1:entry+dir*atr*2.25,tp2:entry+dir*atr*3.75});
-  // نظام التأكيدات
-  const confirmation=computeConfirmation(ctx,signal,c1h.candles);
-  return{status:"signal",ctx,signal,confidence:best.conf.confidence,confirmation};
-}
+/* ============ Storage ============ */
+const SETTINGS_KEY="jbbg_v12_settings",TRADES_KEY="jbbg_v12_trades";
+const DEFAULT_SETTINGS={maxTrades:5,cooldown:4,theme:"dark"};
+function safeLoad(k,fb){try{const r=localStorage.getItem(k);return r?JSON.parse(r):fb}catch(e){return fb}}
+function safeSave(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+const State={pair:"EURUSD",tf:"1h",typeFilter:"all",settings:safeLoad(SETTINGS_KEY,DEFAULT_SETTINGS)};
+function saveSettings(s){State.settings=Object.assign({},State.settings,s);safeSave(SETTINGS_KEY,State.settings)}
+const getTrades=()=>safeLoad(TRADES_KEY,[]);
+const saveTrades=l=>safeSave(TRADES_KEY,l);
+function addTrade(t){const l=getTrades();const o=Object.assign({id:"t"+Date.now()+Math.random().toString(36).slice(2,6),enteredAt:Date.now(),status:"open"},t);l.unshift(o);saveTrades(l);return o}
+function updateTrade(id,patch){const l=getTrades();for(let i=0;i<l.length;i++)if(l[i].id===id){l[i]=Object.assign({},l[i],patch);break}saveTrades(l)}
+function removeTrade(id){saveTrades(getTrades().filter(t=>t.id!==id))}
+
+/* ============ UI ============ */
+const $=id=>document.getElementById(id);
+function fillPairSelect(){const sel=$("pairSelect");const keys=getPairsByGroup(State.typeFilter);sel.innerHTML="";for(const k of keys){const o=document.createElement("option");o.value=k;o.textContent=REGISTRY[k].label;sel.appendChild(o)}if(keys.indexOf(State.pair)<0)State.pair=keys[0];sel.value=State.pair}
 
 function computeConfidence(ctx,signal){
   const a=signal.a,d=signal.dir;if(!a)return null;
@@ -547,7 +547,7 @@ function computeConfidence(ctx,signal){
   if(d===1?a.macdBull:a.macdBear)m+=3;
   if(d===1?a.stochBull:a.stochBear)m+=2;
   layers.push({name:"الزخم",score:Math.min(10,m),max:10});
-  const p=a.atr/a.last*100;let v=0;if(p>.15&&p<2.5)v+=6;if(!a.distEma20>1.2)v+=4;
+  const p=a.atr/a.last*100;let v=0;if(p>.15&&p<2.5)v+=6;if(a.distEma20<1.2)v+=4;
   layers.push({name:"التقلب",score:Math.min(10,v),max:10});
   let sc=7;if(ctx.a1h&&ctx.a1h.trend===d)sc+=3;
   layers.push({name:"الهيكل",score:Math.min(10,sc),max:10});
@@ -556,32 +556,20 @@ function computeConfidence(ctx,signal){
 }
 const confColor=c=>c>=85?"var(--green)":c>=70?"var(--primary)":c>=55?"#f59e0b":"var(--red)";
 
-/* ====== Storage ====== */
-const SETTINGS_KEY="jbbg_v11_settings",TRADES_KEY="jbbg_v11_trades";
-const DEFAULT_SETTINGS={maxTrades:5,cooldown:4,theme:"dark"};
-function safeLoad(k,fb){try{const r=localStorage.getItem(k);return r?JSON.parse(r):fb}catch(e){return fb}}
-function safeSave(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-const State={pair:"EURUSD",tf:"1h",typeFilter:"all",settings:safeLoad(SETTINGS_KEY,DEFAULT_SETTINGS)};
-function saveSettings(s){State.settings=Object.assign({},State.settings,s);safeSave(SETTINGS_KEY,State.settings)}
-const getTrades=()=>safeLoad(TRADES_KEY,[]);
-const saveTrades=l=>safeSave(TRADES_KEY,l);
-function addTrade(t){const l=getTrades();const o=Object.assign({id:"t"+Date.now()+Math.random().toString(36).slice(2,6),enteredAt:Date.now(),status:"open"},t);l.unshift(o);saveTrades(l);return o}
-function updateTrade(id,patch){const l=getTrades();for(let i=0;i<l.length;i++)if(l[i].id===id){l[i]=Object.assign({},l[i],patch);break}saveTrades(l)}
-function removeTrade(id){saveTrades(getTrades().filter(t=>t.id!==id))}
-
-/* ====== UI ====== */
-const $=id=>document.getElementById(id);
-function fillPairSelect(){const sel=$("pairSelect");const keys=getPairsByGroup(State.typeFilter);sel.innerHTML="";for(const k of keys){const o=document.createElement("option");o.value=k;o.textContent=REGISTRY[k].label;sel.appendChild(o)}if(keys.indexOf(State.pair)<0)State.pair=keys[0];sel.value=State.pair}
-
 function renderSignal(ctx,signal,meta){
   meta=meta||{};
-  const pair=REGISTRY[ctx.pairKey],d=pair.decimals,buy=signal.dir===1;
+  const pair=REGISTRY[ctx.pairKey];
+  const d=pair.decimals;
+  const buy=signal.dir===1;
   const conf=computeConfidence(ctx,signal);
-  const risk=signal.atr*1.5;
-  const sl=signal.entry-signal.dir*risk;
-  const tp1=signal.entry+signal.dir*risk*1.5;
-  const tp2=signal.entry+signal.dir*risk*2.5;
-  const confirmation=meta.confirmation;
+  
+  const targets = calcTargets(ctx.pairKey, signal.dir, signal.entry, signal.atr, ctx.ind1h.candles);
+  const sl = targets.sl;
+  const tp1 = targets.tp1;
+  const tp2 = targets.tp2;
+  
+  const ema20Val = ctx.ind1h.ema20[ctx.ind1h.ema20.length-1];
+  const confirm = calcConfirm(ctx.pairKey, signal.dir, signal.entry, signal.atr, ctx.ind1h.candles, ema20Val, signal.a.rsi);
   
   let lh="";
   for(const l of conf.layers){
@@ -593,30 +581,40 @@ function renderSignal(ctx,signal,meta){
   let h='<div class="signal">';
   h+='<div class="sig-head"><span class="sig-badge '+(buy?"buy":"sell")+'">'+(buy?"شراء BUY":"بيع SELL")+' — '+signal.name+'</span><span class="sig-strat">'+pair.label+'</span></div>';
   
-  // التأكيدات
-  if(confirmation){
-    const cmap={1:{cls:"buy",icon:"🟢",txt:"جاهزة للدخول الآن"},2:{cls:"confirm",icon:"🟡",txt:"انتظر إغلاق شمعة 1h"},3:{cls:"sell",icon:"🔴",txt:"انتظر إغلاق شمعة 4h"},0:{cls:"hold",icon:"⏸️",txt:"انتظر"}};
-    const c=cmap[confirmation.level]||cmap[0];
-    h+='<div class="confirm-box"><div class="row"><span>'+c.icon+' <b>'+c.txt+'</b></span>'+(confirmation.waitMinutes>0?'<span class="note">'+confirmation.waitMinutes+' د</span>':'')+'</div>';
-    if(confirmation.waitReason)h+='<p class="note" style="margin:0">'+confirmation.waitReason+'</p>';
-    h+='</div>';
-  }
+  const cc = confirm.level===1 ? "var(--green)" : "var(--yellow)";
+  const ct = confirm.level===1 ? "🟢 جاهزة الآن — ادخل" : "🟡 انتظر تأكيد";
+  h+='<div style="padding:12px;border-radius:14px;background:'+cc+'22;border:1.5px solid '+cc+'">';
+  h+='<p style="font-weight:900;color:'+cc+';margin-bottom:8px;font-size:14px">'+ct+'</p>';
+  h+='<p style="margin:0;font-size:12.5px;font-weight:700">'+confirm.reason+'</p>';
+  if(confirm.waitMinutes>0) h+='<p class="note" style="margin-top:6px">⏱ بعد ~'+confirm.waitMinutes+' دقيقة</p>';
+  h+='</div>';
   
   h+='<div class="confidence"><div class="conf-top"><span class="conf-label">درجة الثقة</span><span class="conf-score" style="color:'+confColor(conf.confidence)+'">'+conf.confidence+'<span>/100</span></span></div><div class="conf-track"><i class="conf-fill" style="width:'+conf.confidence+'%;background:linear-gradient(90deg,var(--red),#f59e0b,var(--green))"></i></div></div>';
   h+='<div class="layers">'+lh+'</div>';
+  
   h+='<div class="levels">';
-  h+='<div class="level-box entry"><span class="level-label">الدخول</span><span class="level-value">'+signal.entry.toFixed(d)+'</span></div>';
-  h+='<div class="level-box sl"><span class="level-label">وقف الخسارة</span><span class="level-value" style="color:var(--red)">'+sl.toFixed(d)+'</span></div>';
-  h+='<div class="level-box tp1"><span class="level-label">هدف 1</span><span class="level-value" style="color:var(--green)">'+tp1.toFixed(d)+'</span></div>';
-  h+='<div class="level-box tp2"><span class="level-label">هدف 2</span><span class="level-value" style="color:var(--green)">'+tp2.toFixed(d)+'</span></div>';
+  h+='<div class="level-box entry"><span class="level-label">📍 الدخول</span><span class="level-value">'+signal.entry.toFixed(d)+'</span></div>';
+  h+='<div class="level-box sl"><span class="level-label">🛑 الوقف</span><span class="level-value" style="color:var(--red)">'+sl.toFixed(d)+'</span></div>';
+  h+='<div class="level-box tp1"><span class="level-label">🎯 هدف 1 (1:'+targets.rr1.toFixed(1)+')</span><span class="level-value" style="color:var(--green)">'+tp1.toFixed(d)+'</span></div>';
+  h+='<div class="level-box tp2"><span class="level-label">🎯 هدف 2 (1:'+targets.rr2.toFixed(1)+')</span><span class="level-value" style="color:var(--green)">'+tp2.toFixed(d)+'</span></div>';
   h+='</div>';
+  
+  h+='<div class="info-grid">';
+  h+='<div class="info-box" style="font-size:10px">أعلى 10<b>'+targets.hh10.toFixed(d)+'</b></div>';
+  h+='<div class="info-box" style="font-size:10px">أدنى 10<b>'+targets.ll10.toFixed(d)+'</b></div>';
+  h+='<div class="info-box" style="font-size:10px">أعلى 20<b>'+targets.hh20.toFixed(d)+'</b></div>';
+  h+='<div class="info-box" style="font-size:10px">أدنى 20<b>'+targets.ll20.toFixed(d)+'</b></div>';
+  h+='</div>';
+  
+  h+='<button class="copy-btn" data-act="copy" type="button" data-pair="'+pair.label+'" data-dir="'+(buy?"BUY":"SELL")+'" data-entry="'+signal.entry.toFixed(d)+'" data-sl="'+sl.toFixed(d)+'" data-tp1="'+tp1.toFixed(d)+'" data-tp2="'+tp2.toFixed(d)+'" data-conf="'+conf.confidence+'"><i class="fa-solid fa-copy"></i> نسخ الإشارة</button>';
+  if(meta.stats) h+='<p class="note">'+meta.stats+'</p>';
   h+='</div>';
   return h;
 }
 
-/* ====== Signals ====== */
-function notify(t,b){try{if(navigator.vibrate)navigator.vibrate([200,100,200])}catch(e){}try{if("Notification" in window&&Notification.permission==="granted")new Notification(t,{body:b})}catch(e){}try{if(window.ntf&&window.ntf!==notify)window.ntf(t,b)}catch(e){}}
+function notify(t,b){try{if(navigator.vibrate)navigator.vibrate([200,100,200])}catch(e){}try{if("Notification" in window&&Notification.permission==="granted")new Notification(t,{body:b})}catch(e){}}
 
+/* ============ Trades ============ */
 const FORCE_CLOSE_MS=90*6e4;
 function recordTradeFromBtn(btn){
   const key=btn.dataset.key,dir=parseFloat(btn.dataset.dir),entry=parseFloat(btn.dataset.entry),sl=parseFloat(btn.dataset.sl),tp1=parseFloat(btn.dataset.tp1),tp2=parseFloat(btn.dataset.tp2),conf=parseFloat(btn.dataset.conf),strat=btn.dataset.strat,atr=parseFloat(btn.dataset.atr);
@@ -673,7 +671,37 @@ function renderClosedTrades(closed){
   box.innerHTML='<div class="card"><div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> المغلقة ('+closed.length+')</div><div class="info-grid"><div class="info-box">رابحة<b style="color:var(--green)">'+wins+'</b></div><div class="info-box">نسبة النجاح<b>'+rate+'%</b></div></div>'+closed.slice(0,20).map(t=>{const win=["tp1","tp2"].indexOf(t.outcome)>=0;const dt=new Date(t.closedAt).toLocaleString("ar-EG",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});return '<div class="info-box" style="display:flex;justify-content:space-between;margin-top:6px"><span>'+t.pairLabel+'</span><span style="color:'+(win?"var(--green)":"var(--red)")+'">'+(labels[t.outcome]||t.outcome)+'</span><span class="note">'+dt+'</span></div>'}).join("")+'</div>';
 }
 
-/* ====== Scan ====== */
+/* ============ Scan ============ */
+const SCAN_MODES={strict:{minConf:75},balanced:{minConf:65},flex:{minConf:55}};
+async function scanSinglePair(pk,modeKey){
+  const mode=SCAN_MODES[modeKey]||SCAN_MODES.strict;
+  const pair=getPair(pk);if(!pair)throw new Error("غير معروف");
+  const check=isPairBlocked(pk);
+  if(check.blocked)return{status:"blocked",reason:check.reason};
+  const rs=await Promise.all([getCandles(pk,"15m"),getCandles(pk,"1h"),getCandles(pk,"4h")]);
+  const c15=rs[0],c1h=rs[1],c4h=rs[2];
+  const ind=computeAll(c15.candles),ind1h=computeAll(c1h.candles),ind4h=computeAll(c4h.candles);
+  const i=c15.candles.length-1,i1h=c1h.candles.length-1,i4h=c4h.candles.length-1;
+  const a=analyzeAt(ind,i);if(!a)return{status:"fail",reason:"بيانات قليلة"};
+  const regime=detectRegime(a);
+  const ctx={ind,i,ind1h,i1h,ind4h,i4h,pairKey:pk,pairType:pair.type,regime,a1h:analyzeAt(ind1h,i1h),a4h:analyzeAt(ind4h,i4h)};
+  const signals=[];
+  for(const k of Object.keys(STRATEGIES)){try{const s=STRATEGIES[k](ctx);if(s)signals.push(s)}catch(e){}}
+  if(!signals.length)return{status:"reject",reason:"لا إشارة"};
+  const scored=signals.map(sig=>({sig,conf:computeConfidence(ctx,sig)})).sort((x,y)=>y.conf.confidence-x.conf.confidence);
+  const best=scored[0];
+  if(best.conf.confidence<mode.minConf)return{status:"reject",reason:"ثقة "+best.conf.confidence};
+  const src=pair.sources[0];
+  const lp=await getLivePrice(src[1],src[0]);
+  const entry=lp||best.sig.entry;
+  const dir=best.sig.dir,atr=best.sig.atr;
+  const targets=calcTargets(pk,dir,entry,atr,c1h.candles);
+  const signal=Object.assign({},best.sig,{entry,sl:targets.sl,tp1:targets.tp1,tp2:targets.tp2});
+  const ema20Val=ind1h.ema20[ind1h.ema20.length-1];
+  const confirmation=calcConfirm(pk,dir,entry,atr,c1h.candles,ema20Val,a.rsi);
+  return{status:"signal",ctx,signal,confidence:best.conf.confidence,confirmation};
+}
+
 async function runScan(){
   const btn=$("scanBtn"),prog=$("scanProgress"),msg=$("scanMsg"),out=$("scanResults");
   const modeKey=$("scanMode").value;
@@ -695,19 +723,11 @@ async function runScan(){
   let h="";
   if(!signals.length){h+='<div class="card"><div class="empty"><i class="fa-solid fa-moon"></i><p>لا صفقات مؤهلة الآن.<br>'+blocked.length+' محظور • '+rejected.length+' مرفوض</p></div></div>'}
   else{h+=signals.map(r=>{
-    const s=r.signal;
-    let extra='';
-    if(r.confirmation){
-      const c=r.confirmation;
-      const cmap={1:{cls:"buy",txt:"🟢 جاهزة",color:"var(--green)"},2:{cls:"confirm",txt:"🟡 انتظر شمعة",color:"var(--yellow)"},3:{cls:"sell",txt:"🔴 انتظر 4h",color:"var(--red)"},0:{cls:"hold",txt:"⏸️ انتظر",color:"var(--text-dim)"}};
-      const cc=cmap[c.level]||cmap[0];
-      extra='<div style="padding:10px;border-radius:12px;background:'+cc.color+'22;border:1px solid '+cc.color+';margin-bottom:10px"><b style="color:'+cc.color+'">'+cc.txt+'</b>'+(c.waitReason?'<p class="note" style="margin:6px 0 0">'+c.waitReason+'</p>':'')+(c.waitMinutes>0?'<p class="note" style="margin:4px 0 0">⏱ بعد ~'+c.waitMinutes+' دقيقة</p>':'')+'</div>';
-    }
-    return '<div class="card">'+extra+renderSignal(r.ctx,s,{confirmation:r.confirmation})+'<div style="margin-top:10px"><button class="enter-btn" type="button" data-action="scan-enter" data-key="'+r.key+'" data-dir="'+s.dir+'" data-entry="'+s.entry+'" data-sl="'+s.sl+'" data-tp1="'+s.tp1+'" data-tp2="'+s.tp2+'" data-conf="'+r.confidence+'" data-strat="'+s.name+'" data-atr="'+s.atr+'"><i class="fa-solid fa-circle-check"></i> دخلت الصفقة دي</button></div></div>';
+    return '<div class="card">'+renderSignal(r.ctx,r.signal,{confirmation:r.confirmation})+'<div style="margin-top:10px"><button class="enter-btn" type="button" data-action="scan-enter" data-key="'+r.key+'" data-dir="'+r.signal.dir+'" data-entry="'+r.signal.entry+'" data-sl="'+r.signal.sl+'" data-tp1="'+r.signal.tp1+'" data-tp2="'+r.signal.tp2+'" data-conf="'+r.confidence+'" data-strat="'+r.signal.name+'" data-atr="'+r.signal.atr+'"><i class="fa-solid fa-circle-check"></i> دخلت الصفقة دي</button></div></div>';
   }).join("")}
   if(blocked.length||rejected.length||failed.length){
     h+='<div class="card"><div class="card-title"><i class="fa-solid fa-list"></i> التفاصيل</div>';
-    h+='<p class="note"><b style="color:var(--green)">'+signals.length+'</b> مؤهلة • <b style="color:var(--yellow)">'+blocked.length+'</b> محظورة • <b>'+rejected.length+'</b> مرفوضة • <b style="color:var(--red)">'+failed.length+'</b> فشل</p>';
+    h+='<p class="note"><b style="color:var(--green)">'+signals.length+'</b> مؤهلة • <b style="color:var(--yellow)">'+blocked.length+'</b> محظورة • <b>'+rejected.length+'</b> مرفوضة</p>';
     blocked.forEach(r=>h+='<p class="note" style="color:var(--yellow)">🚫 <b>'+getPairLabel(r.key)+'</b>: '+r.reason+'</p>');
     rejected.forEach(r=>h+='<p class="note">• <b>'+getPairLabel(r.key)+'</b>: '+r.reason+'</p>');
     h+='</div>';
@@ -715,7 +735,7 @@ async function runScan(){
   out.innerHTML=h;msg.textContent="انتهى — "+signals.length+" مؤهلة";
 }
 
-/* ====== Chart / Analysis ====== */
+/* ============ Chart / Analysis ============ */
 let tvWidget=null;
 function applyTheme(theme){document.documentElement.dataset.theme=theme;$("themeBtn").innerHTML=theme==="light"?'<i class="fa-solid fa-moon"></i>':'<i class="fa-solid fa-sun"></i>';saveSettings({theme})}
 function toggleTheme(){applyTheme(State.settings.theme==="light"?"dark":"light");loadChart()}
@@ -742,18 +762,16 @@ async function runAnalysis(){
     const scored=signals.map(sig=>({sig,conf:computeConfidence(ctx,sig)})).sort((x,y)=>y.conf.confidence-x.conf.confidence);
     const best=scored[0];
     const signal=best.sig;
-    const risk=signal.atr*1.5;
-    const sl=signal.entry-signal.dir*risk;
-    const tp1=signal.entry+signal.dir*risk*1.5;
-    const tp2=signal.entry+signal.dir*risk*2.5;
-    const confirmation=computeConfirmation(ctx,signal,c1h.candles);
+    const targets=calcTargets(pk,signal.dir,signal.entry,signal.atr,c1h.candles);
+    const ema20Val=ind1h.ema20[ind1h.ema20.length-1];
+    const confirmation=calcConfirm(pk,signal.dir,signal.entry,signal.atr,c1h.candles,ema20Val,a.rsi);
     result.innerHTML=renderSignal(ctx,signal,{confirmation});
     const btnDiv=document.createElement("div");btnDiv.style.marginTop="10px";
     const enterBtn=document.createElement("button");
     enterBtn.className="enter-btn";enterBtn.type="button";
     enterBtn.innerHTML='<i class="fa-solid fa-circle-check"></i> دخلت الصفقة دي';
     enterBtn.dataset.key=pk;enterBtn.dataset.dir=signal.dir;enterBtn.dataset.entry=signal.entry;
-    enterBtn.dataset.sl=sl;enterBtn.dataset.tp1=tp1;enterBtn.dataset.tp2=tp2;
+    enterBtn.dataset.sl=targets.sl;enterBtn.dataset.tp1=targets.tp1;enterBtn.dataset.tp2=targets.tp2;
     enterBtn.dataset.conf=best.conf.confidence;enterBtn.dataset.strat=signal.name;enterBtn.dataset.atr=signal.atr;
     enterBtn.addEventListener("click",()=>{if(recordTradeFromBtn(enterBtn)){enterBtn.innerHTML='<i class="fa-solid fa-check"></i> ✅ تم التسجيل';enterBtn.classList.add("success");enterBtn.disabled=true}});
     btnDiv.appendChild(enterBtn);
@@ -762,11 +780,11 @@ async function runAnalysis(){
   finally{btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-wand-magic-sparkles"></i> حلّل الآن'}
 }
 
-/* ====== Futures ====== */
+/* ============ Futures ============ */
 (function(){
-const FT="jbbg_v11_ftrades",FSET="jbbg_v11_fset";
+const FT="jbbg_v12_ftrades",FSET="jbbg_v12_fset";
 const futSet=Object.assign({balance:1000},safeLoad(FSET,{}));
-const SYMS=[["BTCUSDT","BTC"],["ETHUSDT","ETH"],["SOLUSDT","SOL"],["BNBUSDT","BNB"],["XRPUSDT","XRP"],["ADAUSDT","ADA"],["DOGEUSDT","DOGE"],["AVAXUSDT","AVAX"],["LINKUSDT","LINK"],["LTCUSDT","LTC"],["DOTUSDT","DOT"],["MATICUSDT","MATIC"],["TRXUSDT","TRX"],["ATOMUSDT","ATOM"],["NEARUSDT","NEAR"],["FILUSDT","FIL"],["APTUSDT","APT"],["ARBUSDT","ARB"],["OPUSDT","OP"],["SUIUSDT","SUI"],["GRAMUSDT","GRAM"]];
+const SYMS=[["BTCUSDT","BTC"],["ETHUSDT","ETH"],["SOLUSDT","SOL"],["BNBUSDT","BNB"],["XRPUSDT","XRP"],["ADAUSDT","ADA"],["DOGEUSDT","DOGE"],["AVAXUSDT","AVAX"],["LINKUSDT","LINK"],["LTCUSDT","LTC"],["DOTUSDT","DOT"],["MATICUSDT","MATIC"],["TRXUSDT","TRX"],["ATOMUSDT","ATOM"],["NEARUSDT","NEAR"],["FILUSDT","FIL"],["APTUSDT","APT"],["ARBUSDT","ARB"],["OPUSDT","OP"],["SUIUSDT","SUI"]];
 const SAFE_SYMS=SYMS.map(s=>s[0]);
 const LEVERAGES=[1,2,3,5,10,15,20,25,50,75,100,125];
 
@@ -785,7 +803,7 @@ sec.innerHTML=`
 
 <div class="card">
   <div class="card-title"><i class="fa-solid fa-wand-magic-sparkles"></i> ماسح فيوتشرز ذكي</div>
-  <p class="note">يفحص 21 زوج قوي. يستبعد الصفقات المفتوحة + Cooldown 4 ساعات.</p>
+  <p class="note">يفحص 20 زوج قوي. يستبعد الصفقات المفتوحة + Cooldown 4 ساعات.</p>
   <button class="btn primary block" id="ftScanBtn" type="button" style="padding:16px;font-size:15px"><i class="fa-solid fa-magnifying-glass-chart"></i> امسح السوق</button>
   <div class="progress" id="ftScanProg" style="display:none"><i></i></div>
   <p class="note" id="ftScanMsg"></p>
@@ -845,12 +863,10 @@ function calcATR(c,p){p=p||14;const out=[];if(c.length<p)return out;const tr=[];
 function calcADX(c,p){p=p||14;const out=[];const n=c.length;if(n<p*2)return out;const tr=[],pdm=[],mdm=[];for(let i=0;i<n;i++){if(i===0){tr[i]=c[i].h-c[i].l;pdm[i]=0;mdm[i]=0;continue}const up=c[i].h-c[i-1].h;const dn=c[i-1].l-c[i].l;tr[i]=Math.max(c[i].h-c[i].l,Math.abs(c[i].h-c[i-1].c),Math.abs(c[i].l-c[i-1].c));pdm[i]=up>dn&&up>0?up:0;mdm[i]=dn>up&&dn>0?dn:0}let tS=0,pS=0,mS=0;for(let i=1;i<=p;i++){tS+=tr[i];pS+=pdm[i];mS+=mdm[i]}const dx=[];for(let i=p+1;i<n;i++){tS=tS-tS/p+tr[i];pS=pS-pS/p+pdm[i];mS=mS-mS/p+mdm[i];const pdi=tS===0?0:(pS/tS)*100;const mdi=tS===0?0:(mS/tS)*100;const sum=pdi+mdi;dx[i]=sum===0?0:(Math.abs(pdi-mdi)/sum)*100}let aS=0,cnt=0;for(let i=p+1;i<=p*2;i++)if(dx[i]!=null){aS+=dx[i];cnt++}if(cnt===p){out[p*2]=aS/p;for(let i=p*2+1;i<n;i++)if(dx[i]!=null&&out[i-1]!=null)out[i]=(out[i-1]*(p-1)+dx[i])/p}return out}
 
 async function analyzeFutPair(sym){
-  // منع التكرار
-  const allFt=ftrades;
   const now=Date.now();
-  const existing=allFt.find(t=>t.sym===sym&&t.status==="open");
+  const existing=ftrades.find(t=>t.sym===sym&&t.status==="open");
   if(existing)return{skip:true,reason:"صفقة مفتوحة"};
-  const recent=allFt.find(t=>t.sym===sym&&t.closedAt&&now-t.closedAt<4*36e5);
+  const recent=ftrades.find(t=>t.sym===sym&&t.closedAt&&now-t.closedAt<4*36e5);
   if(recent){const r=Math.ceil((4*36e5-(now-recent.closedAt))/6e4);return{skip:true,reason:"انتظر "+r+"د"}}
   
   const [c4h,c1h]=await Promise.all([getFutKlines(sym,"4h",300),getFutKlines(sym,"1h",500)]);
@@ -874,32 +890,66 @@ async function analyzeFutPair(sym){
   if(dir===1&&(r<45||r>75))return null;
   if(dir===-1&&(r>55||r<25))return null;
   const adxV=adx1[i1];if(adxV==null||adxV<20)return null;
-  const slDist=a*1.2,tp1Dist=slDist*3,tp2Dist=slDist*5;
-  const sl=dir===1?price-slDist:price+slDist;
-  const tp1=dir===1?price+tp1Dist:price-tp1Dist;
-  const tp2=dir===1?price+tp2Dist:price-tp2Dist;
-  const a4=atr4[i4];if(!a4)return null;
-  const daysToTarget=Math.max(1,Math.round(tp1Dist/(a4*6)*1.5));
-  if(daysToTarget>2.5)return null;
   
-  // نظام التأكيدات
-  const last=c1h[i1],prev=c1h[i1-1];
-  let confirmLevel=1,confirmReason="جاهزة الآن";
-  let waitMinutes=0;
+  // حساب الأهداف الجديدة
+  const last50=c1h.slice(-50);
+  const hh10=Math.max(...last50.slice(-10).map(c=>c.h));
+  const ll10=Math.min(...last50.slice(-10).map(c=>c.l));
+  const hh20=Math.max(...last50.slice(-20).map(c=>c.h));
+  const ll20=Math.min(...last50.slice(-20).map(c=>c.l));
+  const hh50=Math.max(...last50.map(c=>c.h));
+  const ll50=Math.min(...last50.map(c=>c.l));
+  
+  let slDist,tp1Dist,tp2Dist,sl,tp1,tp2;
   if(dir===1){
-    if(last.c<ema20v){confirmLevel=2;confirmReason="إغلاق شمعة فوق EMA20";waitMinutes=60-new Date().getUTCMinutes()}
-    else if(!(last.c>last.o&&last.c>prev.c)){confirmLevel=2;confirmReason="إغلاق شمعة صاعدة";waitMinutes=60-new Date().getUTCMinutes()}
+    const slBase=Math.min(ll10,price-a*1.2);
+    sl=slBase-a*0.3;
+    slDist=price-sl;
+    const tp1Target=Math.max(hh20,price+slDist*1.8);
+    tp1Dist=Math.min(Math.max(tp1Target-price,slDist*1.5),slDist*2.5);
+    tp1=price+tp1Dist;
+    const tp2Target=Math.max(hh50,price+slDist*3);
+    tp2Dist=Math.min(Math.max(tp2Target-price,slDist*2.5),slDist*4);
+    tp2=price+tp2Dist;
   }else{
-    if(last.c>ema20v){confirmLevel=2;confirmReason="إغلاق شمعة تحت EMA20";waitMinutes=60-new Date().getUTCMinutes()}
-    else if(!(last.c<last.o&&last.c<prev.c)){confirmLevel=2;confirmReason="إغلاق شمعة هابطة";waitMinutes=60-new Date().getUTCMinutes()}
+    const slBase=Math.max(hh10,price+a*1.2);
+    sl=slBase+a*0.3;
+    slDist=sl-price;
+    const tp1Target=Math.min(ll20,price-slDist*1.8);
+    tp1Dist=Math.min(Math.max(price-tp1Target,slDist*1.5),slDist*2.5);
+    tp1=price-tp1Dist;
+    const tp2Target=Math.min(ll50,price-slDist*3);
+    tp2Dist=Math.min(Math.max(price-tp2Target,slDist*2.5),slDist*4);
+    tp2=price-tp2Dist;
   }
   
-  let score=30+15;
+  const a4=atr4[i4];if(!a4)return null;
+  const daysToTarget=Math.max(1,Math.round(tp1Dist/(a4*6)*1.5));
+  if(daysToTarget>3)return null;
+  
+  // التأكيد
+  const last=c1h[i1],prev=c1h[i1-1];
+  let confirmLevel=1,confirmReason="جاهزة الآن ✅",waitMinutes=0;
+  if(dir===1){
+    const breakLevel=Math.max(hh10,ema20v);
+    if(last.c>breakLevel&&last.c>last.o&&last.c>prev.c){confirmLevel=1;confirmReason="شمعة صاعدة مغلقة فوق "+breakLevel.toFixed(6)}
+    else if(last.c<=breakLevel){confirmLevel=2;confirmReason="انتظر شمعة 1h تغلق فوق "+breakLevel.toFixed(6);waitMinutes=60-new Date().getUTCMinutes()}
+    else{confirmLevel=2;confirmReason="انتظر شمعة صاعدة";waitMinutes=60-new Date().getUTCMinutes()}
+  }else{
+    const breakLevel=Math.min(ll10,ema20v);
+    if(last.c<breakLevel&&last.c<last.o&&last.c<prev.c){confirmLevel=1;confirmReason="شمعة هابطة مغلقة تحت "+breakLevel.toFixed(6)}
+    else if(last.c>=breakLevel){confirmLevel=2;confirmReason="انتظر شمعة 1h تغلق تحت "+breakLevel.toFixed(6);waitMinutes=60-new Date().getUTCMinutes()}
+    else{confirmLevel=2;confirmReason="انتظر شمعة هابطة";waitMinutes=60-new Date().getUTCMinutes()}
+  }
+  if(dir===1&&r>68){confirmLevel=2;confirmReason="RSI مرتفع ("+r.toFixed(1)+")"}
+  if(dir===-1&&r<32){confirmLevel=2;confirmReason="RSI منخفض ("+r.toFixed(1)+")"}
+  
+  let score=45;
   if(adxV>25)score+=15;else if(adxV>20)score+=8;
   if(r>50&&r<70&&dir===1)score+=10;
   if(r>30&&r<50&&dir===-1)score+=10;
   const confidence=Math.min(100,score);
-  return{sym,dir,entry:price,sl,tp1,tp2,rr1:tp1Dist/slDist,rr2:tp2Dist/slDist,confidence,daysToTarget,rsi:r,adx:adxV,atr:a,confirmLevel,confirmReason,waitMinutes};
+  return{sym,dir,entry:price,sl,tp1,tp2,rr1:tp1Dist/slDist,rr2:tp2Dist/slDist,confidence,daysToTarget,rsi:r,adx:adxV,atr:a,confirmLevel,confirmReason,waitMinutes,hh10,ll10,hh20,ll20,hh50,ll50};
 }
 
 $("ftScanBtn").onclick=async function(){
@@ -916,26 +966,39 @@ $("ftScanBtn").onclick=async function(){
   prog.style.display="none";btn.disabled=false;msg.textContent="";
   const signals=results.filter(r=>!r.skip).sort((a,b)=>b.confidence-a.confidence);
   const skipped=results.filter(r=>r.skip);
-  if(!signals.length){out.innerHTML='<div class="card"><div class="empty"><i class="fa-solid fa-moon"></i><p>لا توجد فرص قوية الآن.<br>'+(skipped.length?'('+skipped.length+' زوج محظور)':'')+'</p></div></div>';return}
+  if(!signals.length){out.innerHTML='<div class="card"><div class="empty"><i class="fa-solid fa-moon"></i><p>لا توجد فرص قوية الآن.</p></div></div>';return}
   out.innerHTML=signals.map(r=>{
     const buy=r.dir===1,symShort=r.sym.replace("USDT","");
-    const cmap={1:{color:"var(--green)",txt:"🟢 جاهزة الآن"},2:{color:"var(--yellow)",txt:"🟡 انتظر إغلاق شمعة"}};
+    const cmap={1:{color:"var(--green)",txt:"🟢 جاهزة الآن — ادخل"},2:{color:"var(--yellow)",txt:"🟡 انتظر تأكيد"}};
     const cc=cmap[r.confirmLevel]||cmap[1];
+    const dec=Math.abs(r.entry)<1?6:Math.abs(r.entry)<100?4:2;
     return `<div class="card" style="border-inline-start:3px solid ${buy?"var(--green)":"var(--red)"}">
-      <div class="sig-head"><span class="sig-badge ${buy?"buy":"sell"}">${buy?"LONG":"SHORT"} — ${symShort}/USDT</span><span class="sig-strat">ثقة ${r.confidence}%</span></div>
-      <div style="padding:10px;border-radius:12px;background:${cc.color}22;border:1px solid ${cc.color};margin-bottom:10px">
-        <b style="color:${cc.color}">${cc.txt}</b>
-        ${r.confirmReason?'<p class="note" style="margin:6px 0 0">'+r.confirmReason+'</p>':''}
-        ${r.waitMinutes>0?'<p class="note" style="margin:4px 0 0">⏱ بعد ~'+r.waitMinutes+' دقيقة</p>':''}
+      <div class="sig-head"><span class="sig-badge ${buy?"buy":"sell"}">${buy?"LONG شراء":"SHORT بيع"} — ${symShort}/USDT</span><span class="sig-strat">ثقة ${r.confidence}%</span></div>
+      <div style="padding:12px;border-radius:14px;background:${cc.color}22;border:1.5px solid ${cc.color}">
+        <p style="font-weight:900;color:${cc.color};margin-bottom:8px;font-size:14px">${cc.txt}</p>
+        <p style="margin:0;font-size:12.5px;font-weight:700">${r.confirmReason}</p>
+        ${r.waitMinutes>0?'<p class="note" style="margin-top:6px">⏱ بعد ~'+r.waitMinutes+' دقيقة</p>':''}
       </div>
       <div class="levels">
-        <div class="level-box entry"><span class="level-label">الدخول</span><span class="level-value">${fmt(r.entry)}</span></div>
-        <div class="level-box sl"><span class="level-label">الوقف</span><span class="level-value" style="color:var(--red)">${fmt(r.sl)}</span></div>
-        <div class="level-box tp1"><span class="level-label">هدف 1 (1:${r.rr1.toFixed(1)})</span><span class="level-value" style="color:var(--green)">${fmt(r.tp1)}</span></div>
-        <div class="level-box tp2"><span class="level-label">هدف 2 (1:${r.rr2.toFixed(1)})</span><span class="level-value" style="color:var(--green)">${fmt(r.tp2)}</span></div>
+        <div class="level-box entry"><span class="level-label">📍 الدخول</span><span class="level-value">${fmt(r.entry,dec)}</span></div>
+        <div class="level-box sl"><span class="level-label">🛑 الوقف</span><span class="level-value" style="color:var(--red)">${fmt(r.sl,dec)}</span></div>
+        <div class="level-box tp1"><span class="level-label">🎯 هدف 1 (1:${r.rr1.toFixed(1)})</span><span class="level-value" style="color:var(--green)">${fmt(r.tp1,dec)}</span></div>
+        <div class="level-box tp2"><span class="level-label">🎯 هدف 2 (1:${r.rr2.toFixed(1)})</span><span class="level-value" style="color:var(--green)">${fmt(r.tp2,dec)}</span></div>
       </div>
-      <div class="info-grid"><div class="info-box">RSI<b>${r.rsi.toFixed(1)}</b></div><div class="info-box">ADX<b>${r.adx.toFixed(1)}</b></div><div class="info-box">مدة<b>${r.daysToTarget} يوم</b></div></div>
-      <div class="btn-row"><button class="btn" data-fquick="${r.sym}" data-dir="${r.dir}" data-entry="${r.entry}" data-sl="${r.sl}" data-tp="${r.tp1}" type="button" style="background:var(--green-dim);border-color:var(--green);color:var(--green);font-weight:800"><i class="fa-solid fa-bolt"></i> فتح سريع</button></div>
+      <div class="info-grid">
+        <div class="info-box">RSI<b>${r.rsi.toFixed(1)}</b></div>
+        <div class="info-box">ADX<b>${r.adx.toFixed(1)}</b></div>
+        <div class="info-box">مدة<b>${r.daysToTarget} يوم</b></div>
+      </div>
+      <div class="info-grid" style="margin-top:6px">
+        <div class="info-box" style="font-size:10px">أعلى 10<b>${fmt(r.hh10,dec)}</b></div>
+        <div class="info-box" style="font-size:10px">أدنى 10<b>${fmt(r.ll10,dec)}</b></div>
+        <div class="info-box" style="font-size:10px">أعلى 20<b>${fmt(r.hh20,dec)}</b></div>
+        <div class="info-box" style="font-size:10px">أدنى 20<b>${fmt(r.ll20,dec)}</b></div>
+      </div>
+      <div class="btn-row" style="margin-top:10px">
+        <button class="btn" data-fquick="${r.sym}" data-dir="${r.dir}" data-entry="${r.entry}" data-sl="${r.sl}" data-tp="${r.tp1}" type="button" style="background:${r.confirmLevel===1?"var(--green-dim)":"var(--yellow-dim)"};border-color:${r.confirmLevel===1?"var(--green)":"var(--yellow)"};color:${r.confirmLevel===1?"var(--green)":"var(--yellow)"};font-weight:800"><i class="fa-solid fa-bolt"></i> ${r.confirmLevel===1?"ادخل الآن":"ادخل بعد التأكيد"}</button>
+      </div>
     </div>`;
   }).join("");
 };
@@ -956,7 +1019,7 @@ document.addEventListener("click",e=>{
 function fDir(d){F.dir=d;const L=$("fL"),S=$("fS");L.style.background=d===1?"var(--green)":"var(--green-dim)";L.style.color=d===1?"#fff":"var(--green)";S.style.background=d===-1?"var(--red)":"var(--red-dim)";S.style.color=d===-1?"#fff":"var(--red)";fcalc()}
 $("fL").onclick=()=>fDir(1);
 $("fS").onclick=()=>fDir(-1);
-$("fchips").addEventListener("click",e=>{const b=e.target.closest("button[data-v]");if(!b)return;$("flv").textContent=b.dataset.v;document.querySelectorAll("#fchips button").forEach(x=>x.style.background="var(--glass-2)");b.style.background="linear-gradient(135deg,var(--primary),var(--primary-hi))";b.style.color="#fff";fcalc()});
+$("fchips").addEventListener("click",e=>{const b=e.target.closest("button[data-v]");if(!b)return;$("flv").textContent=b.dataset.v;document.querySelectorAll("#fchips button").forEach(x=>{x.style.background="var(--glass-2)";x.style.color="var(--text-dim)"});b.style.background="linear-gradient(135deg,var(--primary),var(--primary-hi))";b.style.color="#fff";fcalc()});
 
 function fcalc(){
   const lev=+$("flv").textContent,e=+$("fentry").value,m=+$("fmargin").value,d=F.dir,R=$("fPreview");
@@ -1048,7 +1111,7 @@ new MutationObserver(()=>{if(sec.classList.contains("active")){fTick();updateAll
 fDir(1);renderFut();
 })();
 
-/* ====== Sidebar ====== */
+/* ============ Sidebar ============ */
 function openSidebar(){$("sidebar").classList.add("on");$("sidebarOverlay").classList.add("on")}
 function closeSidebar(){$("sidebar").classList.remove("on");$("sidebarOverlay").classList.remove("on")}
 function switchTab(tab){
@@ -1065,7 +1128,7 @@ function updateBadges(){
   const tb=$("navTradesBadge");if(tb){tb.textContent=t;tb.style.display=t>0?"inline-block":"none"}
 }
 
-/* ====== Settings ====== */
+/* ============ Settings ============ */
 function loadSettingsToUI(){const s=State.settings;$("setMaxTrades").value=s.maxTrades;$("setCooldown").value=s.cooldown}
 function saveSettingsFromUI(){saveSettings({maxTrades:parseInt($("setMaxTrades").value)||5,cooldown:parseInt($("setCooldown").value)||4});const r=$("settingsResult");r.textContent="✅ تم";r.classList.add("show");setTimeout(()=>r.classList.remove("show"),2e3)}
 function exportCSV(){const trades=getTrades();if(!trades.length){alert("لا صفقات");return}const headers=["ID","Pair","Dir","Entry","SL","TP1","TP2","Status","Outcome","Conf","Entered"];const rows=trades.map(t=>[t.id,t.pairKey,t.dir===1?"BUY":"SELL",t.entry,t.sl,t.tp1,t.tp2,t.status,t.outcome||"",t.confidence,new Date(t.enteredAt).toISOString()]);const csv=[headers].concat(rows).map(r=>r.join(",")).join("\n");const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="joe-bbg.csv";a.click()}
@@ -1088,7 +1151,6 @@ function init(){
   document.querySelectorAll(".tf-chip").forEach(c=>c.addEventListener("click",function(){document.querySelectorAll(".tf-chip").forEach(x=>x.classList.remove("active"));this.classList.add("active");State.tf=this.dataset.tf;loadChart();runAnalysis()}));
   $("pairSelect").addEventListener("change",function(){State.pair=this.value;loadChart();updatePairPrice();runAnalysis()});
   $("analyzeBtn").addEventListener("click",runAnalysis);
-  $("calcBtn").addEventListener("click",async()=>{const cap=parseFloat($("capital").value),rp=parseFloat($("riskPct").value),sp=parseFloat($("stopPips").value);const r=$("calcResult");const risk=cap*rp/100;const lot=risk/(sp*10);r.innerHTML='حجم اللوت: <b>'+lot.toFixed(3)+'</b> • المخاطرة: $'+risk.toFixed(2);r.classList.add("show")});
   $("scanBtn").addEventListener("click",runScan);
   $("themeBtn").addEventListener("click",toggleTheme);
   $("saveSettings").addEventListener("click",saveSettingsFromUI);
