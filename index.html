@@ -661,7 +661,7 @@ async function runChartScan(){
 /* ============ Futures ============ */
 (function(){
 const SYMS=[["BTCUSDT","BTC"],["ETHUSDT","ETH"],["SOLUSDT","SOL"],["BNBUSDT","BNB"],["XRPUSDT","XRP"],["ADAUSDT","ADA"],["DOGEUSDT","DOGE"],["AVAXUSDT","AVAX"],["LINKUSDT","LINK"],["LTCUSDT","LTC"],["DOTUSDT","DOT"],["POLUSDT","POL"],["TRXUSDT","TRX"],["ATOMUSDT","ATOM"],["NEARUSDT","NEAR"],["FILUSDT","FIL"],["APTUSDT","APT"],["ARBUSDT","ARB"],["OPUSDT","OP"],["SUIUSDT","SUI"]];
-const SAFE_SYMS=SYMS.map(s=>s[0]),LEVERAGES=[1,2,3,5,10,15,20,25,50,75,100,125];
+const SAFE_SYMS=SYMS.map(s=>s[0]);
 const MMR=0.005,FEE=0.0004;
 const liqP=(e,lev,d)=>d===1?e*(1-1/lev+MMR):e*(1+1/lev-MMR);
 const futSet=Object.assign({balance:1000},safeLoad(FSET_KEY,{}));
@@ -686,30 +686,6 @@ sec.innerHTML=`
 </div>
 <div id="ftScanResults"></div>
 <div class="card">
-  <div class="card-title"><i class="fa-solid fa-plus-circle"></i> فتح صفقة</div>
-  <div><label>العقد</label><select id="fsym">${SYMS.map(s=>`<option value="${s[0]}">${s[1]}/USDT</option>`).join("")}</select></div>
-  <div class="btn-row" style="grid-template-columns:1fr 1fr">
-    <button class="btn" id="fL" type="button" style="background:var(--green-dim);border-color:var(--green);color:var(--green);font-weight:900">LONG شراء</button>
-    <button class="btn" id="fS" type="button" style="background:var(--red-dim);border-color:var(--red);color:var(--red);font-weight:900">SHORT بيع</button>
-  </div>
-  <div style="display:flex;gap:8px;align-items:flex-end">
-    <div style="flex:1"><label>سعر الدخول</label><input type="number" id="fentry" step="any"></div>
-    <button class="btn" id="fLive" type="button"><i class="fa-solid fa-bolt"></i> حي</button>
-  </div>
-  <div style="display:flex;gap:8px;align-items:center;background:var(--glass-3);padding:12px;border-radius:12px;border:1px solid var(--border)">
-    <span class="note" style="font-size:11px">الرافعة</span>
-    <span style="font-size:22px;font-weight:900;color:var(--primary);margin-inline-start:auto"><span id="flv">10</span>x</span>
-  </div>
-  <div id="fchips" style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none">${LEVERAGES.map(v=>`<button type="button" data-v="${v}" style="flex:none;padding:6px 14px;border-radius:20px;background:var(--glass-2);border:1px solid var(--border);font-weight:700;font-size:12px;cursor:pointer;color:var(--text-dim)">${v}x</button>`).join("")}</div>
-  <div><label>الهامش (USDT)</label><input type="number" id="fmargin" value="10" step="any"></div>
-  <div class="btn-row">
-    <div><label>وقف الخسارة</label><input type="number" id="fsl" step="any" placeholder="اختياري"></div>
-    <div><label>الهدف</label><input type="number" id="ftp" step="any" placeholder="اختياري"></div>
-  </div>
-  <div class="info-grid" id="fPreview"></div>
-  <button class="btn primary block" id="fOpen" type="button" style="padding:16px;font-size:15px"><i class="fa-solid fa-rocket"></i> افتح الصفقة</button>
-</div>
-<div class="card">
   <div class="card-title"><i class="fa-solid fa-briefcase"></i> المفتوحة (<span id="ftOpenCount">0</span>)</div>
   <div id="ftOpenList"></div>
 </div>
@@ -720,7 +696,6 @@ sec.innerHTML=`
 </div>
 <button class="btn danger block" id="ftClear" type="button" style="margin:14px 16px;width:calc(100% - 32px)"><i class="fa-solid fa-trash"></i> مسح السجل</button>`;
 
-const F={dir:1,price:null};
 let ftrades=safeLoad(FT_KEY,[]);
 const fmt=(n,d)=>{if(n==null||!isFinite(n))return"—";d=d==null?(Math.abs(n)<1?5:Math.abs(n)<100?3:2):d;return n.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d})};
 const fmtUSDT=n=>(n>=0?"+":"")+fmt(n,2);
@@ -808,51 +783,23 @@ $("ftScanBtn").onclick=async function(){
         <div class="level-box tp2"><span class="level-label">🎯 هدف 2 (1:${r.rr2.toFixed(1)})</span><span class="level-value" style="color:var(--green)">${fmt(r.tp2,dec)}</span></div>
       </div>
       <div class="info-grid"><div class="info-box">RSI<b>${r.rsi.toFixed(1)}</b></div><div class="info-box">ADX<b>${r.adx.toFixed(1)}</b></div><div class="info-box">مدة تقديرية<b>~${r.hoursEst} ساعة</b></div></div>
-      <button class="btn block" data-fquick="${r.sym}" data-dir="${r.dir}" data-entry="${r.entry}" data-sl="${r.sl}" data-tp="${r.tp1}" data-lvl="${r.confirmLevel}" type="button" style="background:${r.confirmLevel===1?"var(--green-dim)":"var(--yellow-dim)"};border-color:${cc.color};color:${cc.color};font-weight:800"><i class="fa-solid fa-bolt"></i> ${r.confirmLevel===1?"ادخل الآن":"ادخل بعد التأكيد"}</button>
+      <button class="btn block" data-fquick="${r.sym}" data-dir="${r.dir}" data-entry="${r.entry}" data-sl="${r.sl}" data-tp="${r.tp1}" data-tp2="${r.tp2}" data-lvl="${r.confirmLevel}" type="button" style="background:${r.confirmLevel===1?"var(--green-dim)":"var(--yellow-dim)"};border-color:${cc.color};color:${cc.color};font-weight:800"><i class="fa-solid fa-bolt"></i> ${r.confirmLevel===1?"ادخل الآن":"ادخل بعد التأكيد"}</button>
     </div>`;
   }).join("");
 };
 
 document.addEventListener("click",e=>{
   const b=e.target.closest("[data-fquick]");if(!b)return;
-  const sym=b.dataset.fquick,dir=+b.dataset.dir,entry=+b.dataset.entry,sl=+b.dataset.sl,tp=+b.dataset.tp;
+  const sym=b.dataset.fquick,dir=+b.dataset.dir,entry=+b.dataset.entry,sl=+b.dataset.sl,tp=+b.dataset.tp,tp2=+b.dataset.tp2;
   if(ftrades.find(t=>t.sym===sym&&t.status==="open")){alert("عندك صفقة مفتوحة على "+sym);return}
   if(+b.dataset.lvl===2&&!confirm("لسه مستني تأكيد. تدخل برضه؟"))return;
   const lev=10,margin=Math.min(50,futSet.balance*0.1);
   if(margin<1){alert("رصيد قليل");return}
   const qty=margin*lev/entry;
-  ftrades.unshift({id:"f"+Date.now()+Math.random().toString(36).slice(2,5),sym,dir,entry,margin,lev,qty,notional:qty*entry,sl,tp,liq:liqP(entry,lev,dir),openedAt:Date.now(),status:"open",currentPrice:entry});
+  ftrades.unshift({id:"f"+Date.now()+Math.random().toString(36).slice(2,5),sym,dir,entry,margin,lev,qty,notional:qty*entry,sl,tp,tp2,liq:liqP(entry,lev,dir),openedAt:Date.now(),status:"open",currentPrice:entry});
   saveF();futSet.balance-=margin;safeSave(FSET_KEY,futSet);renderFut();
   b.innerHTML='<i class="fa-solid fa-check"></i> ✅ تم';b.disabled=true;
 });
-
-function fDir(d){F.dir=d;const L=$("fL"),S=$("fS");L.style.background=d===1?"var(--green)":"var(--green-dim)";L.style.color=d===1?"#fff":"var(--green)";S.style.background=d===-1?"var(--red)":"var(--red-dim)";S.style.color=d===-1?"#fff":"var(--red)";fcalc()}
-$("fL").onclick=()=>fDir(1);$("fS").onclick=()=>fDir(-1);
-$("fchips").addEventListener("click",e=>{const b=e.target.closest("button[data-v]");if(!b)return;$("flv").textContent=b.dataset.v;document.querySelectorAll("#fchips button").forEach(x=>{x.style.background="var(--glass-2)";x.style.color="var(--text-dim)"});b.style.background="linear-gradient(135deg,var(--primary),var(--primary-hi))";b.style.color="#fff";fcalc()});
-
-function fcalc(){
-  const lev=+$("flv").textContent,e=+$("fentry").value,m=+$("fmargin").value,d=F.dir,R=$("fPreview");
-  if(!(e>0)||!(m>0)){R.innerHTML='<div class="info-box" style="grid-column:1/-1;text-align:center">أدخل السعر والهامش</div>';return}
-  const qty=m*lev/e,liq=liqP(e,lev,d),ld=Math.abs(e-liq)/e*100;
-  R.innerHTML=`<div class="info-box">الكمية<b>${fmt(qty,6)}</b></div><div class="info-box">المركز<b>${fmt(qty*e,2)}</b></div><div class="info-box" style="border-inline-start:3px solid var(--red)">التصفية<b style="color:var(--red)">${fmt(liq)}</b></div><div class="info-box">مسافة<b>${ld.toFixed(2)}%</b></div>`;
-}
-["fentry","fmargin"].forEach(i=>$(i).addEventListener("input",fcalc));
-async function fTick(){if(!sec.classList.contains("active"))return;const p=await getPrice($("fsym").value);if(!p)return;F.price=p;if(!$("fentry").value)$("fentry").value=p;fcalc()}
-$("fLive").onclick=()=>{if(F.price){$("fentry").value=F.price;fcalc()}};
-$("fsym").onchange=()=>{F.price=null;$("fentry").value="";fTick()};
-
-$("fOpen").onclick=function(){
-  const sym=$("fsym").value,e=+$("fentry").value,m=+$("fmargin").value,lev=+$("flv").textContent,sl=+$("fsl").value||null,tp=+$("ftp").value||null;
-  if(!(e>0)||!(m>0)){alert("أدخل السعر والهامش");return}
-  if(m>futSet.balance){alert("الهامش أكبر من رصيدك");return}
-  if(ftrades.find(t=>t.sym===sym&&t.status==="open")){alert("عندك صفقة مفتوحة على "+sym);return}
-  if(sl&&(F.dir===1?sl>=e:sl<=e)){alert("الوقف في الاتجاه الغلط");return}
-  if(tp&&(F.dir===1?tp<=e:tp>=e)){alert("الهدف في الاتجاه الغلط");return}
-  const qty=m*lev/e;
-  ftrades.unshift({id:"f"+Date.now()+Math.random().toString(36).slice(2,5),sym,dir:F.dir,entry:e,margin:m,lev,qty,notional:qty*e,sl,tp,liq:liqP(e,lev,F.dir),openedAt:Date.now(),status:"open",currentPrice:e});
-  saveF();futSet.balance-=m;safeSave(FSET_KEY,futSet);
-  $("fsl").value="";$("ftp").value="";$("fentry").value="";renderFut();fTick();
-};
 
 async function updateAllFutures(){
   const open=ftrades.filter(t=>t.status==="open");if(!open.length){renderFut();return}
@@ -883,7 +830,7 @@ function renderFut(){
   if(!open.length)OL.innerHTML='<div class="empty" style="padding:20px"><i class="fa-regular fa-folder-open"></i><p>لا توجد صفقات مفتوحة</p></div>';
   else OL.innerHTML=open.map(t=>{
     const p=t.currentPrice||t.entry,pnl=(p-t.entry)*t.qty*t.dir,pct=pnl/t.margin*100,buy=t.dir===1;
-    return `<div class="trade-card ${buy?"buy":"sell"}"><div class="trade-head"><b>${t.sym.replace("USDT","")}/USDT ${t.lev}x</b><span class="note">${fmtUSDT(pnl)} USDT</span></div><div class="info-grid"><div class="info-box">الدخول<b>${fmt(t.entry)}</b></div><div class="info-box">الحالي<b>${fmt(p)}</b></div><div class="info-box">P&L<b class="${pnl>=0?"up":"dn"}">${fmtUSDT(pnl)}</b></div><div class="info-box">ROE<b class="${pnl>=0?"up":"dn"}">${pct.toFixed(2)}%</b></div></div><button class="btn danger block" data-fclose="${t.id}" type="button"><i class="fa-solid fa-xmark"></i> إغلاق</button></div>`;
+    return `<div class="trade-card ${buy?"buy":"sell"}"><div class="trade-head"><b>${t.sym.replace("USDT","")}/USDT ${t.lev}x</b><span class="note">${fmtUSDT(pnl)} USDT</span></div><div class="info-grid"><div class="info-box">الدخول<b>${fmt(t.entry)}</b></div><div class="info-box">الحالي<b>${fmt(p)}</b></div><div class="info-box">P&L<b class="${pnl>=0?"up":"dn"}">${fmtUSDT(pnl)}</b></div><div class="info-box">ROE<b class="${pnl>=0?"up":"dn"}">${pct.toFixed(2)}%</b></div></div><div class="info-grid"><div class="info-box" style="border-inline-start:3px solid var(--red)">🛑 الوقف<b style="color:var(--red)">${t.sl?fmt(t.sl):"—"}</b></div><div class="info-box" style="border-inline-start:3px solid var(--green)">🎯 هدف 1<b style="color:var(--green)">${t.tp?fmt(t.tp):"—"}</b></div><div class="info-box" style="border-inline-start:3px solid var(--green)">🎯 هدف 2<b style="color:var(--green)">${t.tp2?fmt(t.tp2):"—"}</b></div><div class="info-box">⚠️ التصفية<b>${fmt(t.liq)}</b></div></div><button class="btn danger block" data-fclose="${t.id}" type="button"><i class="fa-solid fa-xmark"></i> إغلاق</button></div>`;
   }).join("");
   const wins=closed.filter(t=>t.pnl>0).length,losses=closed.filter(t=>t.pnl<=0).length,total=closed.reduce((s,t)=>s+t.pnl,0);
   $("ftStats").innerHTML=closed.length?`<div class="info-box">إجمالي<b class="${total>=0?"up":"dn"}">${fmtUSDT(total)}</b></div><div class="info-box">رابحة<b class="up">${wins}</b></div><div class="info-box">خاسرة<b class="dn">${losses}</b></div><div class="info-box">نسبة<b>${Math.round(wins/closed.length*100)}%</b></div>`:"";
@@ -899,8 +846,8 @@ document.addEventListener("click",e=>{
 $("ftEditBal").onclick=()=>{const v=prompt("الرصيد:",futSet.balance);if(v==null)return;const n=parseFloat(v);if(!(n>0))return;futSet.balance=n;safeSave(FSET_KEY,futSet);renderFut()};
 $("ftClear").onclick=()=>{if(!confirm("مسح السجل؟"))return;ftrades=[];saveF();futSet.balance=1000;safeSave(FSET_KEY,futSet);renderFut()};
 setInterval(()=>{if(sec.classList.contains("active"))updateAllFutures()},5000);
-new MutationObserver(()=>{if(sec.classList.contains("active")){fTick();updateAllFutures()}}).observe(sec,{attributes:true,attributeFilter:["class"]});
-fDir(1);renderFut();
+new MutationObserver(()=>{if(sec.classList.contains("active")){updateAllFutures()}}).observe(sec,{attributes:true,attributeFilter:["class"]});
+renderFut();
 })();
 
 /* ============ Sidebar / Settings / Init ============ */
