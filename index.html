@@ -89,7 +89,7 @@ button,input,select{font-family:inherit;color:inherit}
 .layer-bar i{display:block;height:100%;border-radius:10px;transition:width .6s}
 .layer-score{font-weight:800;min-width:44px;text-align:left}
 .levels{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:400px){.levels{grid-template-columns:1fr}}
+@media(max-width:400px){.level-box{padding:10px 12px}.level-value{font-size:15px}.card,.signal{padding:14px}}
 .level-box{padding:14px;border-radius:14px;background:var(--glass-3);border:1px solid var(--border);display:flex;flex-direction:column;gap:4px}
 .level-box.entry{border-inline-start:3px solid var(--blue)}
 .level-box.sl{border-inline-start:3px solid var(--red)}
@@ -747,12 +747,9 @@ async function analyzeFutPair(sym){
   if(!up4&&!dn4)return null;
   const dir=up4?1:-1,ema20v=e20_1a[i1],ema50v=e50_1a[i1];
   if(ema20v==null||ema50v==null)return null;
-  if(dir===1&&!(ema20v>ema50v))return null;
-  if(dir===-1&&!(ema20v<ema50v))return null;
   const r=rsi1[i1];if(r==null)return null;
-  if(dir===1&&(r<45||r>75))return null;
-  if(dir===-1&&(r>55||r<25))return null;
-  const adxV=adx1[i1];if(adxV==null||adxV<20)return null;
+  const adxV=adx1[i1];if(adxV==null||adxV<18)return null;
+  if(dir===1?r>80:r<20)return null;
   const risk=a*1.5,tp1Dist=risk*1.5,tp2Dist=risk*2.5;
   const sl=dir===1?price-risk:price+risk,tp1=dir===1?price+tp1Dist:price-tp1Dist,tp2=dir===1?price+tp2Dist:price-tp2Dist;
   const prior=c1h.slice(-11,-1),hh10=Math.max(...prior.map(c=>c.h)),ll10=Math.min(...prior.map(c=>c.l));
@@ -772,8 +769,13 @@ async function analyzeFutPair(sym){
   }
   if(dir===1&&r>68){confirmLevel=2;confirmReason="RSI مرتفع ("+r.toFixed(1)+")"}
   if(dir===-1&&r<32){confirmLevel=2;confirmReason="RSI منخفض ("+r.toFixed(1)+")"}
-  let score=45;if(adxV>25)score+=15;else if(adxV>20)score+=8;
-  if(r>50&&r<70&&dir===1)score+=10;if(r>30&&r<50&&dir===-1)score+=10;
+  let score=40;
+  if(dir===1?ema20v>ema50v:ema20v<ema50v)score+=15;
+  if(adxV>30)score+=15;else if(adxV>25)score+=10;else if(adxV>=20)score+=5;
+  if(dir===1?(r>=45&&r<=70):(r>=30&&r<=55))score+=10;
+  if(Math.abs(price-ema20v)/a<1.5)score+=10;
+  if(confirmLevel===1)score+=10;
+  if(score<55)return null;
   return{sym,dir,entry:price,sl,tp1,tp2,rr1:1.5,rr2:2.5,confidence:Math.min(100,score),hoursEst,rsi:r,adx:adxV,confirmLevel,confirmReason,waitMinutes};
 }
 
@@ -785,8 +787,9 @@ $("ftScanBtn").onclick=async function(){
     try{const r=await analyzeFutPair(sym);if(r)results.push(r)}catch(e){}
     done++;fill.style.width=(done/SAFE_SYMS.length*100)+"%";msg.textContent="فحص "+done+"/"+SAFE_SYMS.length+"...";
   }
-  prog.style.display="none";btn.disabled=false;msg.textContent="";
+  prog.style.display="none";btn.disabled=false;
   const signals=results.filter(r=>!r.skip).sort((a,b)=>b.confidence-a.confidence);
+  msg.textContent="انتهى: "+signals.length+" فرصة من "+SAFE_SYMS.length+" • "+results.filter(r=>r.skip).length+" محظورة";
   if(!signals.length){out.innerHTML='<div class="card"><div class="empty"><i class="fa-solid fa-moon"></i><p>لا توجد فرص قوية الآن.</p></div></div>';return}
   out.innerHTML=signals.map(r=>{
     const buy=r.dir===1,short=r.sym.replace("USDT",""),cc=r.confirmLevel===1?{color:"var(--green)",txt:"🟢 جاهزة الآن — ادخل"}:{color:"var(--yellow)",txt:"🟡 انتظر تأكيد"};
