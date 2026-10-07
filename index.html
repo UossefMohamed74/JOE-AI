@@ -190,7 +190,7 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
       <button class="filter-item" data-filter="oil" type="button"><i class="fa-solid fa-oil-can"></i> نفط</button>
     </div>
   </div>
-  <div class="sidebar-foot"><b>Joe BBG Pro</b> • v12</div>
+  <div class="sidebar-foot"><b>Joe BBG Pro</b> • v12.5</div>
 </aside>
 
 <main class="main-content">
@@ -274,7 +274,7 @@ select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%
 <script src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
-/* ============ Joe BBG Core v12 ============ */
+/* ============ Joe BBG Core v12.5 ============ */
 const PAIR_TYPES={FOREX:"fx",METAL:"metal",OIL:"oil",CRYPTO:"crypto"};
 function fx(name,base,quote,range,ov){ov=ov||{};const isJPY=quote==="JPY";return Object.assign({tv:"FX:"+name,type:PAIR_TYPES.FOREX,sources:[["kraken",name]],decimals:isJPY?3:5,quote,pipPerLotQuote:isJPY?1000:10,range,ref:{type:"er",base,quote},tolerance:0.02,label:base+"/"+quote,group:"forex"},ov)}
 function crypto(sym,dec,range,atr){return{tv:"BINANCE:"+sym,type:PAIR_TYPES.CRYPTO,sources:[["binance_spot",sym]],decimals:dec,pipValueUSD:1,range,atrRange:atr||[0.05,9],label:sym.replace("USDT","/USDT"),group:"crypto"}}
@@ -401,52 +401,38 @@ function stratBreakout(ctx){const a=analyzeAt(ctx.ind,ctx.i);if(!a)return null;i
 function stratMeanReversion(ctx){const a=analyzeAt(ctx.ind,ctx.i);if(!a)return null;if(a.adx!=null&&a.adx>22)return null;if(a.trend!==0)return null;const bbP=(ctx.ind.bbUpper[ctx.i]&&ctx.ind.bbLower[ctx.i])?(a.last-ctx.ind.bbLower[ctx.i])/(ctx.ind.bbUpper[ctx.i]-ctx.ind.bbLower[ctx.i]):0.5;if(bbP<.15&&a.rsiOS)return{dir:1,atr:a.atr,entry:a.last,name:"Mean Reversion",a};if(bbP>.85&&a.rsiOB)return{dir:-1,atr:a.atr,entry:a.last,name:"Mean Reversion",a};return null}
 const STRATEGIES={trendFollow:stratTrendFollow,pullback:stratPullback,breakout:stratBreakout,meanReversion:stratMeanReversion};
 
-/* ============ دالة حساب الأهداف الجديدة ============ */
+/* ============ حساب الأهداف (الأصلية) ============ */
 function calcTargets(pairKey, dir, entry, atr, candles1h){
   const dec = getPair(pairKey).decimals;
   const last50 = candles1h.slice(-50);
-  const highs = last50.map(c=>c.h);
-  const lows = last50.map(c=>c.l);
-  
   const hh10 = Math.max(...last50.slice(-10).map(c=>c.h));
   const ll10 = Math.min(...last50.slice(-10).map(c=>c.l));
   const hh20 = Math.max(...last50.slice(-20).map(c=>c.h));
   const ll20 = Math.min(...last50.slice(-20).map(c=>c.l));
-  const hh50 = Math.max(...highs);
-  const ll50 = Math.min(...lows);
+  const hh50 = Math.max(...last50.map(c=>c.h));
+  const ll50 = Math.min(...last50.map(c=>c.l));
   
-  let sl, tp1, tp2, slDist, tp1Dist, tp2Dist;
+  const risk = atr * 1.5;
+  let sl, tp1, tp2;
   
   if(dir===1){
-    const slBase = Math.min(ll10, entry - atr*1.2);
-    sl = slBase - atr*0.3;
-    slDist = entry - sl;
-    
-    const tp1Target = Math.max(hh20, entry + slDist*1.8);
-    tp1Dist = Math.min(Math.max(tp1Target - entry, slDist*1.5), slDist*2.5);
-    tp1 = entry + tp1Dist;
-    
-    const tp2Target = Math.max(hh50, entry + slDist*3);
-    tp2Dist = Math.min(Math.max(tp2Target - entry, slDist*2.5), slDist*4);
-    tp2 = entry + tp2Dist;
+    sl = entry - risk;
+    tp1 = entry + risk * 1.5;
+    tp2 = entry + risk * 2.5;
   } else {
-    const slBase = Math.max(hh10, entry + atr*1.2);
-    sl = slBase + atr*0.3;
-    slDist = sl - entry;
-    
-    const tp1Target = Math.min(ll20, entry - slDist*1.8);
-    tp1Dist = Math.min(Math.max(entry - tp1Target, slDist*1.5), slDist*2.5);
-    tp1 = entry - tp1Dist;
-    
-    const tp2Target = Math.min(ll50, entry - slDist*3);
-    tp2Dist = Math.min(Math.max(entry - tp2Target, slDist*2.5), slDist*4);
-    tp2 = entry - tp2Dist;
+    sl = entry + risk;
+    tp1 = entry - risk * 1.5;
+    tp2 = entry - risk * 2.5;
   }
+  
+  const slDist = Math.abs(entry - sl);
+  const tp1Dist = Math.abs(tp1 - entry);
+  const tp2Dist = Math.abs(tp2 - entry);
   
   return {sl, tp1, tp2, slDist, tp1Dist, tp2Dist, rr1: tp1Dist/slDist, rr2: tp2Dist/slDist, hh10, ll10, hh20, ll20, hh50, ll50};
 }
 
-/* ============ دالة التأكيد الجديدة ============ */
+/* ============ دالة التأكيد ============ */
 function calcConfirm(pairKey, dir, entry, atr, candles1h, ema20, rsi){
   const dec = getPair(pairKey).decimals;
   const last = candles1h[candles1h.length-1];
@@ -517,7 +503,7 @@ function isPairBlocked(pairKey){
 }
 
 /* ============ Storage ============ */
-const SETTINGS_KEY="jbbg_v12_settings",TRADES_KEY="jbbg_v12_trades";
+const SETTINGS_KEY="jbbg_v125_settings",TRADES_KEY="jbbg_v125_trades";
 const DEFAULT_SETTINGS={maxTrades:5,cooldown:4,theme:"dark"};
 function safeLoad(k,fb){try{const r=localStorage.getItem(k);return r?JSON.parse(r):fb}catch(e){return fb}}
 function safeSave(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -782,7 +768,7 @@ async function runAnalysis(){
 
 /* ============ Futures ============ */
 (function(){
-const FT="jbbg_v12_ftrades",FSET="jbbg_v12_fset";
+const FT="jbbg_v125_ftrades",FSET="jbbg_v125_fset";
 const futSet=Object.assign({balance:1000},safeLoad(FSET,{}));
 const SYMS=[["BTCUSDT","BTC"],["ETHUSDT","ETH"],["SOLUSDT","SOL"],["BNBUSDT","BNB"],["XRPUSDT","XRP"],["ADAUSDT","ADA"],["DOGEUSDT","DOGE"],["AVAXUSDT","AVAX"],["LINKUSDT","LINK"],["LTCUSDT","LTC"],["DOTUSDT","DOT"],["MATICUSDT","MATIC"],["TRXUSDT","TRX"],["ATOMUSDT","ATOM"],["NEARUSDT","NEAR"],["FILUSDT","FIL"],["APTUSDT","APT"],["ARBUSDT","ARB"],["OPUSDT","OP"],["SUIUSDT","SUI"]];
 const SAFE_SYMS=SYMS.map(s=>s[0]);
@@ -891,43 +877,25 @@ async function analyzeFutPair(sym){
   if(dir===-1&&(r>55||r<25))return null;
   const adxV=adx1[i1];if(adxV==null||adxV<20)return null;
   
-  // حساب الأهداف الجديدة
+  // الأهداف (نفس الحساب الأصلي)
+  const risk=a*1.5;
+  const slDist=risk;
+  const tp1Dist=risk*1.5;
+  const tp2Dist=risk*2.5;
+  const sl=dir===1?price-slDist:price+slDist;
+  const tp1=dir===1?price+tp1Dist:price-tp1Dist;
+  const tp2=dir===1?price+tp2Dist:price-tp2Dist;
+  
   const last50=c1h.slice(-50);
   const hh10=Math.max(...last50.slice(-10).map(c=>c.h));
   const ll10=Math.min(...last50.slice(-10).map(c=>c.l));
   const hh20=Math.max(...last50.slice(-20).map(c=>c.h));
   const ll20=Math.min(...last50.slice(-20).map(c=>c.l));
-  const hh50=Math.max(...last50.map(c=>c.h));
-  const ll50=Math.min(...last50.map(c=>c.l));
-  
-  let slDist,tp1Dist,tp2Dist,sl,tp1,tp2;
-  if(dir===1){
-    const slBase=Math.min(ll10,price-a*1.2);
-    sl=slBase-a*0.3;
-    slDist=price-sl;
-    const tp1Target=Math.max(hh20,price+slDist*1.8);
-    tp1Dist=Math.min(Math.max(tp1Target-price,slDist*1.5),slDist*2.5);
-    tp1=price+tp1Dist;
-    const tp2Target=Math.max(hh50,price+slDist*3);
-    tp2Dist=Math.min(Math.max(tp2Target-price,slDist*2.5),slDist*4);
-    tp2=price+tp2Dist;
-  }else{
-    const slBase=Math.max(hh10,price+a*1.2);
-    sl=slBase+a*0.3;
-    slDist=sl-price;
-    const tp1Target=Math.min(ll20,price-slDist*1.8);
-    tp1Dist=Math.min(Math.max(price-tp1Target,slDist*1.5),slDist*2.5);
-    tp1=price-tp1Dist;
-    const tp2Target=Math.min(ll50,price-slDist*3);
-    tp2Dist=Math.min(Math.max(price-tp2Target,slDist*2.5),slDist*4);
-    tp2=price-tp2Dist;
-  }
   
   const a4=atr4[i4];if(!a4)return null;
   const daysToTarget=Math.max(1,Math.round(tp1Dist/(a4*6)*1.5));
   if(daysToTarget>3)return null;
   
-  // التأكيد
   const last=c1h[i1],prev=c1h[i1-1];
   let confirmLevel=1,confirmReason="جاهزة الآن ✅",waitMinutes=0;
   if(dir===1){
@@ -949,7 +917,7 @@ async function analyzeFutPair(sym){
   if(r>50&&r<70&&dir===1)score+=10;
   if(r>30&&r<50&&dir===-1)score+=10;
   const confidence=Math.min(100,score);
-  return{sym,dir,entry:price,sl,tp1,tp2,rr1:tp1Dist/slDist,rr2:tp2Dist/slDist,confidence,daysToTarget,rsi:r,adx:adxV,atr:a,confirmLevel,confirmReason,waitMinutes,hh10,ll10,hh20,ll20,hh50,ll50};
+  return{sym,dir,entry:price,sl,tp1,tp2,rr1:tp1Dist/slDist,rr2:tp2Dist/slDist,confidence,daysToTarget,rsi:r,adx:adxV,atr:a,confirmLevel,confirmReason,waitMinutes,hh10,ll10,hh20,ll20};
 }
 
 $("ftScanBtn").onclick=async function(){
@@ -989,12 +957,6 @@ $("ftScanBtn").onclick=async function(){
         <div class="info-box">RSI<b>${r.rsi.toFixed(1)}</b></div>
         <div class="info-box">ADX<b>${r.adx.toFixed(1)}</b></div>
         <div class="info-box">مدة<b>${r.daysToTarget} يوم</b></div>
-      </div>
-      <div class="info-grid" style="margin-top:6px">
-        <div class="info-box" style="font-size:10px">أعلى 10<b>${fmt(r.hh10,dec)}</b></div>
-        <div class="info-box" style="font-size:10px">أدنى 10<b>${fmt(r.ll10,dec)}</b></div>
-        <div class="info-box" style="font-size:10px">أعلى 20<b>${fmt(r.hh20,dec)}</b></div>
-        <div class="info-box" style="font-size:10px">أدنى 20<b>${fmt(r.ll20,dec)}</b></div>
       </div>
       <div class="btn-row" style="margin-top:10px">
         <button class="btn" data-fquick="${r.sym}" data-dir="${r.dir}" data-entry="${r.entry}" data-sl="${r.sl}" data-tp="${r.tp1}" type="button" style="background:${r.confirmLevel===1?"var(--green-dim)":"var(--yellow-dim)"};border-color:${r.confirmLevel===1?"var(--green)":"var(--yellow)"};color:${r.confirmLevel===1?"var(--green)":"var(--yellow)"};font-weight:800"><i class="fa-solid fa-bolt"></i> ${r.confirmLevel===1?"ادخل الآن":"ادخل بعد التأكيد"}</button>
