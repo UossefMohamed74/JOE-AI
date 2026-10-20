@@ -1,126 +1,188 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MEXC Early Gems Scanner</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BingX Signals</title>
 <style>
-:root{--bg:#0a0e17;--card:#121a29;--line:#26334a;--text:#e9effb;--muted:#91a0ba;--blue:#5a91ff;--green:#19c784;--red:#f05b68;--amber:#f6bd4b}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Tahoma,Arial,sans-serif}header{padding:16px;border-bottom:1px solid var(--line);display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap}h1{font-size:19px;margin:0}h1 span{color:var(--blue)}.muted{color:var(--muted)}.small{font-size:12px}.toolbar{display:flex;gap:9px;align-items:end;flex-wrap:wrap;padding:12px 16px;background:#101726;border-bottom:1px solid var(--line)}label{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:12px}input,select,button{font:inherit;color:var(--text);background:#0a1120;border:1px solid var(--line);border-radius:8px;padding:9px;min-height:36px}input{width:125px}input[type=checkbox]{width:auto;min-height:auto}button{background:var(--blue);border:0;color:white;font-weight:bold;cursor:pointer}button.secondary{background:#26334a}button:disabled{opacity:.5;cursor:wait}.check{flex-direction:row;align-items:center;padding-bottom:9px}main{padding:14px;display:grid;grid-template-columns:1fr;gap:14px}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px}.stat,.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;min-width:0}.stat small{color:var(--muted)}.stat strong{display:block;font-size:19px;margin-top:6px}.panel h2{font-size:15px;margin:0 0 10px}.tablewrap{overflow:auto;max-height:570px}table{border-collapse:collapse;width:100%;min-width:760px}th,td{text-align:right;padding:9px 8px;border-bottom:1px solid var(--line);white-space:nowrap}th{position:sticky;top:0;background:#151f31;color:var(--muted);font-weight:normal;font-size:12px}tr:hover{background:#1a2740}.up{color:var(--green)}.down{color:var(--red)}.tag{display:inline-block;padding:3px 7px;border-radius:7px;background:#25334b;font-size:11px}.hot{background:#49232a;color:#ff9da5}.good{background:#103c31;color:#7df0c1}.mid{background:#44361b;color:#ffda83}.actions{display:flex;gap:8px;flex-wrap:wrap}.log{max-height:190px;overflow:auto;
-font-size:12px;color:var(--muted)}.log div{padding:7px 0;border-bottom:1px dashed var(--line)}.notice{padding:0 16px 20px;color:var(--muted);font-size:12px;line-height:1.8}.empty{text-align:center;padding:25px;color:var(--muted)}.rowlink{color:#8db4ff;text-decoration:none}.score{font-weight:bold}.twocol{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}@media(max-width:900px){.twocol{grid-template-columns:1fr}header{align-items:flex-start}}
-</style></head><body>
-<header><div><h1>💎 <span>MEXC</span> كاشف الجواهر المبكرة</h1><div class="muted small">يراقب زخم السعر والحجم والاختراقات — لا يضمن التنبؤ بالمضخات</div></div><div id="status" class="muted small">جاهز للفحص</div></header>
-<div class="toolbar">
-<label>أقل تقييم<input id="minScore" type="number" value="45" min="0" max="100"></label>
-<label>أقل حجم 24س بالدولار<input id="minVol" type="number" value="20000" min="0"></label>
-<label>أقصى صعود 24س %<input id="maxChange" type="number" value="120" min="0"></label>
-<label>عدد العملات للفحص<select id="universe"><option value="20">20 — طلبات أقل</option><option value="35">35 — متوازن</option><option value="50" selected>50 — تغطية أكبر</option><option value="70">70 — فحص أوسع</option></select></label>
-<label>التحديث التلقائي<select id="refresh"><option value="0">إيقاف</option><option value="30" selected>30 ثانية</option><option value="60">60 ثانية</option><option value="120">120 ثانية</option></select></label>
-<button id="scan">افحص الآن</button><button id="save" class="secondary">حفظ الإعدادات</button>
+  :root{--bg:#0e1116;--card:#171c24;--line:#262d38;--tx:#e6e9ef;--mut:#8b95a5;--g:#2ebd85;--r:#f6465d;--b:#f0b90b}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,Segoe UI,Tahoma,sans-serif;padding:16px;max-width:720px;margin-inline:auto}
+  h1{font-size:20px;margin:4px 0 12px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  label{font-size:12px;color:var(--mut);display:block;margin-bottom:4px}
+  input,select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--tx);font-size:15px}
+  button{cursor:pointer;border:0;border-radius:10px;padding:12px;font-size:15px;font-weight:600}
+  .main{width:100%;background:var(--b);color:#000;margin-top:12px}
+  .sec{background:#263041;color:var(--tx);padding:8px 12px;font-size:13px}
+  .warn{font-size:12px;color:var(--mut);line-height:1.7}
+  .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .sym{font-weight:700;font-size:16px}
+  .tag{padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+  .LONG{background:#12362b;color:var(--g)}.SHORT{background:#3d1a21;color:var(--r)}
+  table{width:100%;font-size:14px;border-collapse:collapse}
+  td{padding:4px 0}td:last-child{text-align:left;direction:ltr;font-variant-numeric:tabular-nums}
+  .row{display:flex;gap:8px;margin-top:10px}.row button{flex:1}
+  #st{font-size:13px;color:var(--mut);margin:8px 0}
+  summary{cursor:pointer;font-weight:600}
+  .full{grid-column:1/-1}
+</style>
+</head>
+<body>
+<h1>📡 سكانر إشارات BingX</h1>
+
+<details class="box" id="setbox">
+  <summary>⚙️ إعدادات تليجرام (بتتحفظ على جهازك فقط)</summary>
+  <div class="grid" style="margin-top:12px">
+    <div class="full"><label>Telegram Bot Token</label><input id="tgToken" type="password" autocomplete="off"></div>
+    <div class="full"><label>Telegram Chat ID</label><input id="tgChat" autocomplete="off"></div>
+    <div class="full"><label>Proxy URL (اختياري - Cloudflare Worker لو BingX بلوك المتصفح)</label><input id="proxy" placeholder="https://xxx.workers.dev" dir="ltr"></div>
+  </div>
+  <button class="main sec" id="save">💾 حفظ</button>
+  <div class="warn" style="margin-top:8px">الفحص بيستخدم بيانات BingX العامة، فمفيش API key ولا تنفيذ صفقات. التوكن بيتخزن في متصفحك فقط، ما تكتبوش جوه الملف ولا ترفعه على GitHub.</div>
+</details>
+
+<div class="box">
+  <div class="grid">
+    <div><label>الهامش (USDT)</label><input id="margin" type="number" value="50"></div>
+    <div><label>الرافعة (ثابتة)</label><input id="lev" type="number" value="10" min="1" max="50"></div>
+    <div><label>الربح الصافي المطلوب ($)</label><input id="target" type="number" value="12"></div>
+    <div><label>الفريم</label>
+      <select id="tf"><option>5m</option><option selected>15m</option><option>30m</option><option>1h</option></select></div>
+  </div>
+  <button class="main" id="scan">🔍 فحص السوق الآن</button>
 </div>
-<div class="toolbar">
-<label style="min-width:230px">Telegram Bot Token<input id="token" type="password" placeholder="توكن البوت" style="width:230px"></label>
-<label>Telegram Chat ID<input id="chat" placeholder="Chat ID" style="width:155px"></label>
-<label class="check"><input id="tgOn" type="checkbox" checked> إرسال تنبيهات الجواهر</label>
-<label class="check"><input id="testMode" type="checkbox" checked> وضع الاختبار: لا تكرر العملة خلال 6 ساعات</label>
-<button id="testTg" class="secondary">اختبار تيليجرام</button>
+
+<div id="st"></div>
+<div id="out"></div>
+<div class="row" id="allrow" style="display:none"><button class="sec" id="sendAll">📨 إرسال كل الإشارات لتليجرام</button></div>
+
+<div class="box warn" style="margin-top:14px">
+  ⚠️ الإشارات مبنية على مؤشرات فنية (EMA / RSI / ATR) وليست ضمان. الستوب لوس يقلل الخسارة لكنه لا يضمن عدم الضرب،
+  والسعر ممكن يعمل slippage أو gap. لا تدخل بأكتر من اللي تقدر تتحمل خسارته.
 </div>
-<main>
-<div class="stats"><div class="stat"><small>أزواج USDT النشطة</small><strong id="pairs">—</strong></div><div class="stat"><small>عملات تم فحصها</small><strong id="scanned">—</strong></div><div class="stat"><small>إشارات فوق الحد</small><strong id="signals">—</strong></div><div class="stat"><small>فشل تحليلها</small><strong id="failed">—</strong></div><div class="stat"><small>آخر فحص</small><strong id="lastScan" style="font-size:15px">—</strong></div></div>
-<div class="twocol"><section class="panel"><h2>🚀 إشارات مبكرة مرتبة حسب القوة</h2><div class="tablewrap"><table><thead><tr><th>العملة</th><th>التقييم</th><th>تغير 1د</th><th>تغير 5د</th><th>قفزة الحجم</th><th>شراء/بيع</th><th>صعود 24س</th><th>حجم 24س</th><th>الإشارات</th></tr></thead><tbody id="gems"><tr><td colspan="9" class="empty">اضغط «افحص الآن» لبدء الفحص</td></tr></tbody></table></div></section>
-<section class="panel"><h2>📋 سجل النظام والتنبيهات</h2><div class="log" id="log"><div>تم تحميل الواجهة. ابدأ الفحص.</div></div><p class="muted small">الإشارات مبنية على بيانات السوق العامة وقد تتأخر أو تفشل إذا قيّدت المنصة الطلبات أو منع المتصفح الاتصال.</p></section></div>
-<section class="panel"><h2>كيف نقرأ التقييم؟</h2><div class="small muted" style="line-height:1.9">التقييم يجمع زخم الدقيقة والخمس دقائق، ارتفاع حجم الشمعة الأخيرة مقارنة بمتوسط الشموع السابقة، الاقتراب من قمة حديثة، وتوازن صفقات الشراء/البيع في آخر الصفقات المتاحة. هذه مؤشرات رصد وليست توقعًا مؤكدًا. لا تدخل لمجرد ظهور تقييم مرتفع؛ تحقق من السيولة والسبريد وخطة الخروج.</div></section>
-</main><div class="notice">تنبيه أمان: لا ترفع هذا الملف إلى موقع عام وأنت حافظ توكن تيليجرام بداخله؛ أي شخص يستطيع رؤية التوكن من المتصفح. استخدمه محليًا أو انقل إرسال تيليجرام إلى خادم خاص. لا يحتاج هذا الماسح إلى MEXC API Key لقراءة بيانات السوق العامة.</div>
+
 <script>
-const API='https://api.mexc.com/api/v3';const $=id=>document.getElementById(id);let timer=null,busy=false;let sent={};try{sent=JSON.parse(localStorage.getItem('early_sent')||'{}')||{}}catch(e){sent={}}
-const fmt=(n,d=2)=>Number.isFinite(n)?n.toLocaleString('en-US',{maximumFractionDigits:d}):'—';const money=n=>n>=1e9?(n/1e9).toFixed(2)+'B':n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':fmt(n,0);const pct=n=>(n>=0?'+':'')+fmt(n,2)+'%';
-function log(s){const el=$('log');if(el.children.length===1&&el.textContent.includes('تم تحميل'))el.innerHTML='';const d=document.createElement('div');d.textContent=new Date().toLocaleTimeString('ar-EG')+' — '+s;el.prepend(d);while(el.children.length>100)el.lastChild.remove()}
-async function api(path,timeout=12000){const c=new AbortController(),t=setTimeout(()=>c.abort(),timeout);try{const r=await fetch(API+path,{signal:c.signal,cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);return await r.json()}finally{clearTimeout(t)}}
-async function limitedMap(items,limit,fn){const out=new Array(items.length);let next=0;async function worker(){while(next<items.length){const i=next++;try{out[i]=await fn(items[i],i)}catch(e){out[i]=null}}}await Promise.all(Array.from({length:Math.min(limit,items.length)},worker));return out}
-function settings(){localStorage.setItem('early_settings',JSON.stringify({minScore:$('minScore').value,minVol:$('minVol').value,maxChange:$('maxChange').value,universe:$('universe').value,refresh:$('refresh').value,token:$('token').value,chat:$('chat').value,tgOn:$('tgOn').checked,testMode:$('testMode').checked}));log('تم حفظ الإعدادات على هذا الجهاز')}
-function loadSettings(){try{const s=JSON.parse(localStorage.getItem('early_settings')||'{}');for(const k of ['minScore','minVol','maxChange','universe','refresh','token','chat'])if(s[k]!==undefined)$(k).value=s[k];if(s.tgOn!==undefined)$('tgOn').checked=s.tgOn;if(s.testMode!==undefined)$('testMode').checked=s.testMode}catch(e){}}
-async function telegram(text){const token=$('token').value.trim(),chat=$('chat').value.trim();if(!token||!chat)return {ok:false,description:'أدخل Bot Token وChat ID'};const r=await fetch(`https://api.telegram.org/bot${token}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:chat,text,disable_web_page_preview:true})});const j=await r.json();if(!r.ok&&!j.description)j.description='HTTP '+r.status;return j}
-async function scoreOne(t){
- const sym=t.symbol;
- const k=await api(`/klines?symbol=${sym}&interval=1m&limit=26`);
- if(!Array.isArray(k)||k.length<22)return null;
- const candles=k.map(x=>({time:+x[0],o:+x[1],h:+x[2],l:+x[3],c:+x[4],base:+x[5],q:+x[7]||(+x[4]*+x[5])}));
- const last=candles[candles.length-1],closed=candles.slice(0,-1),prev=closed[closed.length-1];
- if(!last||!prev||!last.c||!prev.c)return null;
- const c5=closed.slice(-5),c20=closed.slice(-20);
- const p1=(last.c/prev.c-1)*100;
- const p5=c5.length?(last.c/c5[0].o-1)*100:0;
- const avgQ=c20.reduce((a,x)=>a+x.q,0)/Math.max(c20.length,1);
- // Normalize the current, still-forming minute's volume to elapsed time to avoid comparing 10 seconds with a full minute.
- const elapsed=Math.max(8,Math.min(60,(Date.now()-last.time)/1000));
- const expected=avgQ*(elapsed/60);
- const spike=expected>0?last.q/expected:0;
- const recentHigh=Math.max(...closed.slice(-20).map(x=>x.h));
- const breakout=last.c>=recentHigh*.998;
- const candleRange=prev.h-prev.l;
- const closePos=candleRange>0?(prev.c-prev.l)/candleRange:.5;
- let buyRatio=50,buyUsd=0,sellUsd=0,tradeCount=0;
- try{
-  const tr=await api(`/trades?symbol=${sym}&limit=100`);
-  if(Array.isArray(tr)){
-   for(const x of tr){const usd=(+x.price)*(+x.qty);if(!Number.isFinite(usd))continue;tradeCount++;if(x.isBuyerMaker)sellUsd+=usd;else buyUsd+=usd}
-   buyRatio=buyUsd+sellUsd>0?buyUsd/(buyUsd+sellUsd)*100:50;
+const $=id=>document.getElementById(id);
+const FEE_RATE=0.0005;
+const cfg=Object.assign({proxy:'',tgToken:'',tgChat:''},
+  (()=>{try{return JSON.parse(localStorage.getItem('cfg')||'{}')}catch(e){return{}}})());
+const FIELDS=['tgToken','tgChat','proxy'];
+FIELDS.forEach(k=>$(k).value=cfg[k]||'');
+$('save').onclick=()=>{
+  FIELDS.forEach(k=>cfg[k]=$(k).value.trim());
+  try{localStorage.setItem('cfg',JSON.stringify({tgToken:cfg.tgToken,tgChat:cfg.tgChat,proxy:cfg.proxy}))}catch(e){alert('تعذر الحفظ')}
+  $('setbox').open=false;
+};
+
+// ---------- BingX (بيانات عامة فقط) ----------
+const base=()=>cfg.proxy?cfg.proxy.replace(/\/$/,'')+'/live':'https://open-api.bingx.com';
+async function pub(p){
+  let r;
+  try{r=await fetch(base()+p)}
+  catch(e){throw new Error('تعذر الاتصال بـ BingX من المتصفح (غالبًا CORS). استخدم Proxy URL في الإعدادات - راجع worker.js')}
+  const j=await r.json();
+  if(j.code!==0)throw new Error('BingX: '+(j.msg||j.code));
+  return j.data;
+}
+
+// ---------- المؤشرات ----------
+const ema=(a,n)=>{const k=2/(n+1);let e=a[0];for(let i=1;i<a.length;i++)e=a[i]*k+e*(1-k);return e};
+function rsi(c,n=14){let g=0,l=0;for(let i=c.length-n;i<c.length;i++){const d=c[i]-c[i-1];d>=0?g+=d:l-=d}return l===0?100:100-100/(1+g/l)}
+function atr(k,n=14){let s=0;for(let i=k.length-n;i<k.length;i++){const pc=k[i-1].close;s+=Math.max(k[i].high-k[i].low,Math.abs(k[i].high-pc),Math.abs(k[i].low-pc))}return s/n}
+
+function analyze(symbol,k,o){
+  const closes=k.map(x=>x.close),price=closes[closes.length-1];
+  const e20=ema(closes,20),e50=ema(closes,50),R=rsi(closes),A=atr(k);
+  let side=null;
+  if(e20>e50&&price>e20&&R>=50&&R<=68)side='LONG';
+  if(e20<e50&&price<e20&&R<=50&&R>=32)side='SHORT';
+  if(!side)return null;
+  const notional=o.margin*o.leverage,fees=notional*FEE_RATE*2;
+  const tpDist=((o.target+fees)/notional)*price,slDist=1.5*A,dir=side==='LONG'?1:-1;
+  if(tpDist<0.5*A||tpDist>2.5*A)return null;
+  if(slDist>(price/o.leverage)*0.7)return null;
+  const risk=(slDist/price)*notional+fees,trend=Math.abs(e20-e50)/price;
+  return{symbol,side,entry:price,tp:price+dir*tpDist,sl:price-dir*slDist,leverage:o.leverage,margin:o.margin,notional,
+    netProfit:o.target,maxLoss:+risk.toFixed(2),rr:+(o.target/risk).toFixed(2),rsi:+R.toFixed(1),
+    atrPct:+((A/price)*100).toFixed(2),score:trend*1000+o.target/risk};
+}
+async function scan(o){
+  const tk=await pub('/openApi/swap/v2/quote/ticker');
+  const top=tk.filter(t=>t.symbol.endsWith('-USDT')&&+t.quoteVolume>5e6).sort((a,b)=>b.quoteVolume-a.quoteVolume).slice(0,50);
+  const out=[];let i=0;
+  async function worker(){
+    while(i<top.length){
+      const t=top[i++];
+      try{
+        let k=await pub(`/openApi/swap/v3/quote/klines?symbol=${t.symbol}&interval=${o.tf}&limit=120`);
+        k=k.map(x=>({time:+x.time,open:+x.open,high:+x.high,low:+x.low,close:+x.close})).sort((a,b)=>a.time-b.time);
+        if(k.length<60)continue;
+        const s=analyze(t.symbol,k,o);if(s)out.push(s);
+      }catch(e){}
+    }
   }
- }catch(e){/* Keep the price/volume signal if the trades endpoint is temporarily unavailable. */}
- let score=0;const why=[];
- if(p1>=.25){score+=8;why.push('زخم دقيقة')}
- if(p1>=.8){score+=8;why.push('تسارع دقيقة')}
- if(p5>=.8){score+=10;why.push('زخم 5 دقائق')}
- if(p5>=2){score+=8;why.push('تسارع 5 دقائق')}
- if(spike>=1.5){score+=8;why.push('حجم لحظي ×'+spike.toFixed(1))}
- if(spike>=2.5){score+=10;why.push('قفزة حجم قوية')}
- if(breakout){score+=12;why.push('اختبار/اختراق قمة حديثة')}
- if(buyRatio>=53&&tradeCount>0){score+=6;why.push('ميل للشراء')}
- if(buyRatio>=62&&tradeCount>0){score+=8;why.push('ضغط شراء واضح')}
- if(closePos>=.75){score+=4;why.push('إغلاق سابق قرب القمة')}
- if(t.change24>=0&&t.change24<=35&&p5>0){score+=6;why.push('حركة يومية غير ممتدة')}
- if(t.vol<50000){score-=8;why.push('سيولة منخفضة')}
- return {symbol:sym,last:last.c,change24:t.change24,vol:t.vol,p1,p5,spike,buyRatio,buyUsd,sellUsd,score:Math.max(0,Math.min(100,score)),why,breakout,tradeCount};
+  await Promise.all(Array.from({length:5},worker));
+  return{scanned:top.length,signals:out.sort((a,b)=>b.score-a.score).slice(0,10)};
 }
-async function scan(){
- if(busy)return;busy=true;$('scan').disabled=true;$('status').textContent='جاري جلب بيانات السوق…';
- try{
-  const data=await api('/ticker/24hr');if(!Array.isArray(data))throw new Error('استجابة غير متوقعة من API');
-  const all=data.filter(x=>String(x.symbol).endsWith('USDT')&&+x.lastPrice>0).map(x=>{
-   const last=+x.lastPrice,open=+x.openPrice;
-   const change24=open>0?(last/open-1)*100:(Number.isFinite(+x.priceChangePercent)?+x.priceChangePercent:0);
-   const qv=+x.quoteVolume,baseVol=+x.volume;
-   const vol=Number.isFinite(qv)&&qv>0?qv:(Number.isFinite(baseVol)&&baseVol>0?last*baseVol:0);
-   return {symbol:x.symbol,last,change24,vol,trades:+x.count||0};
+
+// ---------- تليجرام ----------
+async function sendTelegram(text){
+  if(!cfg.tgToken||!cfg.tgChat)throw new Error('ضع توكن البوت والـ Chat ID في الإعدادات');
+  const r=await fetch(`https://api.telegram.org/bot${cfg.tgToken}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({chat_id:cfg.tgChat,text:text.slice(0,4000)})});
+  const j=await r.json();
+  if(!j.ok)throw new Error('Telegram: '+j.description);
+}
+
+// ---------- الواجهة ----------
+let signals=[];
+const f=n=>n>=1?n.toFixed(4):n.toPrecision(4);
+const msg=s=>`📡 إشارة ${s.side==='LONG'?'🟢 شراء':'🔴 بيع'} | ${s.symbol}
+الدخول: ${f(s.entry)}
+الهدف: ${f(s.tp)}
+الستوب: ${f(s.sl)}
+الرافعة: ${s.leverage}x | الهامش: ${s.margin}$
+الربح الصافي المتوقع: +${s.netProfit}$
+أقصى خسارة: -${s.maxLoss}$ | R/R ${s.rr}
+⚠️ ليست نصيحة مالية`;
+
+async function tg(text,btn){
+  const old=btn.textContent;btn.textContent='...';
+  try{await sendTelegram(text);btn.textContent='✅ تم'}catch(e){btn.textContent='❌';alert(e.message)}
+  setTimeout(()=>btn.textContent=old,2500);
+}
+function render(){
+  $('out').innerHTML='';
+  signals.forEach(s=>{
+    const d=document.createElement('div');d.className='box';
+    d.innerHTML=`<div class="head"><span class="sym">${s.symbol}</span><span class="tag ${s.side}">${s.side==='LONG'?'شراء LONG':'بيع SHORT'}</span></div>
+    <table>
+      <tr><td>الدخول</td><td>${f(s.entry)}</td></tr>
+      <tr><td>الهدف</td><td style="color:var(--g)">${f(s.tp)}</td></tr>
+      <tr><td>الستوب</td><td style="color:var(--r)">${f(s.sl)}</td></tr>
+      <tr><td>الربح الصافي</td><td style="color:var(--g)">+${s.netProfit}$</td></tr>
+      <tr><td>أقصى خسارة</td><td style="color:var(--r)">-${s.maxLoss}$</td></tr>
+      <tr><td>R/R · RSI · ATR%</td><td>${s.rr} · ${s.rsi} · ${s.atrPct}%</td></tr>
+    </table>
+    <div class="row"><button class="sec tgb">📨 إرسال لتليجرام</button></div>`;
+    d.querySelector('.tgb').onclick=e=>tg(msg(s),e.target);
+    $('out').appendChild(d);
   });
-  $('pairs').textContent=all.length;
-  const minVol=Math.max(0,+$('minVol').value||0),maxChange=+$('maxChange').value;
-  const eligible=all.filter(t=>t.vol>=minVol&&(!Number.isFinite(maxChange)||t.change24<=maxChange));
-  const pool=eligible.length?eligible:all.filter(t=>t.vol>=minVol);
-  const n=+$('universe').value||50;
-  // Mix candidates from volume, positive 24h movement, and trade activity so high-volume majors don't crowd out smaller movers.
-  const unique=new Map();
-  const add=(arr,limit)=>arr.slice(0,limit).forEach(t=>unique.set(t.symbol,t));
-  add([...pool].sort((a,b)=>b.vol-a.vol),Math.ceil(n*.45));
-  add([...pool].filter(t=>t.change24>-15).sort((a,b)=>b.change24-a.change24),Math.ceil(n*.35));
-  add([...pool].sort((a,b)=>b.trades-a.trades),Math.ceil(n*.25));
-  let cands=[...unique.values()];
-  if(cands.length<n){add([...pool].sort((a,b)=>b.vol-a.vol),n);cands=[...unique.values()].slice(0,n)}else cands=cands.slice(0,n);
-  if(!cands.length)throw new Error('لا توجد أزواج مطابقة. خفّض أقل حجم تداول.');
-  $('status').textContent=`تحليل ${cands.length} عملة — قد يستغرق الفحص بعض الوقت`;
-  let done=0,failed=0;
-  const scored=await limitedMap(cands,3,async t=>{const result=await scoreOne(t);done++;if(!result)failed++;$('status').textContent=`جاري التحليل ${done}/${cands.length}`;return result});
-  const results=scored.filter(Boolean).sort((a,b)=>b.score-a.score);const minScore=Math.max(0,+$('minScore').value||0);const shown=results.filter(x=>x.score>=minScore);
-  $('scanned').textContent=results.length;$('failed').textContent=failed;$('signals').textContent=shown.length;$('lastScan').textContent=new Date().toLocaleTimeString('ar-EG');
-  render(shown);log(`اكتمل الفحص: ${results.length} محللة، ${failed} فشل، ${shown.length} إشارة فوق ${minScore}/100`);
-  if(!results.length)log('لم يتم تحليل أي عملة بنجاح؛ تحقق من اتصال API أو افتح الملف عبر خادم محلي.');
-  await sendAlerts(shown);
-  $('status').textContent=`اكتمل الفحص — ${results.length} عملة محللة`;
- }catch(e){$('status').textContent='فشل الفحص: '+e.message;log('خطأ: '+e.message+' — جرّب خفض عدد العملات أو زيادة فترة التحديث')}
- finally{busy=false;$('scan').disabled=false}
+  $('allrow').style.display=signals.length?'flex':'none';
 }
-function render(list){const body=$('gems');if(!list.length){body.innerHTML='<tr><td colspan="9" class="empty">لا توجد إشارات فوق الحد الحالي. خفّض أقل تقييم أو انتظر تحديثًا جديدًا.</td></tr>';return}body.innerHTML=list.map(g=>`<tr><td><b>${g.symbol.replace('USDT','')}</b><span class="muted">/USDT</span><br><a class="rowlink small" target="_blank" rel="noopener" href="https://www.mexc.com/exchange/${g.symbol.replace('USDT','_USDT')}">فتح السوق ↗</a></td><td><span class="tag ${g.score>=70?'hot':g.score>=50?'good':'mid'} score">${g.score}/100</span></td><td class="${g.p1>=0?'up':'down'}">${pct(g.p1)}</td><td class="${g.p5>=0?'up':'down'}">${pct(g.p5)}</td><td>${fmt(g.spike,1)}x</td><td>${fmt(g.buyRatio,0)}%</td><td class="${g.change24>=0?'up':'down'}">${pct(g.change24)}</td><td>$${money(g.vol)}</td><td style="white-space:normal;min-width:180px;font-size:11px">${g.why.join(' · ')||'لا توجد إشارة قوية'}</td></tr>`).join('')}
-async function sendAlerts(list){if(!$('tgOn').checked)return;for(const g of list){const now=Date.now(),cooldown=$('testMode').checked?6*3600e3:30*60e3;if(sent[g.symbol]&&now-sent[g.symbol]<cooldown)continue;const msg=`💎 إشارة مبكرة MEXC: ${g.symbol}\n⭐ التقييم: ${g.score}/100 (ليس احتمال نجاح)\n💵 السعر الحالي: ${g.last}\n📈 تغير دقيقة: ${pct(g.p1)}\n📈 تغير 5 دقائق: ${pct(g.p5)}\n📊 قفزة حجم الدقيقة: ${fmt(g.spike,2)}x\n🟢 نسبة الشراء بآخر الصفقات: ${fmt(g.buyRatio,1)}%\n📈 تغير 24س: ${pct(g.change24)}\n💰 حجم 24س: $${money(g.vol)}\n🔎 الإشارات: ${g.why.join('، ')||'لا توجد'}\n🔗 https://www.mexc.com/exchange/${g.symbol.replace('USDT','_USDT')}\n⚠️ تنبيه آلي للمراقبة فقط؛ قد تكون الإشارة كاذبة، افحص السبريد والسيولة وحدد المخاطرة.`;try{const r=await telegram(msg);if(r.ok){sent[g.symbol]=now;log('تم إرسال تنبيه تيليجرام: '+g.symbol)}else log('فشل تيليجرام '+g.symbol+': '+(r.description||'خطأ غير معروف'))}catch(e){log('تعذر إرسال تيليجرام: '+e.message)}}localStorage.setItem('early_sent',JSON.stringify(sent))}
-function setTimer(){if(timer)clearInterval(timer);const s=+$('refresh').value;if(s>0)timer=setInterval(scan,s*1000)}
-$('scan').onclick=scan;$('save').onclick=()=>{settings();setTimer()};$('refresh').onchange=()=>{settings();setTimer()};$('testTg').onclick=async()=>{settings();try{const r=await telegram('✅ اختبار اتصال MEXC Early Gems Scanner');alert(r.ok?'تم إرسال رسالة الاختبار':'فشل الإرسال: '+(r.description||'راجع البيانات'))}catch(e){alert('خطأ: '+e.message)}};
-loadSettings();setTimer();scan();
-</script></body></html>
+$('scan').onclick=async()=>{
+  $('st').textContent='⏳ جاري فحص أعلى 50 عملة سيولة...';
+  $('out').innerHTML='';$('allrow').style.display='none';
+  const o={margin:Math.max(1,+$('margin').value||50),leverage:Math.min(50,Math.max(1,+$('lev').value||10)),target:Math.max(1,+$('target').value||12),tf:$('tf').value};
+  try{
+    const j=await scan(o);signals=j.signals;
+    $('st').textContent=`تم فحص ${j.scanned} عملة — الإشارات المطابقة: ${signals.length}`+(signals.length?'':' (مفيش حاليًا، جرب فريم أو هدف مختلف)');
+    render();
+  }catch(e){$('st').textContent='❌ '+e.message}
+};
+$('sendAll').onclick=e=>tg(signals.map(msg).join('\n\n———\n\n'),e.target);
+</script>
+</body>
+</html>
