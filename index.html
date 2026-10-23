@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCAan - نظام تداول الحيتان</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        h1 {
+            color: #58a6ff;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .status-badge {
+            display: inline-block;
+            background-color: #238636;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background-color: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: right;
+        }
+        .card p {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+        .highlight {
+            color: #3fb950;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #8b949e;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>SCAan Smart Scanner</h1>
+        <div class="status-badge">🟢 النظام يعمل لمراقبة السوق</div>
+        
+        <div class="card" id="signalBox">
+            <p><strong>الزوج المستهدف:</strong> <span id="pair">EUR/USD</span></p>
+            <p><strong>نوع الصفقة:</strong> <span class="highlight" id="signalType">انتظار صيد سيولة...</span></p>
+            <p><strong>وقف الخسارة (Stop Loss):</strong> <span id="stopLoss">-- نقاط</span></p>
+            <p><strong>الهدف (Take Profit):</strong> <span id="takeProfit">-- نقطة</span></p>
+        </div>
+
+        <div class="footer">
+            مخصص لصفقات الحيتان بـ ستوب صغير وهدف كبير
+        </div>
+    </div>
+
+</body>
+</html>
